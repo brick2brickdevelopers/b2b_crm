@@ -103,9 +103,9 @@ class LeadsDataTable extends BaseDataTable
 
                 return $date;
             })
-            ->editColumn('created_at', function ($row) {
-                return $row->created_at->format($this->global->date_format);
-            })
+            // ->editColumn('created_at', function ($row) {
+            //     return $row->created_at->format($this->global->date_format);
+            // })
             ->editColumn('agent_name', function ($row) {
                 if (!is_null($row->agent_name)) {
                     return ($row->image) ? '<img src="' . asset_url('avatar/' . $row->image) . '"
@@ -114,18 +114,29 @@ class LeadsDataTable extends BaseDataTable
                 }
                 return '--';
             })
-            ->editColumn('client_email', function ($row) {
-                if ($row->client_email != null && $row->client_email != '') {
-                    return ($row->client_email);
-                } else {
-                    return '--';
-                }
-            })
+            // ->editColumn('client_email', function ($row) {
+            //     if ($row->client_email != null && $row->client_email != '') {
+            //         return ($row->client_email);
+            //     } else {
+            //         return '--';
+            //     }
+            // })
             ->editColumn('mobile', function ($row) {
                 if (!is_null($row->mobile) && $row->mobile != ' ') {
                     return '<a href="tel:+' . ($row->mobile) . '">' . '+' . ($row->mobile) . '</a>';
                 }
                 return '--';
+            })
+            ->AddColumn('client_action', function ($row) {
+                // if (!is_null($row->mobile) && $row->mobile != ' ') {
+                //     return '';
+
+                // }
+                $action = '
+                   <a href="tel:+' . ($row->mobile) . '" class="material-icons">' .'<i class="fa fa-phone" aria-hidden="true"></i>' . '</a><br>
+                   <a href="tel:+' . ($row->mobile) . '" class="material-icons">' . 'SMS'. '</a></br>
+                   <a href="https://wa.me/+' . str_replace(' ', '', $row->mobile) . '" class="material-icons">' . '<i class="fa fa-whatsapp" aria-hidden="true"></i>'. '</a';
+               return $action;
             })
             ->removeColumn('status_id')
             ->removeColumn('client_id')
@@ -134,7 +145,7 @@ class LeadsDataTable extends BaseDataTable
             ->removeColumn('next_follow_up')
             ->removeColumn('statusName')
             ->addIndexColumn()
-            ->rawColumns(['status', 'action', 'checkbox', 'client_name', 'next_follow_up_date', 'agent_name', 'mobile', 'client_email']);
+            ->rawColumns(['status', 'action', 'checkbox', 'client_name', 'next_follow_up_date', 'agent_name', 'mobile', 'client_email','client_action']);
     }
 
     /**
@@ -256,11 +267,12 @@ class LeadsDataTable extends BaseDataTable
             __('app.clientName') => ['data' => 'client_name', 'name' => 'client_name'],
             // __('modules.lead.companyName') => ['data' => 'company_name', 'name' => 'company_name'],
             __('app.leadValue') => ['data' => 'value', 'name' => 'value'],
-            __('app.createdOn') => ['data' => 'created_at', 'name' => 'created_at'],
+            // __('app.createdOn') => ['data' => 'created_at', 'name' => 'created_at'],
             __('modules.lead.nextFollowUp') => ['data' => 'next_follow_up_date', 'name' => 'next_follow_up_date', 'orderable' => false, 'searchable' => false],
             __('modules.lead.leadAgent') => ['data' => 'agent_name', 'name' => 'users.name'],
-            __('modules.lead.client_email') => ['data' => 'client_email', 'name' => 'client_email'],
+            // __('modules.lead.client_email') => ['data' => 'client_email', 'name' => 'client_email'],
             __('app.mobile') => ['data' => 'mobile', 'name' => 'mobile'],
+            __('app.client_action') => ['data' => 'client_action', 'name' => 'client_action'],
             __('app.status') => ['data' => 'status', 'name' => 'status', 'exportable' => false],
             __('app.leadStatus') => ['data' => 'leadStatus', 'name' => 'leadStatus', 'visible' => false, 'orderable' => false, 'searchable' => false],
             Column::computed('action', __('app.action'))

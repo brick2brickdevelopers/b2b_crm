@@ -230,7 +230,7 @@ class LeadController extends AdminBaseController
         if ($request->get('custom_fields_data')) {
             $lead->updateCustomFieldData($request->get('custom_fields_data'));
         }
-
+        //update redirection after update the data
         return Reply::redirect(route('admin.leads.index'), __('messages.LeadUpdated'));
     }
 
