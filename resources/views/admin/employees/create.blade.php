@@ -55,7 +55,8 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label class="required">@lang('modules.employees.employeeName')</label>
-                                        <input type="text" name="name" id="name" class="form-control" autocomplete="nope">
+                                        <input type="text" name="name" id="name" class="form-control"
+                                            autocomplete="nope">
                                     </div>
                                 </div>
 
@@ -77,7 +78,8 @@
                                         <span class="fa fa-fw fa-eye field-icon toggle-password"></span>
                                         <span class="help-block"> @lang('modules.employees.passwordNote') </span>
                                         <div class="checkbox checkbox-info">
-                                            <input id="random_password" name="random_password" value="true" type="checkbox">
+                                            <input id="random_password" name="random_password" value="true"
+                                                type="checkbox">
                                             <label for="random_password">@lang('modules.client.generateRandomPassword')</label>
                                         </div>
                                     </div>
@@ -135,21 +137,37 @@
                             <!--/row-->
 
                             <div class="row">
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         <label class="control-label">@lang('app.address')</label>
-                                        <textarea name="address" id="address" rows="5" class="form-control"></textarea>
+                                        <textarea name="address" id="address" rows="2" class="form-control"></textarea>
                                     </div>
                                 </div>
-                                @if (in_array('campaign', $modules))
-                                    <div class="col-md-4">
+                                @if (in_array('calling', $modules))
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="required"> Enable Calling </label>
+
+
+                                            <select name="sip_setting" id="sipSetting" class="form-control">
+                                                <option value="no" selected>NO</option>
+                                                <option value="yes">YES</option>
+
+
+                                            </select>
+                                        </div>
+                                    </div>
+
+
+
+                                    <div class="col-md-3 sipshow">
                                         <div class="form-group">
                                             <label class="control-label"><i class="fa fa-phone"></i> Sip User</label>
                                             <input autocomplete="false" type="text" id="sip_user" name="sip_user"
                                                 value="{{ $lastEmployeeID + 1000 }}" class="form-control" readonly>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-3 sipshow">
                                         <div class="form-group">
                                             <label class="control-label"><i class="fa fa-phone"></i> Sip
                                                 Password</label>
@@ -237,8 +255,8 @@
                                             <label class="control-label">@lang('modules.emailSettings.emailNotifications')</label>
                                         </div>
                                         <div class="radio radio-inline">
-                                            <input type="radio" checked name="email_notifications" id="email_notifications1"
-                                                value="1">
+                                            <input type="radio" checked name="email_notifications"
+                                                id="email_notifications1" value="1">
                                             <label for="email_notifications1" class="">
                                                 @lang('app.enable') </label>
 
@@ -257,7 +275,8 @@
                                     <div class="form-group">
                                         <label for="address">@lang('modules.accountSettings.changeLanguage')</label>
                                         <select name="locale" id="locale" class="form-control select2">
-                                            <option @if ($global->locale == 'en') selected @endif value="en">English
+                                            <option @if ($global->locale == 'en') selected @endif value="en">
+                                                English
                                             </option>
                                             @foreach ($languageSettings as $language)
                                                 <option value="{{ $language->language_code }}">
@@ -319,8 +338,7 @@
                                                         value="{{ $editUser->custom_fields_data['field_' . $field->id] ?? '' }}">
                                                 @elseif($field->type == 'textarea')
                                                     <textarea name="custom_fields_data[{{ $field->name . '_' . $field->id }}]" class="form-control"
-                                                        id="{{ $field->name }}"
-                                                        cols="3">{{ $editUser->custom_fields_data['field_' . $field->id] ?? '' }}</textarea>
+                                                        id="{{ $field->name }}" cols="3">{{ $editUser->custom_fields_data['field_' . $field->id] ?? '' }}</textarea>
                                                 @elseif($field->type == 'radio')
                                                     <div class="radio-list">
                                                         @foreach ($field->values as $key => $value)
@@ -414,6 +432,17 @@
     <script src="{{ asset('plugins/bower_components/bootstrap-select/bootstrap-select.min.js') }}"></script>
     <script src="{{ asset('plugins/bower_components/custom-select/custom-select.min.js') }}"></script>
     <script src="{{ asset('plugins/bower_components/bootstrap-select/bootstrap-select.min.js') }}"></script>
+    <script>
+        $('.sipshow').hide();
+        $('#sipSetting').on('change', function() {
+            if ($(this).val() === 'yes') {
+                $('.sipshow').show();
+            } else {
+                $('.sipshow').hide();
+            }
+        })
+    </script>
+
     <script data-name="basic">
         function checkboxChange(parentClass, id) {
             var checkedData = '';

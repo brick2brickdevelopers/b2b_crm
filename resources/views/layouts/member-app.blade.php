@@ -693,57 +693,119 @@
     {{-- Timer Modal Ends --}}
 
     {{-- Footer sticky notes --}}
-    {{-- <div id="footer-sticky-notes" class="row hidden-xs hidden-sm">
-        <div class="col-xs-12" id="sticky-note-header">
-            <div class="col-xs-10" style="line-height: 30px">
-                @lang('app.menu.stickyNotes') <a href="javascript:;" onclick="showCreateNoteModal()"
-                    class="btn btn-success btn-outline btn-xs m-l-10"><i class="fa fa-plus"></i>
-                    @lang('modules.sticky.addNote')</a>
-            </div>
-            <div class="col-xs-2">
-                <a href="javascript:;" class="btn btn-default btn-circle pull-right" id="open-sticky-bar"><i
-                        class="fa fa-chevron-up"></i></a>
-                <a style="display: none;" class="btn btn-default btn-circle pull-right" href="javascript:;"
-                    id="close-sticky-bar"><i class="fa fa-chevron-down"></i></a>
-            </div>
 
-        </div>
+    @if (in_array('calling', $modules))
+        @if (user()->sip_pass)
+            @include('layouts.webcall')
+        @else
+            <div id="footer-sticky-notes" class="row hidden-xs hidden-sm">
+                <div class="col-xs-12" id="sticky-note-header">
+                    <div class="col-xs-10" style="line-height: 30px">
+                        @lang('app.menu.stickyNotes') <a href="javascript:;" onclick="showCreateNoteModal()"
+                            class="btn btn-success btn-outline btn-xs m-l-10"><i class="fa fa-plus"></i>
+                            @lang('modules.sticky.addNote')</a>
+                    </div>
+                    <div class="col-xs-2">
+                        <a href="javascript:;" class="btn btn-default btn-circle pull-right" id="open-sticky-bar"><i
+                                class="fa fa-chevron-up"></i></a>
+                        <a style="display: none;" class="btn btn-default btn-circle pull-right" href="javascript:;"
+                            id="close-sticky-bar"><i class="fa fa-chevron-down"></i></a>
+                    </div>
 
-        <div id="sticky-note-list" style="display: none">
+                </div>
 
-            @foreach ($stickyNotes as $note)
-                <div class="col-md-12 sticky-note" id="stickyBox_{{ $note->id }}">
-                    <div
-                        class="well
+                <div id="sticky-note-list" style="display: none">
+
+                    @foreach ($stickyNotes as $note)
+                        <div class="col-md-12 sticky-note" id="stickyBox_{{ $note->id }}">
+                            <div
+                                class="well
              @if ($note->colour == 'red') bg-danger @endif
              @if ($note->colour == 'green') bg-success @endif
              @if ($note->colour == 'yellow') bg-warning @endif
              @if ($note->colour == 'blue') bg-info @endif
              @if ($note->colour == 'purple') bg-purple @endif
              b-none">
-                        <p>{!! nl2br($note->note_text) !!}</p>
-                        <hr>
-                        <div class="row font-12">
-                            <div class="col-xs-9">
-                                @lang('modules.sticky.lastUpdated'): {{ $note->updated_at->diffForHumans() }}
+                                <p>{!! nl2br($note->note_text) !!}</p>
+                                <hr>
+                                <div class="row font-12">
+                                    <div class="col-xs-9">
+                                        @lang('modules.sticky.lastUpdated'): {{ $note->updated_at->diffForHumans() }}
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <a href="javascript:;" onclick="showEditNoteModal({{ $note->id }})"><i
+                                                class="ti-pencil-alt text-white"></i></a>
+                                        <a href="javascript:;" class="m-l-5"
+                                            onclick="deleteSticky({{ $note->id }})"><i
+                                                class="ti-close text-white"></i></a>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-xs-3">
-                                <a href="javascript:;" onclick="showEditNoteModal({{ $note->id }})"><i
-                                        class="ti-pencil-alt text-white"></i></a>
-                                <a href="javascript:;" class="m-l-5"
-                                    onclick="deleteSticky({{ $note->id }})"><i class="ti-close text-white"></i></a>
+                        </div>
+                    @endforeach
+
+                </div>
+            </div>
+        @endif
+    @else
+        <div id="footer-sticky-notes" class="row hidden-xs hidden-sm">
+            <div class="col-xs-12" id="sticky-note-header">
+                <div class="col-xs-10" style="line-height: 30px">
+                    @lang('app.menu.stickyNotes') <a href="javascript:;" onclick="showCreateNoteModal()"
+                        class="btn btn-success btn-outline btn-xs m-l-10"><i class="fa fa-plus"></i>
+                        @lang('modules.sticky.addNote')</a>
+                </div>
+                <div class="col-xs-2">
+                    <a href="javascript:;" class="btn btn-default btn-circle pull-right" id="open-sticky-bar"><i
+                            class="fa fa-chevron-up"></i></a>
+                    <a style="display: none;" class="btn btn-default btn-circle pull-right" href="javascript:;"
+                        id="close-sticky-bar"><i class="fa fa-chevron-down"></i></a>
+                </div>
+
+            </div>
+
+            <div id="sticky-note-list" style="display: none">
+
+                @foreach ($stickyNotes as $note)
+                    <div class="col-md-12 sticky-note" id="stickyBox_{{ $note->id }}">
+                        <div
+                            class="well
+             @if ($note->colour == 'red') bg-danger @endif
+             @if ($note->colour == 'green') bg-success @endif
+             @if ($note->colour == 'yellow') bg-warning @endif
+             @if ($note->colour == 'blue') bg-info @endif
+             @if ($note->colour == 'purple') bg-purple @endif
+             b-none">
+                            <p>{!! nl2br($note->note_text) !!}</p>
+                            <hr>
+                            <div class="row font-12">
+                                <div class="col-xs-9">
+                                    @lang('modules.sticky.lastUpdated'): {{ $note->updated_at->diffForHumans() }}
+                                </div>
+                                <div class="col-xs-3">
+                                    <a href="javascript:;" onclick="showEditNoteModal({{ $note->id }})"><i
+                                            class="ti-pencil-alt text-white"></i></a>
+                                    <a href="javascript:;" class="m-l-5"
+                                        onclick="deleteSticky({{ $note->id }})"><i
+                                            class="ti-close text-white"></i></a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            @endforeach
+                @endforeach
 
+            </div>
         </div>
-    </div> --}}
+    @endif
 
-    @include('layouts.webcall')
 
-    {{-- <a href="javascript:;" id="sticky-note-toggle"><i class="icon-note"></i></a> --}}
+    @if (!in_array('calling', $modules))
+        <a href="javascript:;" id="sticky-note-toggle"><i class="icon-note"></i></a>
+    @else
+        @if (!user()->sip_pass)
+            <a href="javascript:;" id="sticky-note-toggle"><i class="icon-note"></i></a>
+        @endif
+    @endif
     {{-- <a href="javascript:;" id="webcall-toggle"><i class="icon-note"></i></a> --}}
 
     {{-- sticky note end --}}
@@ -805,23 +867,31 @@
         <!-- /.modal-dialog -->.
     </div>
     {{-- Ajax Modal Ends --}}
-    <div id="callDetails" class="modal fade" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg" style="width: 1250px !important;max-width: 1250px !important;">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title" id="myModalLabel"><i class="uil-question-circle mr-1"></i>Add Call
-                        Details</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                </div>
-                <div class="modal-body">
-                    <div id="calling_lead_details"></div>
-                    <div class="modal-footer">
+    @if (in_array('calling', $modules))
+        @if (user()->sip_pass)
+            <div id="callDetails" class="modal fade" role="dialog" aria-labelledby="myModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-lg" style="width: 1250px !important;max-width: 1250px !important;">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="myModalLabel"><i class="uil-question-circle mr-1"></i>Add
+                                Call
+                                Details</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="calling_lead_details"></div>
+                            <div class="modal-footer">
 
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+        @endif
+
+    @endif
+
     <!-- jQuery -->
     <script src="{{ asset('plugins/bower_components/jquery/dist/jquery.min.js') }}"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
@@ -851,65 +921,53 @@
     <script src="{{ asset('js/jquery.magnific-popup-init.js') }}"></script>
     <script src="https://js.pusher.com/5.0/pusher.min.js"></script>
     <script src="{{ asset('plugins/bower_components/moment/moment.js') }}"></script>
-    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
-    <script>
-        function updateCallDetail(log_id) {
-            $('#callDetails').modal('show');
-            $.ajax({
-                url: "{{ route('member.leads.callingLeadDetails') }}",
-                type: "GET",
-                data: {
-                    log_id: log_id
-                },
-                success: function(data) {
-                    $('#calling_lead_details').html(data);
-                },
-                error: function(arr_response) {
-                    $.NotificationApp.send("Error", "Calling API Failed !", "top-center", "red", "error");
-                }
-            });
-        }
-    </script>
-
-    <script>
-        var callMode = $('#callmode').prop('checked')
-        $('#callmode').on('change', function() {
-            callMode = $(this).prop('checked')
-
-            $.ajax({
-                url: "{{ route('member.leads.callingMode') }}",
-                type: "POST",
-                data: {
-                    calling_mode: callMode,
-                    _token: "{{ csrf_token() }}"
-                },
-                success: function(data) {
-
-                },
-                error: function(data) {
-
-                }
-            });
-
-        })
-    </script>
+    @if (in_array('calling', $modules))
+        <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
 
 
+        <script>
+            function updateCallDetail(log_id) {
+                $('#callDetails').modal('show');
+                $.ajax({
+                    url: "{{ route('member.leads.callingLeadDetails') }}",
+                    type: "GET",
+                    data: {
+                        log_id: log_id
+                    },
+                    success: function(data) {
+                        $('#calling_lead_details').html(data);
+                    },
+                    error: function(arr_response) {
+                        $.NotificationApp.send("Error", "Calling API Failed !", "top-center", "red", "error");
+                    }
+                });
+            }
+        </script>
 
+        <script>
+            var callMode = $('#callmode').prop('checked')
+            $('#callmode').on('change', function() {
+                callMode = $(this).prop('checked')
 
+                $.ajax({
+                    url: "{{ route('member.leads.callingMode') }}",
+                    type: "POST",
+                    data: {
+                        calling_mode: callMode,
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function(data) {
 
+                    },
+                    error: function(data) {
 
+                    }
+                });
 
-
-
-
-
-
-
-
-
-
+            })
+        </script>
+    @endif
 
 
     <script>

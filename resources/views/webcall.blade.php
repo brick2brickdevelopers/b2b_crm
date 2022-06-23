@@ -32,8 +32,10 @@
     </script>
     <script type="text/javascript" src="https://dtd6jl0d42sve.cloudfront.net/lib/XMPP/strophe-1.4.1.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+
     <script>
         var user = {
+            server: "{{ company()->sip_gateway->endpoint }}",
             id: "{{ Auth::user()->sip_user }}",
             xid: "{{ Auth::user()->sip_pass }}",
             name: "{{ Auth::user()->name }}",

@@ -5,16 +5,13 @@
         <!-- .page title -->
         <div class="col-lg-6 col-md-6 col-sm-4 col-xs-12 bg-title-left">
             <h4 class="page-title"><i class="{{ $pageIcon }}"></i> {{ __($pageTitle) }}
-                <span class="text-info b-l p-l-10 m-l-5">888</span> <span class="font-12 text-muted m-l-5">
-                    @lang('modules.dashboard.totalCompanies')</span>
+
             </h4>
         </div>
         <!-- /.page title -->
         <!-- .breadcrumb -->
         <div class="col-lg-6 col-sm-8 col-md-6 col-xs-12 text-right bg-title-right">
-            {{-- <a href="javascript:;" id="addDefaultLanguage" class="btn btn-outline btn-info btn-sm">@lang('app.manage') @lang('app.defaultLanguage') </a> --}}
 
-            {{-- <a href="{{ route('super-admin.sip-gateway.create') }}" class="btn btn-outline btn-success btn-sm">@lang('app.add') @lang('app.company') <i class="fa fa-plus" aria-hidden="true"></i></a> --}}
 
             <ol class="breadcrumb">
                 <li><a href="{{ route('super-admin.dashboard') }}">@lang('app.menu.home')</a></li>
@@ -44,7 +41,6 @@
                 <div class="form-group">
                     <label class="control-label">Company Name</label>
                     <select class="form-control selectpicker" name="company_id" id="company_id" data-style="form-control">
-                        {{-- <option value="all">@lang('app.all')</option> --}}
                         @foreach ($company as $item)
                             <option value="{{ $item->id }}">{{ $item->company_name }}</option>
                         @endforeach
@@ -55,7 +51,6 @@
                 <div class="form-group">
                     <label class="control-label">Server Type</label>
                     <select class="form-control selectpicker" name="type" id="type" data-style="form-control">
-                        {{-- <option value="all">@lang('app.all')</option> --}}
                         <option value="1">SIP</option>
                         <option value="2">SARV</option>
                     </select>
@@ -64,25 +59,29 @@
             <div class="col-xs-12">
                 <div class="form-group">
                     <label class="control-label">Caller ID</label>
-                    <input class="form-control" type="text" name="caller_id" id="caller_id" data-style="form-control" required="true">
+                    <input class="form-control" type="text" name="caller_id" id="caller_id" data-style="form-control"
+                        required="true">
                 </div>
             </div>
             <div class="col-xs-12">
                 <div class="form-group">
                     <label class="control-label">End Point</label>
-                    <input class="form-control" type="url" name="endpoint" id="endpoint" data-style="form-control" required="true">
+                    <input class="form-control" type="url" name="endpoint" id="endpoint" data-style="form-control"
+                        required="true">
                 </div>
             </div>
             <div class="col-xs-12 sarv">
                 <div class="form-group">
                     <label class="control-label">User</label>
-                    <input class="form-control sarvInput" type="text" name="user" id="user" data-style="form-control">
+                    <input class="form-control sarvInput" type="text" name="user" id="user"
+                        data-style="form-control">
                 </div>
             </div>
             <div class="col-xs-12 sarv">
                 <div class="form-group">
                     <label class="control-label">Token</label>
-                    <input class="form-control sarvInput" type="text" name="token" id="token" data-style="form-control">
+                    <input class="form-control sarvInput" type="text" name="token" id="token"
+                        data-style="form-control">
                 </div>
             </div>
             <div class="col-xs-12">
@@ -90,8 +89,7 @@
                     <label class="control-label col-xs-12">&nbsp;</label>
                     <button type="submit" id="save-form" class="btn btn-success col-md-6"><i class="fa fa-check"></i>
                         @lang('app.apply')</button>
-                    {{-- <button type="button" id="reset-filters" class="btn btn-inverse col-md-5 col-md-offset-1"><i
-                            class="fa fa-refresh"></i> @lang('app.reset')</button> --}}
+
                 </div>
             </div>
         </form>
@@ -163,15 +161,15 @@
                             <div class="col-xs-12 sarv-modal">
                                 <div class="form-group">
                                     <label class="control-label">User</label>
-                                    <input class="form-control sarvInput user" type="text" name="user" id="user"
-                                        data-style="form-control">
+                                    <input class="form-control sarvInput user" type="text" name="user"
+                                        id="user" data-style="form-control">
                                 </div>
                             </div>
                             <div class="col-xs-12 sarv-modal">
                                 <div class="form-group">
                                     <label class="control-label">Token</label>
-                                    <input class="form-control sarvInput token" type="text" name="token" id="token"
-                                        data-style="form-control">
+                                    <input class="form-control sarvInput token" type="text" name="token"
+                                        id="token" data-style="form-control">
 
                                 </div>
                             </div>
@@ -191,14 +189,11 @@
         </div>
         <!-- /.modal-dialog -->
     </div>
-    <!-- .row -->
 @endsection
 
 
 
 @push('footer-script')
-    {!! $html->scripts() !!}
-
     <script src="{{ asset('plugins/bower_components/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="https://cdn.datatables.net/1.10.13/js/dataTables.bootstrap.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.1.1/js/dataTables.responsive.min.js"></script>
@@ -206,7 +201,19 @@
     <script src="{{ asset('plugins/bower_components/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script>
     <script src="{{ asset('plugins/bower_components/custom-select/custom-select.min.js') }}"></script>
     <script src="{{ asset('plugins/bower_components/bootstrap-select/bootstrap-select.min.js') }}"></script>
+
+    {!! $html->scripts() !!}
+
     <script>
+        function changeStatus(id) {
+            $.post("{{ route('super-admin.sip-gateway.change') }}", {
+                id: id,
+                _token: "{{ csrf_token() }}"
+            })
+            $("#dataTableBuilder").DataTable().ajax.reload();
+            $(".switch-event1").switchButton()
+        }
+
         $('#save-form').click(function(evt) {
             evt.preventDefault();
 

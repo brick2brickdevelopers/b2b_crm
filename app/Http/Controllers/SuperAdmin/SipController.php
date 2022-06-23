@@ -29,12 +29,21 @@ class SipController extends SuperAdminBaseController
                 })
                 ->addColumn('action', function ($data) {
                     $btn = "<div class='btn-group dropdown m-r-10'>
-                 <button onclick='editData(". json_encode($data).")' data-toggle='modal' data-target='#editSIP' class='btn btn-default dropdown-toggle waves-effect waves-light'><i class='fa fa-pencil'></i></button>
+                 <button onclick='editData(" . json_encode($data) . ")' data-toggle='modal' data-target='#editSIP' class='btn btn-default dropdown-toggle waves-effect waves-light'><i class='fa fa-pencil'></i></button>
+                </div>";
+                    $btn .= "<div class='btn-group dropdown m-r-10'>
+                 <a href=" . route('super-admin.sip-gateway.destroy', $data->id) . " class='btn btn-danger dropdown-toggle waves-effect waves-light'><i class='fa fa-trash'></i></a>
                 </div>";
                     return $btn;
                 })
+                // ' . $data->id . '
+                ->addColumn('status', function ($data) {
+                    $checked  = $data->status == true ? 'checked' : "";
+                    $btn = '<input class="switch-event1" ' . $checked . '   onchange="changeStatus(' . $data->id . ')" type="checkbox" > ';
+                    return $btn;
+                })
 
-                ->rawColumns(['action'])
+                ->rawColumns(['action', 'status'])
                 ->toJson();
         }
         $this->html = $builder->columns([
@@ -44,6 +53,7 @@ class SipController extends SuperAdminBaseController
             ['data' => 'caller_id', 'name' => 'caller_id', 'title' => 'Caller ID'],
             ['data' => 'key', 'name' => 'key', 'title' => 'Key'],
             ['data' => 'token', 'name' => 'token', 'title' => 'Token'],
+            ['data' => 'status', 'name' => 'status', 'title' => 'Status'],
             ['data' => 'action', 'name' => 'action', 'title' => 'Action'],
         ]);
 
@@ -63,6 +73,21 @@ class SipController extends SuperAdminBaseController
         $sip->token = $request->token;
         $sip->save();
         return Reply::redirect(route('super-admin.sip-gateway.index'), 'Package updated successfully.');
+    }
+
+
+    public function changeStatus(Request $request)
+    {
+        $sip = SipGateway::find($request->id);
+        $sip->status = $sip->status ? false : true;
+        $sip->save();
+        return $sip;
+    }
+
+    public function destroy($id)
+    {
+        SipGateway::find($id)->delete();
+        return redirect()->back();
     }
 
     public function leadwebcall()

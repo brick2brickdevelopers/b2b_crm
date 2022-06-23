@@ -21,7 +21,7 @@ class Company extends BaseModel
 
     protected $fillable = ['last_login', 'company_name', 'company_email', 'company_phone', 'website', 'address', 'currency_id', 'timezone', 'locale', 'date_format', 'time_format', 'week_start', 'longitude', 'latitude', 'status'];
 
-    protected $appends = ['logo_url', 'login_background_url','moment_date_format'];
+    protected $appends = ['logo_url', 'login_background_url', 'moment_date_format'];
 
     public static function boot()
     {
@@ -142,7 +142,7 @@ class Company extends BaseModel
         return $user;
     }
 
-    public function addEmployeeDetails($user, $createdBy=null)
+    public function addEmployeeDetails($user, $createdBy = null)
     {
         $employee = new EmployeeDetails();
         $employee->user_id = $user->id;
@@ -201,4 +201,8 @@ class Company extends BaseModel
         $this->attributes['sub_domain'] = strtolower($value);
     }
 
+    public function sip_gateway()
+    {
+        return $this->hasOne(SipGateway::class, 'company_id')->where('status', true)->where('type', 1);
+    }
 }

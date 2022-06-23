@@ -43,9 +43,12 @@ class ManageEmployeesController extends AdminBaseController
         $this->pageTitle = 'app.menu.employees';
         $this->pageIcon = 'icon-user';
         $this->middleware(function ($request, $next) {
+
             abort_if(!in_array('employees', $this->user->modules), 403);
             return $next($request);
         });
+        // dd(superAdmin());
+        // $modules = $this->user->modules;
     }
 
     /**
@@ -80,7 +83,7 @@ class ManageEmployeesController extends AdminBaseController
 
         $this->freeEmployees = $whoseProjectCompleted->merge($notAssignedProject)->count();
 
-        // return view('admin.employees.index', $this->data);
+
         return $dataTable->render('admin.employees.index', $this->data);
     }
 
@@ -112,6 +115,8 @@ class ManageEmployeesController extends AdminBaseController
      */
     public function store(StoreRequest $request)
     {
+
+
         $company = company();
         if (!is_null($company->employees) && $company->employees->count() >= $company->package->max_employees) {
             return Reply::dataOnly(['type' => 'maxEmployeeReached', 'employeeCount' => company()->employees->count(), 'maxEmployees' => $company->package->max_employees]);
@@ -137,8 +142,14 @@ class ManageEmployeesController extends AdminBaseController
             }
             $user = User::create($data);
             if ($user) {
-                if ($request->has('sip_pass')) {
-                    sip_api($user->id + 1000, $user->sip_pass, 'add');
+                if ($request->sip_setting === 'yes') {
+                    if ($request->has('sip_pass')) {
+                        if (in_array('calling', $this->modules)) {
+                            if ($this->user->company->sip_gateway) {
+                                sip_api($this->user->company->sip_gateway->endpoint, $user->id + 1000, $user->sip_pass, 'add');
+                            }
+                        }
+                    }
                 }
             }
 
@@ -294,12 +305,20 @@ class ManageEmployeesController extends AdminBaseController
         if ($request->hasFile('image')) {
             $user->image = Files::upload($request->image, 'avatar', 300);
         }
+        if (in_array('calling', $this->modules)) {
+            if ($user->save()) {
 
-        if ($user->save()) {
-            if ($request->has('sip_pass')) {
-                sip_api($user->sip_user, $user->sip_pass, 'edit');
+                if ($request->has('sip_pass')) {
+                    if (in_array('calling', $this->modules)) {
+                        if ($this->user->company->sip_gateway) {
+
+                            sip_api($this->user->company->sip_gateway->endpoint, $user->sip_user, $user->sip_pass, 'edit');
+                        }
+                    }
+                }
             }
         }
+
 
 
         $tags = json_decode($request->tags);
@@ -358,7 +377,12 @@ class ManageEmployeesController extends AdminBaseController
     public function destroy($id)
     {
         $user = User::withoutGlobalScope('active')->findOrFail($id);
+        if (in_array('calling', $this->modules)) {
+            if ($this->user->company->sip_gateway) {
 
+                sip_api($this->user->company->sip_gateway->endpoint, $user->sip_user, $user->sip_pass, 'delete');
+            }
+        }
         if ($user->id == 1) {
             return Reply::error(__('messages.adminCannotDelete'));
         }

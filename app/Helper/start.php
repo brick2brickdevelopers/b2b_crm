@@ -6,8 +6,8 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use App\CurrencyFormatSetting;
+use App\SipGateway;
 use App\User;
-use Illuminate\Support\Facades\DB;
 
 if (!function_exists('superAdmin')) {
 
@@ -594,11 +594,11 @@ if (!function_exists('pusher_settings')) {
 }
 if (!function_exists('sip_api')) {
 
-    function sip_api($user, $pass, $action)
+    function sip_api($url, $user, $pass, $action)
     {
         $curl = curl_init();
         curl_setopt_array($curl, array(
-            CURLOPT_URL => "https://sip.cleverstack.in/eventnuts_api/sipaccount.php?sipusername=$user&sippassword=$pass&action=$action",
+            CURLOPT_URL => "https://$url/eventnuts_api/sipaccount.php?sipusername=$user&sippassword=$pass&action=$action",
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
             CURLOPT_MAXREDIRS => 10,
@@ -630,6 +630,14 @@ if (!function_exists('fixSipDuplicate')) {
             $u->save();
             sip_api($u->sip_user, $u->sip_pass, 'add');
         }
+    }
+}
+if (!function_exists('sip_info')) {
+
+    function sip_info($id)
+    {
+        return
+            SipGateway::where('company_id', $id)->first();
     }
 }
 if (!function_exists('call_outcome')) {

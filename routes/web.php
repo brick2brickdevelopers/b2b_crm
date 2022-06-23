@@ -173,7 +173,11 @@ Route::group(['middleware' => 'auth'], function () {
 
             // Storage settings
             //SIP Gateway Routes
+            Route::post('/sip-gateway/change', 'SipController@changeStatus')->name('sip-gateway.change');
+
             Route::resource('/sip-gateway', 'SipController');
+            Route::get('/sip-gateway/destroy/{id}', 'SipController@destroy')->name('sip-gateway.destroy');
+
 
             Route::resource('/settings', 'SuperAdminSettingsController', ['only' => ['index', 'update']]);
 
@@ -342,6 +346,9 @@ Route::group(['middleware' => 'auth'], function () {
                 Route::resource('campaigns', 'CampaignController');
                 Route::get('/campaigns/destroy/{id}', 'CampaignController@destroy')->name('campaigns.destroy');
                 Route::get('/campaigns/view/{id}', 'CampaignController@view')->name('campaigns.view');
+
+                //Call Record Route
+                Route::resource('call-log-reports', 'CallRecordController');
 
 
                 Route::get('designations/quick-create', ['uses' => 'ManageDesignationController@quickCreate'])->name('designations.quick-create');
