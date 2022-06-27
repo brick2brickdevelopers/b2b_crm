@@ -26,5 +26,4 @@ class Team extends BaseModel
     {
         return $this->hasMany(EmployeeDetails::class, 'department_id');
     }
-
 }

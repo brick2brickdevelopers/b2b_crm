@@ -450,6 +450,7 @@ dd($getIndex);
                         <li><a href="{{ route('admin.campaigns.index') }}">Campaign List </a> </li>
                         <li><a href="{{ route('admin.campaigns.create') }}">Create Campaign </a></li>
                         <li><a href="{{ route('admin.campaigns.call-purpose') }}">Call Purpose </a></li>
+                        <li><a href="{{ route('admin.calling-group.index') }}">Calling Group </a></li>
                     </ul>
                 </li>
             @endif

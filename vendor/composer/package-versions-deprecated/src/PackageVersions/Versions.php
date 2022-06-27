@@ -241,7 +241,7 @@ final class Versions
   'symfony/debug' => 'v4.4.37@5de6c6e7f52b364840e53851c126be4d71e60470',
   'theseer/tokenizer' => '1.2.1@34a41e998c2183e22995f158c581e7b5e755ab9e',
   'webmozart/assert' => '1.10.0@6964c76c7804814a842473e0c8fd15bab0f18e25',
-  'laravel/laravel' => 'No version set (parsed as 1.0.0)@',
+  'laravel/laravel' => 'dev-master@a3515b6e243f3fe1084568fc5a2276d9d43365c9',
 );
 
     private function __construct()

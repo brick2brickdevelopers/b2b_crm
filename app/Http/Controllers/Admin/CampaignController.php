@@ -26,7 +26,14 @@ class CampaignController extends AdminBaseController
         parent::__construct();
         $this->pageIcon = 'icon-list';
         $this->pageTitle = 'Campaigns';
+        // $this->middleware(function ($request, $next) {
+        //     if (!in_array('campaigns', $this->user->modules)) {
+        //         abort(403);
+        //     }
+        //     return $next($request);
+        // });
     }
+
     public function index()
     {
         $this->campaigns = Campaign::all();
@@ -49,7 +56,6 @@ class CampaignController extends AdminBaseController
         $campaign->name = $request->name;
         $campaign->status = $request->status;
         $campaign->caller_id = $request->caller_id;
-
         $campaign->start_date = ($request->start_date != '') ? date('Y-m-d', strtotime($request->start_date)) : NULL;
         $campaign->end_date = ($request->end_date != '') ? date('Y-m-d', strtotime($request->end_date)) : NULL;
         $campaign->call_to_call_gap = $request->call_to_call_gap;
@@ -103,14 +109,6 @@ class CampaignController extends AdminBaseController
         $campaign->save();
         return Reply::redirect(route('admin.campaigns.index'), __('messages.groupUpdatedSuccessfully'));
     }
-
-    // public function view($id)
-    // {
-    //     $this->employee = EmployeeDetails::all();
-    //     $this->teams = Team::all();
-    //     $this->campaign = Campaign::findOrFail($id);
-    //     return view('admin.campaign.view', $this->data);
-    // }
 
     public function view(Builder $builder, Request $request, $id)
     {

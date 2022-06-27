@@ -347,6 +347,11 @@ Route::group(['middleware' => 'auth'], function () {
                 Route::get('/campaigns/destroy/{id}', 'CampaignController@destroy')->name('campaigns.destroy');
                 Route::get('/campaigns/view/{id}', 'CampaignController@view')->name('campaigns.view');
 
+                //Calling Group Route
+                Route::resource('calling-group', 'CallingGroupController');
+                Route::post('/calling-groups/status', 'CallingGroupController@isDefault')->name('calling-group.default-switch');
+                Route::get('/calling-group/{id}/delete', 'CallingGroupController@destroy')->name('calling-group.destroy');
+
                 //Call Record Route
                 Route::resource('call-log-reports', 'CallRecordController');
 

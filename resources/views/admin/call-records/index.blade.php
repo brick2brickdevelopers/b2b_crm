@@ -29,16 +29,6 @@
 @endpush
 
 @section('content')
-
-    {{-- <div class="row dashboard-stats">
-        <div class="col-md-12 m-b-30">
-            <div class="white-box">
-                
-            </div>
-        </div>
-
-    </div> --}}
-
     <div class="row">
         <div class="col-xs-12">
             <div class="white-box">
