@@ -596,6 +596,7 @@ if (!function_exists('sip_api')) {
 
     function sip_api($url, $user, $pass, $action)
     {
+
         $curl = curl_init();
         curl_setopt_array($curl, array(
             CURLOPT_URL => "https://$url/eventnuts_api/sipaccount.php?sipusername=$user&sippassword=$pass&action=$action",

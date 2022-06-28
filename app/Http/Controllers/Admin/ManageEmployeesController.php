@@ -141,17 +141,17 @@ class ManageEmployeesController extends AdminBaseController
                 $data['locale'] = company()->locale;
             }
             $user = User::create($data);
-            if ($user) {
-                if ($request->sip_setting === 'yes') {
-                    if ($request->has('sip_pass')) {
-                        if (in_array('calling', $this->modules)) {
-                            if ($this->user->company->sip_gateway) {
-                                sip_api($this->user->company->sip_gateway->endpoint, $user->id + 1000, $user->sip_pass, 'add');
-                            }
+
+            if ($request->sip_setting === 'yes') {
+                if ($request->has('sip_pass')) {
+                    if (in_array('calling', $this->modules)) {
+                        if ($this->user->company->sip_gateway) {
+                            sip_api($this->user->company->sip_gateway->endpoint, $user->id + 1000, $user->sip_pass, 'add');
                         }
                     }
                 }
             }
+
 
             $user->employeeDetail()->create([
                 'employee_id' => $request->employee_id,
@@ -305,15 +305,16 @@ class ManageEmployeesController extends AdminBaseController
         if ($request->hasFile('image')) {
             $user->image = Files::upload($request->image, 'avatar', 300);
         }
+        $user->save();
         if (in_array('calling', $this->modules)) {
-            if ($user->save()) {
 
-                if ($request->has('sip_pass')) {
-                    if (in_array('calling', $this->modules)) {
-                        if ($this->user->company->sip_gateway) {
 
-                            sip_api($this->user->company->sip_gateway->endpoint, $user->sip_user, $user->sip_pass, 'edit');
-                        }
+
+            if ($request->has('sip_pass')) {
+                if (in_array('calling', $this->modules)) {
+                    if ($this->user->company->sip_gateway) {
+
+                        sip_api($this->user->company->sip_gateway->endpoint, $user->sip_user, $user->sip_pass, 'edit');
                     }
                 }
             }
