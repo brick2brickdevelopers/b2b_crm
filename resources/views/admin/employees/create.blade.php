@@ -152,8 +152,6 @@
                                             <select name="sip_setting" id="sipSetting" class="form-control">
                                                 <option value="no" selected>NO</option>
                                                 <option value="yes">YES</option>
-
-
                                             </select>
                                         </div>
                                     </div>
@@ -164,7 +162,8 @@
                                         <div class="form-group">
                                             <label class="control-label"><i class="fa fa-phone"></i> Sip User</label>
                                             <input autocomplete="false" type="text" id="sip_user" name="sip_user"
-                                                value="{{ $lastEmployeeID + 1000 }}" class="form-control" readonly>
+                                                placeholder="Auto Generated ID" value="" class="form-control"
+                                                readonly>
                                         </div>
                                     </div>
                                     <div class="col-md-3 sipshow">

@@ -84,6 +84,8 @@ class ManageEmployeesController extends AdminBaseController
         $this->freeEmployees = $whoseProjectCompleted->merge($notAssignedProject)->count();
 
 
+
+
         return $dataTable->render('admin.employees.index', $this->data);
     }
 
@@ -147,6 +149,9 @@ class ManageEmployeesController extends AdminBaseController
                     if (in_array('calling', $this->modules)) {
                         if ($this->user->company->sip_gateway) {
                             sip_api($this->user->company->sip_gateway->endpoint, $user->id + 1000, $user->sip_pass, 'add');
+                            $xuser = User::find($user->id);
+                            $xuser->sip_user = $user->id + 1000;
+                            $xuser->save();
                         }
                     }
                 }

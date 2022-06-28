@@ -49,7 +49,7 @@
                         <div class="col-xs-12 m-t-20">
                             <div class="form-group">
                                 <label class="control-label">Select Agent</label>
-                                <select class="selectpicker form-control" name="" id="" data-style="">
+                                <select class="selectpicker form-control" name="" id="agent_id" data-style="">
                                     <option value="all">@lang('modules.lead.all')</option>
                                     @foreach ($employees as $item)
                                         <option value="{{ $item->id }}">{{ $item->user->name }}</option>
@@ -75,26 +75,26 @@
                                 <select class="form-control selectpicker" name="call_type" id="call_type"
                                     data-style="form-control">
                                     <option value="all">All</option>
-                                    <option value="auto">Auto</option>
-                                    <option value="manual">manual</option>
+                                    <option value="1">Auto</option>
+                                    <option value="0">manual</option>
                                 </select>
                             </div>
                         </div>
                         <div class="col-xs-12">
                             <div class="form-group">
                                 <label class="control-label">Select Call Source</label>
-                                <select class="form-control selectpicker" name="" id=""
+                                <select class="form-control selectpicker" name="" id="call_source"
                                     data-style="form-control">
                                     <option value="all">All</option>
-                                    <option value="outgoing">Outgoing</option>
-                                    <option value="ioncoming">Incoming</option>
+                                    <option value="0">Outgoing</option>
+                                    <option value="1">Incoming</option>
                                 </select>
                             </div>
                         </div>
                         <div class="col-xs-12">
                             <div class="form-group">
                                 <label class="control-label">Campaign Status Filter</label>
-                                <select class="form-control selectpicker" name="" id=""
+                                <select class="form-control selectpicker" name="" id="campaign_status"
                                     data-style="form-control">
                                     <option value="all">All</option>
                                     <option value="available">Available</option>
@@ -235,7 +235,7 @@
     var table;
 
     function tableLoad() {
-        window.LaravelDataTables["leads-table"].draw();
+        window.LaravelDataTables["callreport-table"].draw();
     }
 
     $(function() {
@@ -245,44 +245,40 @@
             $('#start-date').val('');
             $('#end-date').val('');
             $('#filter-form').find('select').selectpicker('render');
-            $.easyBlockUI('#leads-table');
+            $.easyBlockUI('#callreport-table');
             $('#reportrange span').html('');
             tableLoad();
-            $.easyUnblockUI('#leads-table');
+            $.easyUnblockUI('#callreport-table');
         })
         var table;
         $('#apply-filters').click(function() {
-            $('#leads-table').on('preXhr.dt', function(e, settings, data) {
+            $('#callreport-table').on('preXhr.dt', function(e, settings, data) {
                 var startDate = $('#start-date').val();
-
                 if (startDate == '') {
                     startDate = null;
                 }
-
                 var endDate = $('#end-date').val();
-
                 if (endDate == '') {
                     endDate = null;
                 }
-
                 var client = $('#client').val();
                 var agent = $('#agent_id').val();
-                var followUp = $('#followUp').val();
-                var category_id = $('#category_id').val();
+                var call_outcome = $('#call_outcome').val();
+                var call_type = $('#call_type').val();
+                var call_source = $('#call_source').val();
+                var campaign_status = $('#campaign_status').val();
                 var source_id = $('#source_id').val();
 
                 data['startDate'] = startDate;
                 data['endDate'] = endDate;
-                data['client'] = client;
+                data['call_type'] = call_type;
+                data['call_source'] = call_source;
                 data['agent'] = agent;
-                data['followUp'] = followUp;
-                data['category_id'] = category_id;
-                data['source_id'] = source_id;
 
             });
-            $.easyBlockUI('#leads-table');
+            $.easyBlockUI('#callreport-table');
             tableLoad();
-            $.easyUnblockUI('#leads-table');
+            $.easyUnblockUI('#callreport-table');
         });
 
         $('body').on('click', '.sa-params', function() {
@@ -321,9 +317,9 @@
                                     .totalClientConverted);
                                 $('#pendingLeadFollowUps').html(response.data
                                     .pendingLeadFollowUps);
-                                $.easyBlockUI('#leads-table');
+                                $.easyBlockUI('#callreport-table');
                                 tableLoad();
-                                $.easyUnblockUI('#leads-table');
+                                $.easyUnblockUI('#callreport-table');
                             }
                         }
                     });
@@ -346,9 +342,9 @@
             },
             success: function(response) {
                 if (response.status == "success") {
-                    $.easyBlockUI('#leads-table');
+                    $.easyBlockUI('#callreport-table');
                     tableLoad();
-                    $.easyUnblockUI('#leads-table');
+                    $.easyUnblockUI('#callreport-table');
                 }
             }
         });

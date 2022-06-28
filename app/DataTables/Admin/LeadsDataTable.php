@@ -26,7 +26,6 @@ class LeadsDataTable extends BaseDataTable
         return datatables()
             ->eloquent($query)
             ->addColumn('action', function ($row) {
-
                 if ($row->client_id == null || $row->client_id == '') {
                     $follow = '<li><a href="' . route('admin.clients.create') . '/' . $row->id . '"><i class="fa fa-user"></i> ' . __('modules.lead.changeToClient') . '</a></li>';
                     if ($row->next_follow_up == 'yes') {
@@ -133,10 +132,10 @@ class LeadsDataTable extends BaseDataTable
 
                 // }
                 $action = '
-                   <a href="tel:+' . ($row->mobile) . '" class="material-icons">' .'<i class="fa fa-phone" aria-hidden="true"></i>' . '</a><br>
-                   <a href="tel:+' . ($row->mobile) . '" class="material-icons">' . 'SMS'. '</a></br>
-                   <a href="https://wa.me/+' . str_replace(' ', '', $row->mobile) . '" class="material-icons">' . '<i class="fa fa-whatsapp" aria-hidden="true"></i>'. '</a';
-               return $action;
+                   <a href="tel:+' . ($row->mobile) . '" class="material-icons">' . '<i class="fa fa-phone" aria-hidden="true"></i>' . '</a><br>
+                   <a href="tel:+' . ($row->mobile) . '" class="material-icons">' . 'SMS' . '</a></br>
+                   <a href="https://wa.me/+' . str_replace(' ', '', $row->mobile) . '" class="material-icons">' . '<i class="fa fa-whatsapp" aria-hidden="true"></i>' . '</a';
+                return $action;
             })
             ->removeColumn('status_id')
             ->removeColumn('client_id')
@@ -145,7 +144,7 @@ class LeadsDataTable extends BaseDataTable
             ->removeColumn('next_follow_up')
             ->removeColumn('statusName')
             ->addIndexColumn()
-            ->rawColumns(['status', 'action', 'checkbox', 'client_name', 'next_follow_up_date', 'agent_name', 'mobile', 'client_email','client_action']);
+            ->rawColumns(['status', 'action', 'checkbox', 'client_name', 'next_follow_up_date', 'agent_name', 'mobile', 'client_email', 'client_action']);
     }
 
     /**
