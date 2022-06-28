@@ -10,7 +10,7 @@ let loadAlternateLang = (getDbItem("loadAlternateLang", "0") == "1"); // Enables
 let profileUserID = user.id; // Internal reference ID. (DON'T CHANGE THIS!)
 let profileUser = user.id; // eg: 100
 let profileName = user.name; // eg: Keyla James
-let wssServer = 'sip.cleverstack.in'; // eg: raspberrypi.local
+let wssServer = user.server; // eg: raspberrypi.local
 let WebSocketPort = '7443'; // eg: 444 | 4443
 let ServerPath = '/'; // eg: /ws
 // let SipUsername = '1001'; // eg: webrtc
