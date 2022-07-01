@@ -241,12 +241,29 @@ class MemberLeadController extends MemberBaseController
                 }
                 return '--';
             })
+
+            ->addColumn('App_Client_Action', function ($row) use ($lead) {
+                if (!is_null($row->mobile) && $row->mobile != ' ') {
+                    $output = preg_replace('/(?<=\d)\s+(?=\d)/', '', $row->mobile);
+                    // // return '<a href="tel:+' . ($row->mobile) . '">' . '+' . ($row->mobile) . '</a>';
+                    // return '<div class="pointer" onclick=click2Call(' . ($output) . ')>' . ($row->mobile) . ' </div>';
+                   
+                    $action = '
+                    <a href="tel:+' . ($row->mobile) . '" class="material-icons">' . '<i class="fa fa-phone" aria-hidden="true"></i>' . '</a><br>
+                    <a href="tel:+' . ($row->mobile) . '" class="material-icons">' . 'SMS' . '</a></br>
+                    <a href="https://wa.me/+' . str_replace(' ', '', $row->mobile) . '" class="material-icons">' . '<i class="fa fa-whatsapp" aria-hidden="true"></i>' . '</a';
+                    return $action;
+
+                }
+                return '--';
+            })
+
             ->removeColumn('status_id')
             ->removeColumn('client_id')
             ->removeColumn('source')
             ->removeColumn('next_follow_up')
             ->removeColumn('statusName')
-            ->rawColumns(['status', 'action', 'client_name', 'next_follow_up_date', 'customfields', 'mobile'])
+            ->rawColumns(['status', 'action', 'client_name', 'next_follow_up_date', 'customfields', 'mobile', 'App_Client_Action'])
             ->make(true);
     }
 
