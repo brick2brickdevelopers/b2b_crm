@@ -352,6 +352,9 @@ Route::group(['middleware' => 'auth'], function () {
                 Route::post('/calling-groups/status', 'CallingGroupController@isDefault')->name('calling-group.default-switch');
                 Route::get('/calling-group/{id}/delete', 'CallingGroupController@destroy')->name('calling-group.destroy');
 
+                //Call Flow Design
+                Route::resource('call-flow-design', 'CallFlowController');
+
                 //Call Record Route
                 Route::resource('call-log-reports', 'CallRecordController');
 

@@ -1,0 +1,11 @@
+<?php
+
+namespace $CLASS_NAMESPACE$;
+
+use Modules\RestAPI\Http\Controllers\BaseController;
+
+class $CLASS$ extends BaseController {
+
+    protected $model = '';
+
+}

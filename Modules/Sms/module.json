@@ -1,0 +1,15 @@
+{
+    "name": "Sms",
+    "alias": "sms",
+    "description": "",
+    "keywords": [],
+    "order": 0,
+    "providers": [
+        "Modules\\Sms\\Providers\\SmsServiceProvider"
+    ],
+    "aliases": {},
+    "files": [
+        "start.php"
+    ],
+    "requires": []
+}

@@ -451,6 +451,7 @@ dd($getIndex);
                         <li><a href="{{ route('admin.campaigns.create') }}">Create Campaign </a></li>
                         <li><a href="{{ route('admin.campaigns.call-purpose') }}">Call Purpose </a></li>
                         <li><a href="{{ route('admin.calling-group.index') }}">Calling Group </a></li>
+                        <li><a href="{{ route('admin.call-flow-design.index') }}">Call Flow Design </a></li>
                     </ul>
                 </li>
             @endif
@@ -627,10 +628,11 @@ dd($getIndex);
             <div class="col-lg-4 m-b-5">
                 <div class="btn-group dropup user-dropdown">
 
-                    <img aria-expanded="false" data-toggle="dropdown" src="{{ $user->image_url }}" alt="user-img"
-                        class="img-circle dropdown-toggle h-30 w-30">
+                    <img aria-expanded="false" data-toggle="dropdown" src="{{ $user->image_url }}"
+                        alt="user-img" class="img-circle dropdown-toggle h-30 w-30">
                     <ul role="menu" class="dropdown-menu">
-                        <li><a class="bg-inverse"><strong class="text-info">{{ ucwords($user->name) }}</strong></a>
+                        <li><a class="bg-inverse"><strong
+                                    class="text-info">{{ ucwords($user->name) }}</strong></a>
                         </li>
                         <li>
                             <a href="{{ route('member.dashboard') }}">

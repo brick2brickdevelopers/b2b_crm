@@ -1,0 +1,10 @@
+<?php
+
+$factory->define(
+    \Modules\$MODULE$\Entities\$STUDLY_NAME$::class,
+    function(Faker\Generator $faker) {
+        return [
+            //
+        ];
+    }
+);
