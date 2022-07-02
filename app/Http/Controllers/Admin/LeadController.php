@@ -173,7 +173,9 @@ class LeadController extends AdminBaseController
     private function LogEntry($lead)
     {
         $this->logSearchEntry($lead->id, $lead->client_name, 'admin.leads.show', 'lead');
-        $this->logSearchEntry($lead->id, $lead->client_email, 'admin.leads.show', 'lead');
+        if(!is_null($lead->client_email)){
+            $this->logSearchEntry($lead->id, $lead->client_email, 'admin.leads.show', 'lead');
+        }
 
         if (!is_null($lead->company_name)) {
             $this->logSearchEntry($lead->id, $lead->company_name, 'admin.leads.show', 'lead');

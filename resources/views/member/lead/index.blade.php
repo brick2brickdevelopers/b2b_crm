@@ -132,6 +132,7 @@
                                 <th>@lang('app.clientName')</th>
                                 {{-- <th>@lang('modules.lead.companyName')</th> --}}
                                 <th>Phone</th>
+                                <th>App Client Action</th>
                                 <th>@lang('app.createdOn')</th>
                                 <th>@lang('modules.lead.nextFollowUp')</th>
                                 <th>@lang('app.status')</th>
@@ -208,6 +209,11 @@
             {
                 data: 'mobile',
                 name: 'phone',
+
+            },
+            {
+                data: 'App_Client_Action',
+                name: 'App Client Action',
 
             },
             {

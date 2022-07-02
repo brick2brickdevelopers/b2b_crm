@@ -57,7 +57,7 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label>@lang('app.name')</label>
-                                        <input type="text" name="name" value="{{ $lead->client_name }}" id="name" class="form-control">
+                                        <input type="text" name="client_name" value="{{ $lead->client_name }}" id="name" class="form-control">
                                     </div>
                                 </div>
 
@@ -89,8 +89,8 @@
                                     <div class="form-group">
                                         <label>@lang('app.next_follow_up')</label>
                                         <select name="next_follow_up" id="next_follow_up" class="form-control">
-                                            <option value="yes" {{ $lead->next_follow_up ='yes'?'selected':'' }}> @lang('app.yes')</option>
-                                            <option value="no" {{ $lead->next_follow_up ='no'?'selected':'' }}> @lang('app.no')</option>
+                                            <option value="yes" {{ $lead->next_follow_up =='yes'?'selected':'' }}> @lang('app.yes')</option>
+                                            <option value="no" {{ $lead->next_follow_up =='no'?'selected':'' }}> @lang('app.no')</option>
                                         </select>
                                     </div>
                                 </div>
@@ -137,13 +137,23 @@
                                         <select class="select2 form-control" data-placeholder="@lang('modules.tickets.chooseAgents')"
                                             id="agent_id" name="agent_id">
                                             <option value="">@lang('modules.tickets.chooseAgents')</option>
+                                                        {# @foreach ($leadAgents as $emp)
+                                                            <option value="{{ $emp->id }}">{{ ucwords($emp->user->name) }}
+                                                                @if ($emp->user->id == $user->id)
+                                                                    (YOU)
+                                                                @endif
+                                                            </option>
+                                                        @endforeach #}
+
                                             @foreach ($leadAgents as $emp)
-                                                <option value="{{ $emp->id }}">{{ ucwords($emp->user->name) }}
+                                                <option @if ($emp->id == $lead->agent_id) selected @endif
+                                                    value="{{ $emp->id }}">{{ ucwords($emp->user->name) }}
                                                     @if ($emp->user->id == $user->id)
                                                         (YOU)
                                                     @endif
                                                 </option>
                                             @endforeach
+
                                         </select>
                                     </div>
                                 </div>
@@ -155,10 +165,11 @@
                                                 @lang('app.add') @lang('modules.lead.leadSource')</a></label>
                                         <select class="select2 form-control" data-placeholder="@lang('modules.lead.leadSource')"
                                             id="source_id" name="source_id">
-                                            @foreach ($sources as $source)
-                                                <option value="{{ $source->id }}">{{ ucwords($source->type) }}
-                                                </option>
-                                            @endforeach
+                                            @forelse($sources as $source)
+                                                <option @if ($lead->source_id == $source->id) selected @endif
+                                                    value="{{ $source->id }}"> {{ ucfirst($source->type) }}</option>
+                                            @empty
+                                            @endforelse
                                         </select>
                                     </div>
                                 </div>
@@ -173,7 +184,8 @@
                                         <select class="select2 form-control" name="category_id" id="category_id"
                                             data-style="form-control">
                                             @forelse($categories as $category)
-                                                <option value="{{ $category->id }}">
+                                            <option value="{{ $category->id }}"
+                                                    @if ($lead->category_id == $category->id) selected @endif>
                                                     {{ ucwords($category->category_name) }}</option>
                                             @empty
                                                 <option value="">@lang('messages.noCategoryAdded')</option>
@@ -197,21 +209,21 @@
                                                         <input type="text"
                                                             name="custom_fields_data[{{ $field->name . '_' . $field->id }}]"
                                                             class="form-control" placeholder="{{ $field->label }}"
-                                                            value="{{ $editUser->custom_fields_data['field_' . $field->id] ?? '' }}">
+                                                            value="{{ $lead->custom_fields_data['field_' . $field->id] ?? '' }}">
                                                     @elseif($field->type == 'password')
                                                         <input type="password"
                                                             name="custom_fields_data[{{ $field->name . '_' . $field->id }}]"
                                                             class="form-control" placeholder="{{ $field->label }}"
-                                                            value="{{ $editUser->custom_fields_data['field_' . $field->id] ?? '' }}">
+                                                            value="{{ $lead->custom_fields_data['field_' . $field->id] ?? '' }}">
                                                     @elseif($field->type == 'number')
                                                         <input type="number"
                                                             name="custom_fields_data[{{ $field->name . '_' . $field->id }}]"
                                                             class="form-control" placeholder="{{ $field->label }}"
-                                                            value="{{ $editUser->custom_fields_data['field_' . $field->id] ?? '' }}">
+                                                            value="{{ $lead->custom_fields_data['field_' . $field->id] ?? '' }}">
                                                     @elseif($field->type == 'textarea')
                                                         <textarea name="custom_fields_data[{{ $field->name . '_' . $field->id }}]" class="form-control"
                                                             id="{{ $field->name }}"
-                                                            cols="3">{{ $editUser->custom_fields_data['field_' . $field->id] ?? '' }}</textarea>
+                                                            cols="3">{{ $lead->custom_fields_data['field_' . $field->id] ?? '' }}</textarea>
                                                     @elseif($field->type == 'radio')
                                                         <div class="radio-list">
                                                             @foreach ($field->values as $key => $value)
@@ -222,7 +234,7 @@
                                                                             name="custom_fields_data[{{ $field->name . '_' . $field->id }}]"
                                                                             id="optionsRadios{{ $key . $field->id }}"
                                                                             value="{{ $value }}"
-                                                                            @if (isset($editUser) && $editUser->custom_fields_data['field_' . $field->id] == $value) checked @elseif($key == 0) checked @endif>>
+                                                                            @if (isset($lead) && $lead->custom_fields_data['field_' . $field->id] == $value) checked @elseif($key == 0) checked @endif>>
                                                                         <label
                                                                             for="optionsRadios{{ $key . $field->id }}">{{ $value }}</label>
                                                                     </div>
@@ -230,7 +242,7 @@
                                                             @endforeach
                                                         </div>
                                                     @elseif($field->type == 'select')
-                                                        {!! Form::select('custom_fields_data[' . $field->name . '_' . $field->id . ']', $field->values, isset($editUser) ? $editUser->custom_fields_data['field_' . $field->id] : '', ['class' => 'form-control gender']) !!}
+                                                        {!! Form::select('custom_fields_data[' . $field->name . '_' . $field->id . ']', $field->values, isset($lead) ? $lead->custom_fields_data['field_' . $field->id] : '', ['class' => 'form-control gender']) !!}
                                                     @elseif($field->type == 'checkbox')
                                                         <div
                                                             class="mt-checkbox-inline custom-checkbox checkbox-{{ $field->id }}">
@@ -239,12 +251,14 @@
                                                                 id="{{ $field->name . '_' . $field->id }}" value=" ">
                                                             @foreach ($field->values as $key => $value)
                                                                 <label class="mt-checkbox mt-checkbox-outline">
-                                                                    <input name="{{ $field->name . '_' . $field->id }}[]"
-                                                                        type="checkbox"
-                                                                        onchange="checkboxChange('checkbox-{{ $field->id }}', '{{ $field->name . '_' . $field->id }}')"
-                                                                        value="{{ $value }}"> {{ $value }}
-                                                                    <span></span>
-                                                                </label>
+                                                                <input name="{{ $field->name . '_' . $field->id }}[]"
+                                                                    class="custom_fields_data[{{ $field->name . '_' . $field->id }}]"
+                                                                    type="checkbox" value="{{ $value }}"
+                                                                    onchange="checkboxChange('checkbox-{{ $field->id }}', '{{ $field->name . '_' . $field->id }}')"
+                                                                    @if ($lead->custom_fields_data['field_' . $field->id] != '' && in_array($value, explode(', ', $lead->custom_fields_data['field_' . $field->id]))) checked @endif>
+                                                                {{ $value }}
+                                                                <span></span>
+                                                            </label>
                                                             @endforeach
                                                         </div>
                                                     @elseif($field->type == 'date')
@@ -265,7 +279,9 @@
                                     <div class="col-xs-12">
                                         <label>@lang('app.note')</label>
                                         <div class="form-group">
-                                            <textarea name="note" id="note" class="form-control summernote" rows="5"></textarea>
+                                            <textarea name="note" id="note" class="form-control summernote" rows="5">
+                                                {{ $lead->note ?? '' }}
+                                            </textarea>
                                         </div>
                                     </div>
                                 </div>
