@@ -106,7 +106,29 @@ class CampaignController extends AdminBaseController
         $campaign->end_date = ($request->end_date != '') ? date('Y-m-d', strtotime($request->end_date)) : NULL;
         $campaign->call_to_call_gap = $request->call_to_call_gap;
         $campaign->break_time = $request->break_time;
-        $campaign->save();
+        if ($campaign->save()) {
+            CampaignAgent::where('campaign_id', $campaign->id)->delete();
+            if ($request->agent != null) {
+                foreach ($request->agent as $ag) {
+                    CampaignAgent::create([
+                        'campaign_id' => $campaign->id,
+                        'employee_id' => $ag,
+
+                    ]);
+                }
+            }
+            if ($request->agentGroup != null) {
+                $team = Team::find($request->agentGroup);
+                if (!empty($agentGroupId)) {
+                    foreach ($team->member as $member) {
+                        DB::table('campaign_agents')->insert([
+                            'campaign_id' => $campaign->id,
+                            'agent_id' => $member->user_id,
+                        ]);
+                    }
+                }
+            }
+        }
         return Reply::redirect(route('admin.campaigns.index'), __('messages.groupUpdatedSuccessfully'));
     }
 
