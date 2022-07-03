@@ -136,7 +136,8 @@
                         <div class="col-xs-12">
                             <div class="form-group">
                                 <label class="control-label">@lang('modules.lead.leadSource')</label>
-                                <select class="select2 form-control" data-placeholder="@lang('modules.lead.leadSource')" id="source_id">
+                                <select class="select2 form-control" data-placeholder="@lang('modules.lead.leadSource')"
+                                    id="source_id">
                                     <option selected value="all">@lang('app.all')</option>
 
                                     @foreach ($sources as $source)
@@ -150,21 +151,22 @@
                             <div class="form-group">
                                 <button type="button" id="apply-filters" class="btn btn-success col-md-6"><i
                                         class="fa fa-check"></i> @lang('app.apply')</button>
-                                <button type="button" id="reset-filters" class="btn btn-inverse col-md-5 col-md-offset-1"><i
-                                        class="fa fa-refresh"></i> @lang('app.reset')</button>
+                                <button type="button" id="reset-filters"
+                                    class="btn btn-inverse col-md-5 col-md-offset-1"><i class="fa fa-refresh"></i>
+                                    @lang('app.reset')</button>
                             </div>
                         </div>
                     </form>
                 </div>
             @endsection
-            <div class="row mb-3">
+            <div class="row " style="margin-bottom: 3rem">
                 <div class="col-md-4">
                     <select class="form-control" id="check_action" aria-label="Example select with button addon">
                         <option value="Select Action" selected>Select Action</option>
                         <option value="Assign Selected To Campaign">Assign Selected To Campaign</option>
                     </select>
                 </div>
-                <div class="col-md-4" id="assign_to_campaign_section">
+                <div class="col-md-3" id="assign_to_campaign_section">
                     <select class="form-control" id="assign_to_campaign" data-toggle="select2"
                         data-placeholder="Choose Campaigns">
                         <option value="">Choose Campaign</option>
@@ -175,6 +177,13 @@
                         @endif
                     </select>
                 </div>
+                <div class="col-md-3 selectAllLeads">
+
+                    <input type="checkbox" name="selectAllLeads" id="selectAllLeads" value="true">
+                    <Label for="selectAllLeads">Select All</Label>
+                </div>
+
+
                 <div class="col-md-2">
                     <a class="btn btn-primary" id='action_btn'>Go <i class="mdi mdi-arrow-right-bold"></i></a>
                 </div>
@@ -228,12 +237,20 @@
     $('#selectAll').change(function(e) {
         var table = $(e.target).closest('table');
         $('td input:checkbox', table).prop('checked', this.checked);
+        $('.selectAllLeads input:checkbox').prop('checked', false);
+    });
+    $('#selectAllLeads').change(function(e) {
+        var table = $(e.target).closest('table');
+        console.log(table)
+        $('td input:checkbox').prop('checked', false);
+        $('th input:checkbox').prop('checked', false);
     });
 </script>
 
 <script>
     $(document).ready(function() {
         $('#assign_to_campaign_section').hide();
+        $('.selectAllLeads').hide();
         $('#assign_to_agent_section').hide();
         $('#assign_to_agent_group_section').hide();
         $('#check_action').on('change', function() {
@@ -245,6 +262,7 @@
             } else {}
             if ($('#check_action').val() == 'Assign Selected To Campaign') {
                 $('#assign_to_campaign_section').show();
+                $('.selectAllLeads').show();
                 $('#select_all_section').show();
             } else {
                 $('#assign_to_campaign_section').hide();
@@ -259,8 +277,13 @@
         var ids = [];
 
         $('input[type=checkbox]:checked').each(function(i, val) {
-            if (val.id != 'selectAll')
+            if (val.id != 'selectAll') {
                 ids.push(val.id);
+            }
+            if (val.id === 'selectAllLeads') {
+                ids.push(val.id);
+            }
+
         });
         if (ids.length !== 0) {
             if ($('#check_action').val() == 'Assign Selected To Campaign') {

@@ -80,9 +80,12 @@ class LeadController extends AdminBaseController
     {
         $campaign = Campaign::find($request->campaigns);
 
-        // return $campaign_agent->agent->user->mobile;
+        if ($request->leads[0] === 'selectAllLeads') {
+            $leads =  Lead::all();
+        } else {
+            $leads =  Lead::findMany($request->leads);
+        }
 
-        $leads =  Lead::findMany($request->leads);
         foreach ($leads as $lead) {
             $campaign_agent = CampaignAgent::where('campaign_id', $campaign->id)->inRandomOrder()->first();
             $check = CampaignLead::where('campaign_id', $campaign->id)->where('lead_id', $lead->id)->exists();
@@ -173,7 +176,7 @@ class LeadController extends AdminBaseController
     private function LogEntry($lead)
     {
         $this->logSearchEntry($lead->id, $lead->client_name, 'admin.leads.show', 'lead');
-        if(!is_null($lead->client_email)){
+        if (!is_null($lead->client_email)) {
             $this->logSearchEntry($lead->id, $lead->client_email, 'admin.leads.show', 'lead');
         }
 
