@@ -110,7 +110,7 @@
                                     </select>
                                 </div>
                                 <div class="col-lg-10" id="agentgroupselect">
-                                    <select class="select2 select2-multiple" multiple="multiple"
+                                    <select class="select2 select2-multiple" name="agentGroup"
                                         data-placeholder="Choose Agent Group ...">
                                         @foreach ($teams as $item)
                                             <option value="{{ $item->id }}">{{ $item->team_name }}</option>
