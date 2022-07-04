@@ -1,5 +1,7 @@
 <?php
 
+use Modules\RestAPI\Http\Controllers\CampaignController;
+
 ApiRoute::group(['namespace' => 'Modules\RestAPI\Http\Controllers'], function () {
 
     ApiRoute::get('app', ['as' => 'api.app', 'uses' => 'AppController@app']);
@@ -23,7 +25,7 @@ ApiRoute::group(['namespace' => 'Modules\RestAPI\Http\Controllers'], function ()
     ApiRoute::get('/lang', ['as' => 'lang', 'uses' => 'LanguageController@lang']);
 });
 
-ApiRoute::group(['namespace' => 'Modules\RestAPI\Http\Controllers','middleware' => 'api.auth'], function () {
+ApiRoute::group(['namespace' => 'Modules\RestAPI\Http\Controllers', 'middleware' => 'api.auth'], function () {
 
     ApiRoute::get('dashboard', ['as' => 'api.dashboard', 'uses' => 'DashboardController@dashboard']);
     ApiRoute::get('dashboard/me', ['as' => 'api.dashboard', 'uses' => 'DashboardController@myDashboard']);
@@ -39,6 +41,10 @@ ApiRoute::group(['namespace' => 'Modules\RestAPI\Http\Controllers','middleware' 
             'uses' => 'ProjectController@memberRemove'
         ]
     );
+    //Campaign Route
+    ApiRoute::get('campaign', 'CampaignController@index');
+
+
     ApiRoute::resource('project', 'ProjectController');
     ApiRoute::resource('project-category', 'ProjectCategoryController');
     ApiRoute::resource('currency', 'CurrencyController');

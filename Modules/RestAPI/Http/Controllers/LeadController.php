@@ -2,6 +2,7 @@
 
 namespace Modules\RestAPI\Http\Controllers;
 
+use App\CampaignLead;
 use App\LeadStatus;
 use Froiden\RestAPI\ApiResponse;
 use Modules\RestAPI\Entities\Lead;
@@ -14,6 +15,7 @@ use Modules\RestAPI\Http\Requests\Lead\DeleteRequest;
 class LeadController extends ApiBaseController
 {
     protected $model = Lead::class;
+    // protected $model = CampaignLead::class;
 
     protected $indexRequest = IndexRequest::class;
     protected $storeRequest = CreateRequest::class;
@@ -21,8 +23,13 @@ class LeadController extends ApiBaseController
     protected $showRequest = ShowRequest::class;
     protected $deleteRequest = DeleteRequest::class;
 
+
+
     public function modifyIndex($query)
     {
+
+
+
         return $query->visibility();
     }
 
@@ -32,9 +39,42 @@ class LeadController extends ApiBaseController
         $lead->status_id = $leadStatus->id;
         return $lead;
     }
+    // public function index()
+    // {
+    //     app()->make($this->indexRequest);
 
+    //     $query = $this->parseRequest()
+    //         ->addIncludes()
+    //         ->addFilters()
+    //         ->addOrdering()
+    //         ->addPaging()
+    //         ->getQuery();
+
+
+    //     $user = api_user();
+
+
+    //     $query->where('leads.agent_id', $user->id);
+
+    //     // Load employees relation, if not loaded
+    //     $relations = $query->getEagerLoads();
+
+    //     $query->setEagerLoads($relations);
+
+    //     /** @var Collection $results */
+    //     $results = $this->getResults();
+
+
+
+    //     $results = $results->toArray();
+
+    //     $meta = $this->getMetaData();
+
+    //     return ApiResponse::make(null, $results, $meta);
+    // }
     public function me()
     {
+
         app()->make($this->indexRequest);
 
         $query = $this->parseRequest()
@@ -56,6 +96,7 @@ class LeadController extends ApiBaseController
 
         /** @var Collection $results */
         $results = $this->getResults();
+
 
 
         $results = $results->toArray();

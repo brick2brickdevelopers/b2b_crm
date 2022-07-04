@@ -25,8 +25,6 @@ class IndexRequest extends BaseRequest
      */
     public function rules()
     {
-        return [
-
-        ];
+        return [];
     }
 }
