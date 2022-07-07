@@ -1,0 +1,5 @@
+<?php
+
+ApiRoute::group(['namespace' => '$MODULE_NAMESPACE$\$STUDLY_NAME$\Http\Controllers', 'middleware' => 'api.auth'], function() {
+    // ApiRoute::resource('/$LOWER_NAME$', '$STUDLY_NAME$Controller');
+});

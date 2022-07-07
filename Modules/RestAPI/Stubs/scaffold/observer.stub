@@ -1,0 +1,17 @@
+<?php
+
+namespace Modules\$MODULE$\Observers;
+
+use Modules\$MODULE$\Entities\$STUDLY_NAME$;
+
+class $STUDLY_NAME$Observer
+{
+
+    public function creating($STUDLY_NAME$ $$LOWER_NAME$)
+    {
+        if (company()) {
+            $$LOWER_NAME$->company_id = company()->id;
+        }
+    }
+
+}

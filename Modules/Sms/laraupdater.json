@@ -1,0 +1,6 @@
+{
+    "version": "1.0.4",
+    "archive": "worksuite-saas-sms-module-1.0.4.zip",
+    "description": "<ul><li>Added Lead notifications</li> <li>Added ticket custom form notification</li> <li>Added invoice paid notification</li> <li>Added contract signed notification</li> <li>Added product purchased notification</li> <li>Added task reminder notification</li> <li>Added project reminder notification</li></ul>",
+    "release_date": "2021-09-28"
+}

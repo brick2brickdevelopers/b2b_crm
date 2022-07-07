@@ -1,0 +1,15 @@
+{
+    "name": "RestAPI",
+    "alias": "restapi",
+    "description": "",
+    "keywords": [],
+    "order": 0,
+    "providers": [
+        "Modules\\RestAPI\\Providers\\RestAPIServiceProvider"
+    ],
+    "aliases": {},
+    "files": [
+        "start.php"
+    ],
+    "requires": []
+}

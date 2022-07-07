@@ -68,9 +68,8 @@
                             </div>
                             <div class="form-group row mb-2">
                                 <label class="col-lg-2 col-form-label" for="status">End Date</label>
-                                <div class="col-lg-10">
-                                    <input type="text" autocomplete="off" class="form-control" id="end_date"
-                                        name="end_date">
+                                <div class="col-lg-10"> <input type="text" autocomplete="off" class="form-control"
+                                        id="end_date" name="end_date">
                                 </div>
                             </div>
                             <div class="form-group row mb-2">
@@ -101,8 +100,8 @@
                                 </label>
 
                                 <div class="col-lg-10" id="agentselect">
-                                    <select class="select2 select2-multiple" multiple="multiple" id="agent" name="agent[]"
-                                        data-placeholder="Choose Agent ...">
+                                    <select class="select2 select2-multiple" multiple="multiple" id="agent"
+                                        name="agent[]" data-placeholder="Choose Agent ...">
                                         @foreach ($employee as $item)
                                             <option value="{{ $item->user_id }}">{{ $item->user->name }}
                                                 {{ $item->user_id == Auth::user()->id ? '(YOU)' : '' }} </option>
@@ -111,7 +110,7 @@
                                     </select>
                                 </div>
                                 <div class="col-lg-10" id="agentgroupselect">
-                                    <select class="select2 select2-multiple" multiple="multiple"
+                                    <select class="select2 select2-multiple" name="agentGroup"
                                         data-placeholder="Choose Agent Group ...">
                                         @foreach ($teams as $item)
                                             <option value="{{ $item->id }}">{{ $item->team_name }}</option>

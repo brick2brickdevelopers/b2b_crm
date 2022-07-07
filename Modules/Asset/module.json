@@ -1,0 +1,15 @@
+{
+    "name": "Asset",
+    "alias": "asset",
+    "description": "",
+    "keywords": [],
+    "active": 1,
+    "order": 2,
+    "providers": [
+        "Modules\\Asset\\Providers\\AssetServiceProvider"
+    ],
+    "aliases":{},
+    "files": [
+        "start.php"
+    ]
+}

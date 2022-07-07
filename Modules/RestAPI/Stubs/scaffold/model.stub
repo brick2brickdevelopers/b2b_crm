@@ -1,0 +1,29 @@
+<?php
+
+namespace Modules\$MODULE$\Entities;
+
+class $STUDLY_NAME$ extends \App\$STUDLY_NAME$
+{
+    // region Properties
+
+    protected $table = '$LOWER_NAME$s';
+
+    protected $default = [
+        'id',
+    ];
+
+    protected $hidden = [
+        'company_id',
+    ];
+
+    protected $guarded = [
+        'id',
+        'company_id',
+    ];
+
+    protected $filterable = [
+        'id',
+    ];
+
+
+}

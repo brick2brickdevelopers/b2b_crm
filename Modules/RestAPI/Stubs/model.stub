@@ -1,0 +1,31 @@
+<?php
+
+namespace $NAMESPACE$;
+
+use Modules\RestAPI\Entities\BaseModel;
+use Illuminate\Database\Eloquent\Builder;
+use Modules\RestAPI\Observers\$CLASS$Observer;
+
+class $CLASS$ extends App\$CLASS
+{
+    // region Properties
+
+    protected $table = '$LOWER_NAME$s';
+
+    protected $default = [
+        'id',
+    ];
+
+    protected $hidden = [
+
+    ];
+
+    protected $guarded = [
+        'id',
+    ];
+
+    protected $filterable = [
+        'id',
+    ];
+
+}

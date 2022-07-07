@@ -80,11 +80,18 @@ class LeadController extends AdminBaseController
     {
         $campaign = Campaign::find($request->campaigns);
 
-        // return $campaign_agent->agent->user->mobile;
+        if ($request->leads[0] === 'selectAllLeads') {
+            $leads =  Lead::all();
+        } else {
+            $leads =  Lead::findMany($request->leads);
+        }
 
-        $leads =  Lead::findMany($request->leads);
         foreach ($leads as $lead) {
+
             $campaign_agent = CampaignAgent::where('campaign_id', $campaign->id)->inRandomOrder()->first();
+            $lx = Lead::find($lead->id);
+            $lx->agent_id = $campaign_agent->cAgent->id;
+            $lx->save();
             $check = CampaignLead::where('campaign_id', $campaign->id)->where('lead_id', $lead->id)->exists();
             if (!$check) {
                 $camLead = new CampaignLead();
@@ -95,16 +102,19 @@ class LeadController extends AdminBaseController
                 $camLead->leadcallstatus = 0;
                 $camLead->save();
             }
-            $callingCheck = Callingdata::where('campaign_id', $campaign->id)->where('lead_id', $lead->id)->exists();
-            if (!$callingCheck) {
-                $callLead = new Callingdata();
-                $callLead->lead_id = $lead->id;
-                $callLead->campaign_id = $campaign->id;
-                $callLead->mobile =  "+" . preg_replace('/(?<=\d)\s+(?=\d)/', '', $lead->mobile);
-                $callLead->agent_id =  $campaign_agent->agent->id;
-                $callLead->agent_mobile =  "+" . preg_replace('/(?<=\d)\s+(?=\d)/', '', $campaign_agent->agent->mobile);
-                $callLead->callerid = 0;
-                $callLead->save();
+
+            if (in_array('calling', $this->modules)) {
+                $callingCheck = Callingdata::where('campaign_id', $campaign->id)->where('lead_id', $lead->id)->exists();
+                if (!$callingCheck) {
+                    $callLead = new Callingdata();
+                    $callLead->lead_id = $lead->id;
+                    $callLead->campaign_id = $campaign->id;
+                    $callLead->mobile =  "+" . preg_replace('/(?<=\d)\s+(?=\d)/', '', $lead->mobile);
+                    $callLead->agent_id =  $campaign_agent->agent->id;
+                    $callLead->agent_mobile =  "+" . preg_replace('/(?<=\d)\s+(?=\d)/', '', $campaign_agent->agent->mobile);
+                    $callLead->callerid = 0;
+                    $callLead->save();
+                }
             }
         }
 
@@ -175,7 +185,7 @@ class LeadController extends AdminBaseController
     private function LogEntry($lead)
     {
         $this->logSearchEntry($lead->id, $lead->client_name, 'admin.leads.show', 'lead');
-        if(!is_null($lead->client_email)){
+        if (!is_null($lead->client_email)) {
             $this->logSearchEntry($lead->id, $lead->client_email, 'admin.leads.show', 'lead');
         }
 
