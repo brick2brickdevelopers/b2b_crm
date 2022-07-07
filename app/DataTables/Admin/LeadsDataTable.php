@@ -79,14 +79,29 @@ class LeadsDataTable extends BaseDataTable
 
                 return $leadStatus;
             })
+            ->addColumn('client_surname', function ($row) {
+                if($row->client_surname ){
+                    return $row->client_surname ;
+                }else{
+                    return ;
+                }
+            })
             ->editColumn('client_name', function ($row) {
+
                 if ($row->client_id != null && $row->client_id != '') {
                     $label = '<label class="label label-success">' . __('app.client') . '</label>';
                 } else {
                     $label = '<label class="label label-info">' . __('app.lead') . '</label>';
                 }
 
-                return '<a href="' . route('admin.leads.show', $row->id) . '">' . ucwords($row->client_name) . '</a><div class="clearfix"></div> ' . $label;
+                    if($row->client_surname ){
+                        $client_fullname = $row->client_surname .' ' . $row->client_name;
+                    }else{
+                        $client_fullname = $row->client_name;
+                    }
+
+
+                return '<a href="' . route('admin.leads.show', $row->id) . '">'. ucwords($client_fullname) . '</a><div class="clearfix"></div> ' . $label;
             })
 
             ->editColumn('next_follow_up_date', function ($row) use ($currentDate) {
@@ -144,7 +159,7 @@ class LeadsDataTable extends BaseDataTable
             ->removeColumn('next_follow_up')
             ->removeColumn('statusName')
             ->addIndexColumn()
-            ->rawColumns(['status', 'action', 'checkbox', 'client_name', 'next_follow_up_date', 'agent_name', 'mobile', 'client_email', 'client_action']);
+            ->rawColumns(['status', 'action', 'checkbox', 'client_name', 'next_follow_up_date', 'agent_name', 'mobile', 'client_email', 'client_action','client_surname']);
     }
 
     /**
@@ -164,6 +179,7 @@ class LeadsDataTable extends BaseDataTable
             'leads.client_email',
             'leads.next_follow_up',
             'client_name',
+            'client_surname',
             'company_name',
             'lead_status.type as statusName',
             'status_id',

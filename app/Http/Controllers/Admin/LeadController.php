@@ -141,7 +141,9 @@ class LeadController extends AdminBaseController
         $lead->company_name = $request->company_name;
         $lead->website = $request->website;
         $lead->address = $request->address;
-        $lead->client_name = $request->salutation . ' ' . $request->name;
+        $lead->client_surname = $request->salutation;
+        $lead->client_name = $request->name;
+        // $lead->client_name = $request->salutation . ' ' . $request->name;
         $lead->client_email = $request->email;
         $lead->mobile = $request->input('phone_code') . ' ' . $request->input('mobile');
         $lead->office_phone = $request->office_phone;
@@ -209,6 +211,7 @@ class LeadController extends AdminBaseController
         $lead->company_name = $request->company_name;
         $lead->website = $request->website;
         $lead->address = $request->address;
+        $lead->client_surname = $request->salutation;
         $lead->client_name = $request->client_name;
         $lead->client_email = $request->email;
         $lead->mobile = $request->input('phone_code') . ' ' . $request->input('mobile');

@@ -104,6 +104,7 @@ class MemberLeadController extends MemberBaseController
             'leads.id',
             'leads.client_id',
             'leads.next_follow_up',
+            'client_surname',
             'client_name',
             'company_name',
             'mobile',
@@ -209,6 +210,10 @@ class MemberLeadController extends MemberBaseController
                 $fields = Lead::findOrFail($row->id)->withCustomFields();
                 return json_decode($fields, true);
             })
+            ->addColumn('client_surname', function ($row) {
+                
+                return $row->client_surname;
+            })
             ->editColumn('client_name', function ($row) {
                 if ($row->client_id != null && $row->client_id != '') {
                     $label = '<label class="label label-success">' . __('app.client') . '</label>';
@@ -216,7 +221,13 @@ class MemberLeadController extends MemberBaseController
                     $label = '<label class="label label-info">' . __('app.lead') . '</label>';
                 }
 
-                return $row->client_name . '<div class="clearfix"></div> ' . $label;
+                if($row->client_surname){
+                    $client_fullname = $row->client_surname.' '.$row->client_name;
+                }else{
+                    $client_fullname = $row->client_name;
+                }
+
+                return $client_fullname . '<div class="clearfix"></div> ' . $label;
             })
             ->editColumn('next_follow_up_date', function ($row) use ($currentDate) {
                 if ($row->next_follow_up_date != null && $row->next_follow_up_date != '') {
