@@ -1,2 +1,8 @@
 .idea
 /vendor
+.env
+storage/framework/.DS_Store
+storage/
+storage.zip
+
+storage/.DS_Store
