@@ -1,8 +1,7 @@
 .idea
 /vendor
-.env
 storage/framework/.DS_Store
 storage/
 storage.zip
-.env
+
 storage/.DS_Store
