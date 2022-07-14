@@ -27,18 +27,20 @@ class CampaignController extends ApiBaseController
     public function index()
     {
 
-        $compain = Campaign::all();
+        $perPage = 5;
+        $compain = Campaign::paginate($perPage);
             return response()->json([
-            'status' => 'success',
-            'campaign' => $compain,
+                'success'  => true,
+                'status'   => 200,
+                'code'     => "success",
+                'message'  => "Campaign retrieved successfully",
+                'campaign' => $compain,
         ]);
-
     }
 
     //list of lead assingned to particular user
 
     public function user_lead(Request $request) {
-
         $compain = Campaign::where('id', $request->campaign_id)->get();
         $orders = CampaignLead::where('campaign_id', $request->campaign_id)->get();
         $orders = CampaignLead::where('agent_id', $request->user_id)->get();
@@ -47,16 +49,32 @@ class CampaignController extends ApiBaseController
                array_push($leadId, $order['lead_id']);
         }
 
-        $clientInfo = Lead::whereIn('id', $leadId)->get();
+        //per page
+
+        $perPage = 5;
+        $clientInfo = Lead::whereIn('id', $leadId)->paginate($perPage);
         if(count($clientInfo)>0) {
             $clientInfo = $clientInfo;
         } else {
             $clientInfo = "No lead exist";
         }
             return response()->json([
-                'status' => 'success',
+                'success'  => true,
+                'status'   => 200,
+                'code'     => "success",
+                'message'  => "Lead retrieved successfully",
                 'campaign_info'=> $compain,
                 'lead'=> $clientInfo
             ]);
         }
+
+        //update the particular lead status based on lead id , user id and compaign_id
+        public function update_lead_status(Request $request) {
+            CampaignLead::where(['campaign_id'=>$request->campaign_id,'agent_id'=>$request->user_id,'lead_id'=>$request->lead_id])
+            ->update(['status'=>$request->status]);
+            $updatedLead = Lead::where('id', $request->lead_id)->get();
+            return response()->json(['success'=>'true','status'=> 200, 'code'=> "success",'message'=>'Lead status has been updated successfully','Updatedlead'=>$updatedLead]);
+           
+        }
+
     }
