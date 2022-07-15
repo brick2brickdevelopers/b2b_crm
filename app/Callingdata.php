@@ -14,6 +14,8 @@ class Callingdata extends Model
         static::addGlobalScope(new CompanyScope);
         static::observe(CallingDataObserver::class);
     }
+
     public $timestamps = false;
     protected $table = 'callingdata';
+    protected $guarded = [];
 }

@@ -27,4 +27,6 @@ class CampaignLead extends Model
     {
         return $this->belongsTo(Lead::class, 'lead_id');
     }
+
+    protected $guarded = [];
 }

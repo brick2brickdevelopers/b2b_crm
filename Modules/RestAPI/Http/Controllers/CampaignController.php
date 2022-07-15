@@ -48,9 +48,7 @@ class CampaignController extends ApiBaseController
         foreach($orders as $order) {
                array_push($leadId, $order['lead_id']);
         }
-
         //per page
-
         $perPage = 5;
         $clientInfo = Lead::whereIn('id', $leadId)->paginate($perPage);
         if(count($clientInfo)>0) {
@@ -74,7 +72,75 @@ class CampaignController extends ApiBaseController
             ->update(['status'=>$request->status]);
             $updatedLead = Lead::where('id', $request->lead_id)->get();
             return response()->json(['success'=>'true','status'=> 200, 'code'=> "success",'message'=>'Lead status has been updated successfully','Updatedlead'=>$updatedLead]);
-           
         }
 
+        //call disposal api
+        public function call_disposal(Request $request) {
+            //store the call_purpose and user_id
+            
+            $callPurpose  = CallPurpose::create([
+                'company_id' => 1,
+                'purpose' => $request->call_purpose,
+                'from_id' =>  $request->user_id,
+            ]);
+
+//leadcallstatus 
+//1 is Available
+//2 is Completed
+//3 is Follow Up
+
+            
+
+            $callingData  = CampaignLead::create([
+                'lead_id' =>  $request->lead_id,
+                'campaign_id' => $request->campaign_id,
+                'agent_id' => $request->user_id,
+                'status' => $request->leadcallstatus,
+                'leadcallstatus'=> $request->leadcallstatus,
+                'company_id' => 1
+            ]);
+
+
+            //store the other calling data and other 
+            $callingData  = Callingdata::create([
+                'lead_id' =>  $request->lead_id,
+                'campaign_id' => $request->campaign_id,
+                'mobile' =>  $request->lead_mobile,
+                'agent_id' => $request->user_id,
+                'agent_mobile' => $request->agent_mobile,
+                'company_id' => 1
+            ]);
+
+            $data = [];
+
+            if($request->leadcallstatus==1) {
+                $updatedLeadStatus = 'Available';
+            }
+            elseif($request->leadcallstatus==2) {
+                $updatedLeadStatus = 'Completed';
+            }
+            else {
+                $updatedLeadStatus = 'Follow Up';
+            }
+
+            $newData = array(
+                'lead_id' =>  $request->lead_id,
+                'campaign_id' => $request->campaign_id,
+                'lead_mobile' =>  $request->lead_mobile,
+                'agent_id' => $request->user_id,
+                'agent_mobile' => $request->agent_mobile,
+                'purpose' => $request->call_purpose,
+                'leadcall_status'=> $updatedLeadStatus
+            );
+
+            array_push($data,$newData);
+            return response()->json([
+                'success'  => true,
+                'status'   => 200,
+                'code'     => "success",
+                'message'  => "call disposal has been initiated successfully",
+                'data'=>  $data
+
+            ]);
+        } 
     }

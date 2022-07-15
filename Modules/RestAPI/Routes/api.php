@@ -45,6 +45,8 @@ ApiRoute::group(['namespace' => 'Modules\RestAPI\Http\Controllers', 'middleware'
     ApiRoute::get('campaign', 'CampaignController@index');
     ApiRoute::post('user_lead', 'CampaignController@user_lead');
     ApiRoute::post('update_lead_status', 'CampaignController@update_lead_status');
+    ApiRoute::post('call_disposal', 'CampaignController@call_disposal');
+
 //ending the compaign route here
     ApiRoute::resource('project', 'ProjectController');
     ApiRoute::resource('project-category', 'ProjectCategoryController');
