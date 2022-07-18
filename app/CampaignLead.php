@@ -13,7 +13,7 @@ class CampaignLead extends Model
         parent::boot();
         static::addGlobalScope(new CompanyScope);
         static::observe(CampaignLeadsObserver::class);
-    }
+    } 
 
     public function agent()
     {
