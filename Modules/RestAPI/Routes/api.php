@@ -42,8 +42,8 @@ ApiRoute::group(['namespace' => 'Modules\RestAPI\Http\Controllers', 'middleware'
     );
 
  //Campaign api route tarting from here 
-    ApiRoute::get('campaign', 'CampaignController@index');
-    ApiRoute::post('user_lead', 'CampaignController@user_lead');
+    ApiRoute::get('campaign', 'CampaignController@campign_list');
+    ApiRoute::get('user_lead', 'CampaignController@user_lead');
     ApiRoute::post('update_lead_status', 'CampaignController@update_lead_status');
     ApiRoute::post('call_disposal', 'CampaignController@call_disposal');
 

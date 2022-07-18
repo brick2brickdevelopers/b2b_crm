@@ -26,9 +26,24 @@ class CampaignController extends ApiBaseController
     //list of all the campaign
     public function index()
     {
+        echo "here";
+        
+    }
 
-        $perPage = 5;
+//all campign list
+    public function campign_list(Request $request)
+    {
+        
+        $perPage = $request->page_size;
+
         $compain = Campaign::paginate($perPage);
+
+        if(count($compain)>0) {
+            $$compain = $compain;
+        } else {
+            $$compain = [];
+        }
+
             return response()->json([
                 'success'  => true,
                 'status'   => 200,
@@ -37,6 +52,7 @@ class CampaignController extends ApiBaseController
                 'campaign' => $compain,
         ]);
     }
+
 
     //list of lead assingned to particular user
 
@@ -49,12 +65,12 @@ class CampaignController extends ApiBaseController
                array_push($leadId, $order['lead_id']);
         }
         //per page
-        $perPage = 5;
+        $perPage = $request->page_size;
         $clientInfo = Lead::whereIn('id', $leadId)->paginate($perPage);
         if(count($clientInfo)>0) {
             $clientInfo = $clientInfo;
         } else {
-            $clientInfo = "No lead exist";
+            $clientInfo = [];
         }
             return response()->json([
                 'success'  => true,
@@ -88,8 +104,6 @@ class CampaignController extends ApiBaseController
 //1 is Available
 //2 is Completed
 //3 is Follow Up
-
-            
 
             $callingData  = CampaignLead::create([
                 'lead_id' =>  $request->lead_id,
