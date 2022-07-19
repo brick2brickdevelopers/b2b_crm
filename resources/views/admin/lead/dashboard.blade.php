@@ -631,7 +631,7 @@
     
      $('#reset-filters').click(function () {
        showTable();
-      
+       $('#main-search').hide();
     });
 
     $(".select2").select2({
