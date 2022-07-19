@@ -13,7 +13,6 @@ class LeadCategoryController extends ApiBaseController
 {
 
     protected $model = LeadCategory::class;
-
     protected $indexRequest = IndexRequest::class;
     protected $storeRequest = CreateRequest::class;
     protected $updateRequest = UpdateRequest::class;

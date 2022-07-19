@@ -13,7 +13,7 @@ class CampaignLead extends Model
         parent::boot();
         static::addGlobalScope(new CompanyScope);
         static::observe(CampaignLeadsObserver::class);
-    }
+    } 
 
     public function agent()
     {
@@ -27,4 +27,6 @@ class CampaignLead extends Model
     {
         return $this->belongsTo(Lead::class, 'lead_id');
     }
+
+   protected $guarded = [];
 }

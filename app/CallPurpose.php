@@ -17,4 +17,5 @@ class CallPurpose extends Model
         static::addGlobalScope(new CompanyScope);
         static::observe(CallPurposeObserver::class);
     }
+    protected $guarded = [];
 }

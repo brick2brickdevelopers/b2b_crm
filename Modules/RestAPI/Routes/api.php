@@ -11,7 +11,6 @@ ApiRoute::group(['namespace' => 'Modules\RestAPI\Http\Controllers'], function ()
         'auth/forgot-password',
         ['as' => 'api.auth.forgotPassword', 'uses' => 'AuthController@forgotPassword']
     );
-
     // Auth routes
     ApiRoute::post('auth/login', ['as' => 'api.auth.login', 'uses' => 'AuthController@login']);
     ApiRoute::post('auth/logout', ['as' => 'api.auth.logout', 'uses' => 'AuthController@logout']);
@@ -41,10 +40,14 @@ ApiRoute::group(['namespace' => 'Modules\RestAPI\Http\Controllers', 'middleware'
             'uses' => 'ProjectController@memberRemove'
         ]
     );
-    //Campaign Route
-    ApiRoute::get('campaign', 'CampaignController@index');
 
+ //Campaign api route tarting from here 
+    ApiRoute::get('campaign', 'CampaignController@campign_list');
+    ApiRoute::get('user_lead', 'CampaignController@user_lead');
+    ApiRoute::post('update_lead_status', 'CampaignController@update_lead_status');
+    ApiRoute::post('call_disposal', 'CampaignController@call_disposal');
 
+//ending the compaign route here
     ApiRoute::resource('project', 'ProjectController');
     ApiRoute::resource('project-category', 'ProjectCategoryController');
     ApiRoute::resource('currency', 'CurrencyController');
