@@ -100,6 +100,7 @@ class MemberLeadController extends MemberBaseController
     public function data(CommonRequest $request, $id = null)
     {
         $currentDate = Carbon::today()->format('Y-m-d');
+
         $lead = Lead::select(
             'leads.id',
             'leads.client_id',
@@ -247,13 +248,12 @@ class MemberLeadController extends MemberBaseController
                     $output = preg_replace('/(?<=\d)\s+(?=\d)/', '', $row->mobile);
                     // // return '<a href="tel:+' . ($row->mobile) . '">' . '+' . ($row->mobile) . '</a>';
                     // return '<div class="pointer" onclick=click2Call(' . ($output) . ')>' . ($row->mobile) . ' </div>';
-                   
+
                     $action = '
                     <a href="tel:+' . ($row->mobile) . '" class="material-icons">' . '<i class="fa fa-phone" aria-hidden="true"></i>' . '</a><br>
                     <a href="tel:+' . ($row->mobile) . '" class="material-icons">' . 'SMS' . '</a></br>
                     <a href="https://wa.me/+' . str_replace(' ', '', $row->mobile) . '" class="material-icons">' . '<i class="fa fa-whatsapp" aria-hidden="true"></i>' . '</a';
                     return $action;
-
                 }
                 return '--';
             })

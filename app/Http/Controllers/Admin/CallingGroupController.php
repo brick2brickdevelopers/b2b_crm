@@ -65,30 +65,6 @@ class CallingGroupController extends AdminBaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    // public function isDefault(Request $request)
-    // {
-    //     $checkDefault = CallingGroup::where('is_default', true)->first();
-    //     if ($checkDefault) {
-    //         if ($checkDefault->id !== $request->id) {
-    //             return Reply::redirectWithError(route('admin.calling-group.index'), ('Another Group is Already Activated'));
-    //         } else {
-
-    //         }
-    //     } elseif ($checkDefault) {
-    //         $checkDefault->id === $request->id;
-    //         $group = CallingGroup::find($request->id);
-    //         $group->is_default = false;
-    //         $group->save();
-    //     } else {
-    //         $group = CallingGroup::find($request->id);
-    //         if ($group->is_default === true) {
-    //             $group->is_default = false;
-    //         } else {
-    //             $group->is_default = true;
-    //         }
-    //         $group->save();
-    //     }
-    // }
     public function isDefault(Request $request)
     {
         $checkDefault = CallingGroup::where('is_default', true)->first();
@@ -121,7 +97,10 @@ class CallingGroupController extends AdminBaseController
      */
     public function edit($id)
     {
-        //
+        $this->employee = EmployeeDetails::all();
+        $this->groups = CallingGroup::findOrFail($id);
+        // dd($this->groups);
+        return view('admin.calling-group.edit', $this->data);
     }
 
     /**
@@ -133,7 +112,15 @@ class CallingGroupController extends AdminBaseController
      */
     public function update(Request $request, $id)
     {
-        //
+        $group = CallingGroup::findOrFail($id);
+        $group->company_id = company()->id;
+        $group->calling_group_name = $request->calling_group_name;
+        $group->fallback_number = $request->fallback_number;
+        $group->employees = json_encode($request->employees);
+        // $group->is_default = false;
+        $group->save();
+
+        return Reply::redirect(route('admin.calling-group.index'), 'Calling Group created successfully.');
     }
 
     /**

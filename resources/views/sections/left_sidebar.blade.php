@@ -451,7 +451,9 @@ dd($getIndex);
                         <li><a href="{{ route('admin.campaigns.create') }}">Create Campaign </a></li>
                         <li><a href="{{ route('admin.campaigns.call-purpose') }}">Call Purpose </a></li>
                         <li><a href="{{ route('admin.calling-group.index') }}">Calling Group </a></li>
-                        <li><a href="{{ route('admin.call-flow-design.index') }}">Call Flow Design </a></li>
+                        <li><a href="{{ route('admin.ivr-greetings.index') }}">IVR Greetings </a></li>
+                        <li><a href="{{ route('admin.ivr-voicemail.index') }}">IVR Voicemail </a></li>
+                        <li><a href="{{ route('admin.call-flow-design.index') }}">IVR Call Flow Design </a></li>
                     </ul>
                 </li>
             @endif

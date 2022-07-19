@@ -583,4 +583,22 @@ class LeadController extends AdminBaseController
         $this->leads = CampaignLead::paginate(10);
         return view('admin.lead.dashboard', $this->data);
     }
+
+    public function leadSearch(Request $request)
+    {
+        //return($request->all()); 
+       
+
+            $this->leads = CampaignLead::select('campaign_leads.*','campaigns.id as capmaign_id')
+                ->join('campaigns', 'campaigns.id', '=', 'campaign_leads.campaign_id')
+                ->join('users', 'users.id', '=', 'campaign_leads.agent_id')
+                ->where('campaigns.id', $request->check_action)
+                ->where('users.id', $request->assign_to_campaign)
+                ->get();
+
+         
+      
+        $view = view('admin.lead.dashboard_data', $this->data)->render();
+        return Reply::dataOnly(['status' => 'success', 'data' => $view]);
+    }
 }

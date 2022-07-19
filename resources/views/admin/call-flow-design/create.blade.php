@@ -27,6 +27,7 @@
     <link rel="stylesheet" href="{{ asset('plugins/bower_components/custom-select/custom-select.css') }}">
     <link rel="stylesheet" href="{{ asset('plugins/bower_components/multiselect/css/multi-select.css') }}">
     <link rel="stylesheet" href="{{ asset('plugins/bower_components/switchery/dist/switchery.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('plugins/bower_components/clockpicker/dist/jquery-clockpicker.min.css') }}">
 @endpush
 @section('content')
     <div class="row">
@@ -39,13 +40,23 @@
                     <div class="panel-body">
                         <div class="row">
                             <div class="col-sm-12 col-xs-12">
-                                {!! Form::open(['id' => 'createCallingGroup', 'class' => 'ajax-form', 'method' => 'POST']) !!}
+                                {!! Form::open(['id' => 'createCallFlowDiagram', 'class' => 'ajax-form', 'method' => 'POST']) !!}
+
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="greeting" class="required">Call Flow Design Name</label>
+                                        <input type="text" name="name" id="name" class="form-control"
+                                            autocomplete="nope" required>
+                                    </div>
+                                </div>
                                 <div class="form-group">
                                     <label for="greeting" class="required">Welcome greeting</label>
                                     <div id="greeting">
-                                        <select class="select2 select2-multiple" multiple="multiple" id="greetings"
-                                            name="greetings" data-placeholder="Choose Greetings ...">
-
+                                        <select class="select2 select2-multiple form-control" id="greetings_id"
+                                            name="greetings_id" data-placeholder="Choose Greetings ...">
+                                            @foreach ($grettings as $item)
+                                                <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                            @endforeach
 
                                         </select>
                                     </div>
@@ -53,17 +64,19 @@
                                 <div class="form-group">
                                     <label for="menu" class="required">Need a menu</label>
                                     <div class="switchery-demo">
-                                        <input id="menu-switch" type="checkbox" class="js-switch" data-size="small"
-                                            data-color="#00c292" />
+                                        <input id="menu-switch" name="menu" type="checkbox" class="js-switch"
+                                            data-size="small" data-color="#00c292" value="1"/>
                                     </div>
                                 </div>
                                 <div class="form-group menu-message">
                                     <label for="menu_message" class="required">Menu message</label>
                                     <div id="menu_message">
-                                        <select class="select2 select2-multiple" multiple="multiple" id="menu_message"
+                                        <select class="select2 select2-multiple form-control" id="menu_message"
                                             name="menu_message" data-placeholder="Choose Menu ...">
 
-
+                                            @foreach ($grettings as $item)
+                                                <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                 </div>
@@ -71,8 +84,11 @@
                                     <label for="menu_message" class="required">Extension Directory</label>
                                     <div id="extension">
                                         <select class="select2 select2-multiple" multiple="multiple" id="extension"
-                                            name="extension" data-placeholder="Choose Department ...">
-
+                                            name="extensions[]" data-placeholder="Choose Department ...">
+                                            @foreach (digits() as $item)
+                                            <option value="{{ $item['id'] }}">{{ $item['label'] }}
+                                            </option>
+                                        @endforeach
 
                                         </select>
                                     </div>
@@ -80,44 +96,51 @@
                                 </div>
 
                                 <div class="form-group extension-directory-with-number">
-                                    <div class="row">
-                                        <div class="col-md-6">
+                                    <div class="row  department-choose" style="margin-bottom: 10px;">
+                                        <div class="col-md-3 ">
                                             <label for="extension_directory_with_number" class="required">Extension
                                                 Number</label>
                                             <div id="extension-directory-with-number">
-                                                <select class="form-control" id="" name=""
-                                                    data-placeholder="Choose Department ...">
-
+                                                <select class="form-control" id="selectNumber" name="num[]">
+                                                    @foreach (digits() as $item)
+                                                        <option value="{{ $item['id'] }}">{{ $item['label'] }}
+                                                        </option>
+                                                    @endforeach
 
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class=" col-md-6 appendHere"></div>
+                                        {{-- <div class=" col-md-6 appendHere"></div> --}}
                                         <div class="col-md-6">
                                             <label for="extension_directory_with_number" class="required">Extension
                                                 Directory</label>
                                             <div id="">
-                                                <select class="select2 select2-multiple" multiple="multiple" id=""
-                                                    name="" data-placeholder="Choose Department ...">
-
+                                                <select class="form-control" id="selectGretting" name="voice[]"
+                                                    data-placeholder="Choose Department ...">
+                                                    @foreach ($grettings as $item)
+                                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                                    @endforeach
 
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered">
 
-                                                <tbody id="tbody">
-
-                                                </tbody>
-                                            </table>
+                                        <div class="col-md-3 deleteBtn" style="margin-top: 21px;" id="deleteBtn">
+                                            <button class="btn btn-md btn-primary" type="button"
+                                                onclick="removeDepartment($(this))">
+                                                <i class="fa fa-times"></i>
+                                            </button>
                                         </div>
-                                        <button class="btn btn-md btn-primary" id="addBtn" type="button">
-                                            Add new Row
-                                        </button>
-                                    </div>
 
+
+
+                                    </div>
+                                    <button class="btn btn-md btn-primary" id="addBtn" type="button">
+                                        Add new Row
+                                    </button>
                                 </div>
+
+
                             </div>
                             <div class="form-group">
                                 <div class="row">
@@ -127,7 +150,8 @@
 
                                     </div>
                                     <div class="col-md-4">
-                                        <input class="form-check-input" type="checkbox" id="inline" value="option2">
+                                        <input class="form-check-input" name="voicemail" type="checkbox" id="inline"
+                                        value="1">
 
                                     </div>
                                 </div>
@@ -137,8 +161,8 @@
                                 <label for="menu" class="required">Do you want call flow for non working
                                     hours?</label>
                                 <div class="switchery-demo">
-                                    <input id="menu-switch_work_hour" type="checkbox" class="js-switch"
-                                        data-size="small" data-color="#00c292" />
+                                    <input id="menu-switch_work_hour" name="non_working_hours" type="checkbox"
+                                        class="js-switch" data-size="small" data-color="#00c292" value="1"/>
                                 </div>
                             </div>
 
@@ -150,20 +174,20 @@
                                         </div>
                                         <div class="col-md-2">
                                             <div id="">
-                                                <select class="select2 select2-multiple" multiple="multiple"
-                                                    id="" name="" data-placeholder="Start">
+                                                <input class="form-control" id="start_time" name="start_time"
+                                                    data-placeholder="Start" />
 
 
-                                                </select>
+
                                             </div>
                                         </div>
                                         <div class="col-md-2">
                                             <div id="">
-                                                <select class="select2 select2-multiple" multiple="multiple"
-                                                    id="" name="" data-placeholder="End">
+                                                <input class="form-control" id="end_time" name="end_time"
+                                                    data-placeholder="End" />
 
 
-                                                </select>
+
                                             </div>
                                         </div>
                                     </div>
@@ -175,10 +199,12 @@
                                         </div>
                                         <div class="col-md-4">
                                             <div id="greeting">
-                                                <select class="select2 select2-multiple" multiple="multiple"
-                                                    id="greetings" name="greetings"
+                                                <select class="form-control" id="non_working_hours_greetings"
+                                                    name="non_working_hours_greetings"
                                                     data-placeholder="Choose Greetings ...">
-
+                                                    @foreach ($grettings as $item)
+                                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                                    @endforeach
 
                                                 </select>
                                             </div>
@@ -192,10 +218,12 @@
                                         </div>
                                         <div class="col-md-4">
                                             <div id="greeting">
-                                                <select class="select2 select2-multiple" multiple="multiple"
-                                                    id="greetings" name="greetings"
-                                                    data-placeholder="Choose Greetings ...">
-
+                                                <select class="form-control" id="non_working_hours_voicemail"
+                                                    name="non_working_hours_voicemail"
+                                                    data-placeholder="Choose Voicemail ...">
+                                                    @foreach ($voicemails as $item)
+                                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                                    @endforeach
 
                                                 </select>
                                             </div>
@@ -207,8 +235,8 @@
                             <div class="form-group">
                                 <label for="menu" class="required">Do you want call flow for non working days?</label>
                                 <div class="switchery-demo">
-                                    <input id="menu-switch_work_day" type="checkbox" class="js-switch" data-size="small"
-                                        data-color="#00c292" />
+                                    <input id="menu-switch_work_day" name="non_working_days" type="checkbox"
+                                        class="js-switch" data-size="small" data-color="#00c292" value="1"/>
                                 </div>
                             </div>
 
@@ -220,38 +248,38 @@
                                         </div>
                                         <div class="col-md-4">
                                             <span class="form-check form-check-inline selectdays-otbox">
-                                                <input class="form-check-input" type="checkbox" id="inlineCheckbox2"
-                                                    value="option2">
-                                                <label class="form-check-label" for="inlineCheckbox2">Mon</label>
+                                                <input class="form-check-input" name='days[]' type="checkbox" id="inlineCheckbox2"
+                                                    value="Mon">
+                                                <label class="form-check-label"  for="inlineCheckbox2">Mon</label>
                                             </span>
                                             <span class="form-check form-check-inline selectdays-otbox">
-                                                <input class="form-check-input" type="checkbox" id="inlineCheckbox3"
-                                                    value="option3">
-                                                <label class="form-check-label" for="inlineCheckbox3">Tue</label>
+                                                <input class="form-check-input" name='days[]' type="checkbox" id="inlineCheckbox3"
+                                                    value="Tue">
+                                                <label class="form-check-label"  for="inlineCheckbox3">Tue</label>
                                             </span>
                                             <span class="form-check form-check-inline selectdays-otbox">
-                                                <input class="form-check-input" type="checkbox" id="inlineCheckbox2"
-                                                    value="option2">
+                                                <input class="form-check-input" name='days[]' type="checkbox" id="inlineCheckbox2"
+                                                    value="Wed">
                                                 <label class="form-check-label" for="inlineCheckbox2">Wed</label>
                                             </span>
                                             <span class="form-check form-check-inline selectdays-otbox">
-                                                <input class="form-check-input" type="checkbox" id="inlineCheckbox3"
-                                                    value="option3">
+                                                <input class="form-check-input" name='days[]' type="checkbox" id="inlineCheckbox3"
+                                                    value="Tue">
                                                 <label class="form-check-label" for="inlineCheckbox3">Thu</label>
                                             </span>
                                             <span class="form-check form-check-inline selectdays-otbox">
-                                                <input class="form-check-input" type="checkbox" id="inlineCheckbox2"
-                                                    value="option2">
+                                                <input class="form-check-input" name='days[]' type="checkbox" id="inlineCheckbox2"
+                                                    value="Fri">
                                                 <label class="form-check-label" for="inlineCheckbox2">Fri</label>
                                             </span>
                                             <span class="form-check form-check-inline selectdays-otbox">
-                                                <input class="form-check-input" type="checkbox" id="inlineCheckbox3"
-                                                    value="option3">
+                                                <input class="form-check-input" name='days[]' type="checkbox" id="inlineCheckbox3"
+                                                    value="Sat">
                                                 <label class="form-check-label" for="inlineCheckbox3">Sat</label>
                                             </span>
                                             <span class="form-check form-check-inline selectdays-otbox">
-                                                <input class="form-check-input" type="checkbox" id="inlineCheckbox2"
-                                                    value="option2">
+                                                <input class="form-check-input" name='days[]' type="checkbox" id="inlineCheckbox2"
+                                                    value="Sun">
                                                 <label class="form-check-label" for="inlineCheckbox2">Sun</label>
                                             </span>
 
@@ -265,10 +293,12 @@
                                         </div>
                                         <div class="col-md-4">
                                             <div id="greeting">
-                                                <select class="select2 select2-multiple" multiple="multiple"
-                                                    id="greetings" name="greetings"
+                                                <select class="form-control" id="non_working_days_greetings"
+                                                    name="non_working_days_greetings"
                                                     data-placeholder="Choose Greetings ...">
-
+                                                    @foreach ($grettings as $item)
+                                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                                    @endforeach
 
                                                 </select>
                                             </div>
@@ -282,10 +312,12 @@
                                         </div>
                                         <div class="col-md-4">
                                             <div id="greeting">
-                                                <select class="select2 select2-multiple" multiple="multiple"
-                                                    id="greetings" name="greetings"
-                                                    data-placeholder="Choose Greetings ...">
-
+                                                <select class="form-control" id="non_working_days_voicemail"
+                                                    name="non_working_days_voicemail"
+                                                    data-placeholder="Choose Voicemail ...">
+                                                    @foreach ($voicemails as $item)
+                                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                                    @endforeach
 
                                                 </select>
                                             </div>
@@ -321,7 +353,12 @@
     <script src="{{ asset('plugins/bower_components/multiselect/js/jquery.multi-select.js') }}"></script>
     <script src="{{ asset('plugins/bower_components/bootstrap-select/bootstrap-select.min.js') }}"></script>
     <script src="{{ asset('plugins/bower_components/switchery/dist/switchery.min.js') }}"></script>
+    <script src="{{ asset('plugins/bower_components/clockpicker/dist/jquery-clockpicker.min.js') }}"></script>
     <script>
+        $("#start_time, #end_time").clockpicker({
+            align: 'left',
+            donetext: 'Done'
+        });
         // Switchery
         var elems = Array.prototype.slice.call(document.querySelectorAll('.js-switch'));
         $('.js-switch').each(function() {
@@ -355,11 +392,11 @@
     <script>
         $('#save-form').click(function() {
             $.easyAjax({
-                url: '{{ route('admin.calling-group.store') }}',
-                container: '#createCallingGroup',
+                url: '{{ route('admin.call-flow-design.store') }}',
+                container: '#createCallFlowDiagram',
                 type: "POST",
                 redirect: true,
-                data: $('#createCallingGroup').serialize()
+                data: $('#createCallFlowDiagram').serialize()
             })
         });
     </script>
@@ -409,7 +446,50 @@
      })
 </script> --}}
 
+
+
     <script>
+        // deleteBtn = $('.deleteBtn').length;
+        dep_number = $('.department-choose').length;
+        $('.deleteBtn').hide()
+
+        function add_menu_department() {
+            var cloneData = $('.department-choose:first').clone()
+            var selectNumber = 'selectNumber' + dep_number
+            // cloneData.find('#selectNumber').attr("id", selectNumber);
+            cloneData.find('#selectNumber').attr("name", "num[]");
+            // cloneData.find('#selectNumber').attr("name", "num[" + dep_number + "]");
+            // cloneData.find('#selectGretting').attr("name", "voice[" + dep_number + "]");
+            cloneData.find('#selectGretting').attr("name", "voice[]");
+            cloneData.find('#deleteBtn').removeClass("deleteBtn");
+            $('.department-choose').find('#deleteBtn').css("display", "none");
+
+            cloneData.find('#deleteBtn').css("display", "block");
+
+
+            cloneData.insertAfter(".department-choose:last");
+            dep_number = $('.department-choose').length;
+            // deleteBtn = $('.deleteBtn').length;
+            // $('.deleteBtn').length - 1
+
+        }
+
+        $('#addBtn').on('click', function() {
+            add_menu_department()
+        })
+
+        function removeDepartment(e) {
+            e.parent().parent().remove()
+            dep_number = $('.department-choose').length;
+            if (dep_number.length === 2) {} else {
+                $('.department-choose:last').find('#deleteBtn').css("display", "block");
+
+            }
+        }
+    </script>
+
+
+    {{-- <script>
         $(document).ready(function() {
 
             // Denotes total number of rows
@@ -465,5 +545,5 @@
                 rowIdx--;
             });
         });
-    </script>
+    </script> --}}
 @endpush

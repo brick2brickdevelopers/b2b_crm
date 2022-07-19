@@ -354,10 +354,19 @@ Route::group(['middleware' => 'auth'], function () {
 
                 //Call Flow Design
                 Route::resource('call-flow-design', 'CallFlowController');
+                Route::get('/call-flow-design/destroy/{id}', 'CallFlowController@destroy')->name('call-flow-design.destroy');
+
 
                 //Call Record Route
                 Route::resource('call-log-reports', 'CallRecordController');
 
+                //IVR Greetings Route
+                Route::resource('ivr-greetings', 'IvrGreetingsController');
+                Route::get('ivr-greetings/destroy/{id}', 'IvrGreetingsController@destroy')->name('ivr-greetings.destroy');
+
+                //IVR Voicemail Route
+                Route::resource('ivr-voicemail', 'IvrVoicemailController');
+                Route::get('ivr-voicemails/destroy/{id}', 'IvrVoicemailController@destroy')->name('ivr-voicemails.destroy');
 
                 Route::get('designations/quick-create', ['uses' => 'ManageDesignationController@quickCreate'])->name('designations.quick-create');
                 Route::post('designations/quick-store', ['uses' => 'ManageDesignationController@quickStore'])->name('designations.quick-store');
@@ -404,6 +413,7 @@ Route::group(['middleware' => 'auth'], function () {
                 Route::post('leads/updateIndex', ['as' => 'leads.updateIndex', 'uses' => 'LeadController@updateIndex']);
                 Route::post('leads/assign_lead_campaign', ['as' => 'leads.assign_lead_campaign', 'uses' => 'LeadController@assign_lead_campaign']);
                 Route::get('leads/dashboard', 'LeadController@dashboard')->name('leads.dashboard');
+                Route::post('leads/dashboard/search', 'LeadController@leadSearch')->name('leads.dashboard.search');
                 Route::resource('leads', 'LeadController');
 
 

@@ -92,8 +92,8 @@
                             @lang('modules.dashboard.totalLeads')</span></h4>
                 </div>
                 <div class="col-md-4 text-center b-l">
-                    <h4><span class="text-info">{{ $totalClientConverted }}</span> <span
-                            class="font-12 text-muted m-l-5"> @lang('modules.dashboard.totalConvertedClient')</span></h4>
+                    <h4><span class="text-info">{{ $totalClientConverted }}</span> <span class="font-12 text-muted m-l-5">
+                            @lang('modules.dashboard.totalConvertedClient')</span></h4>
                 </div>
                 <div class="col-md-4 text-center b-l">
                     <h4><span class="text-warning">{{ $pendingLeadFollowUps }}</span> <span
@@ -195,7 +195,7 @@
             all_columnx.push('{{ $key + 6 }}')
         @endforeach
         var table;
-        // $('#column_name').selectpicker();
+        $('#column_name').selectpicker();
         var tableColumns = [{
                 data: 'DT_RowIndex',
                 orderable: true,

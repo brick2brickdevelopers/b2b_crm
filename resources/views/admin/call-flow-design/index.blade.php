@@ -36,81 +36,45 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Calling Group Name</th>
-                                <th>Fallback Number</th>
-                                <th>@lang('app.employees')</th>
-                                <th>Is Default</th>
+                                <th>Name</th>
+                                <th>Company Id</th>
+                                <th>Menu</th>
+                                
                                 <th>@lang('app.action')</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {{-- @forelse($groups as $group)
-                                @php
-                                    $employee = json_decode($group->employees);
-                                    // dd(App\EmployeeDetails::whereIn('user_id',$employee)->get());
-                                @endphp
-                                <tr id="group{{ $group->id }}">
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $group->calling_group_name }} <label
-                                            class="label label-success">{{ count(json_decode($group->employees)) }}
-                                            @lang('modules.projects.members')</label></td>
-                                    <td>{{ $group->fallback_number }}</td>
-                                    <td>
-                                        @forelse(App\EmployeeDetails::whereIn('user_id',$employee)->get() as $item)
-                                            <img data-toggle="tooltip"
-                                                data-original-title="{{ ucwords($item->user->name) }}"
-                                                src="{{ $item->user->image_url }}" alt="user" class="img-circle"
-                                                width="25" height="25">
-                                        @empty
-                                            @lang('messages.noRecordFound')
-                                        @endforelse
-                                    </td>
-                                    <td>
-                                        <div class="switchery-demo">
-                                            <input onchange="defaultSwitch({{ $group->id }})" type="checkbox"
-                                                {{ $group->is_default ? 'checked' : '' }} class="js-switch"
-                                                data-size="small" data-color="#00c292" />
-                                        </div>
-                                    </td>
-                                    <td>
-
-                                        <div class="btn-group dropdown m-r-10">
-                                            <button aria-expanded="false" data-toggle="dropdown"
-                                                class="btn btn-default dropdown-toggle waves-effect waves-light"
-                                                type="button"><i class="fa fa-gears "></i></button>
-                                            <ul role="menu" class="dropdown-menu pull-right">
-                                                <li><a href="{{ route('admin.calling-group.edit', [$group->id]) }}"><i
-                                                            class="icon-settings"></i> Edit</a></li>
-                                                <li><a href="{{ route('admin.calling-group.destroy', $group->id) }}"
-                                                        data-group-id="{{ $group->id }}" class="sa-params"><i
-                                                            class="fa fa-times" aria-hidden="true"></i>
-                                                        @lang('app.delete') </a></li>
-
-                                            </ul>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="3" class="text-center">
-                                        <div class="empty-space" style="height: 200px;">
-                                            <div class="empty-space-inner">
-                                                <div class="icon" style="font-size:30px"><i class="icon-layers"></i>
-                                                </div>
-                                                <div class="title m-b-15">
-                                                    <p>Seems like no Calling Group. Create your first Calling Group</p>
-                                                </div>
-                                                <div class="subtitle">
-                                                    <a href="{{ route('admin.calling-group.create') }}"
-                                                        class="btn btn-outline btn-success btn-sm">Add Calling Group
-                                                        <i class="fa fa-plus" aria-hidden="true"></i></a>
-
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforelse --}}
+                           @foreach ($call_flow_diagrams as $key => $call_flow_diagram )
+                            <tr>
+                                <th>{{ $key + 1 }}</th>
+                                <th>{{ $call_flow_diagram->name }}</th>
+                                <th>{{ $call_flow_diagram->company_id }}</th>
+                                <th>
+                                {{$call_flow_diagram->menu=='1' ? "Enable" : "Disabled"}}
+                                </th>
+                                <td class=" text-center">
+                                    <div class="btn-group dropdown m-r-10">
+                                        <button aria-expanded="false" data-toggle="dropdown"
+                                            class="btn btn-default dropdown-toggle waves-effect waves-light"
+                                            type="button"><i class="fa fa-gears "></i></button>
+                                        <ul role="menu" class="dropdown-menu pull-right">
+                                            <li><a href="{{ route('admin.call-flow-design.edit', $call_flow_diagram->id) }}"
+                                                    type="button"><i class="fa fa-pencil"
+                                                        aria-hidden="true"></i>
+                                                    Edit</a></li>
+                                            {{-- <li><a href="{{ route('admin.call-flow-design.show', $call_flow_diagram->id) }}"><i
+                                                        class="fa fa-search" aria-hidden="true"></i>
+                                                    View</a></li> --}}
+                                            <li><a
+                                                    href="{{ route('admin.call-flow-design.destroy', $call_flow_diagram->id) }}"><i
+                                                        class="fa fa-times" aria-hidden="true"></i>
+                                                    Delete</a></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                           @endforeach
+                          
                         </tbody>
                     </table>
                 </div>
