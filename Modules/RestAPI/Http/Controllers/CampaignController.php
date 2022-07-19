@@ -55,11 +55,10 @@ class CampaignController extends ApiBaseController
 
 
     //list of lead assingned to particular user
-
     public function user_lead(Request $request) {
         $compain = Campaign::where('id', $request->campaign_id)->get();
-        $orders = CampaignLead::where('campaign_id', $request->campaign_id)->get();
-        $orders = CampaignLead::where('agent_id', $request->user_id)->get();
+        $orders = CampaignLead::where(['campaign_id' => $request->campaign_id, 'agent_id' => $request->user_id])->get();
+        //$orders = CampaignLead::where('agent_id', $request->user_id)->get();
         $leadId = [];
         foreach($orders as $order) {
                array_push($leadId, $order['lead_id']);
@@ -93,19 +92,16 @@ class CampaignController extends ApiBaseController
         //call disposal api
         public function call_disposal(Request $request) {
             //store the call_purpose and user_id
-            
             $callPurpose  = CallPurpose::create([
                 'company_id' => 1,
                 'purpose' => $request->call_purpose,
                 'from_id' =>  $request->user_id,
             ]);
-
-//leadcallstatus 
-//1 is Available
-//2 is Completed
-//3 is Follow Up
-
-            $callingData  = CampaignLead::create([
+                //leadcallstatus 
+                //1 is Available
+                //2 is Completed
+                //3 is Follow Up
+         $callingData  = CampaignLead::create([
                 'lead_id' =>  $request->lead_id,
                 'campaign_id' => $request->campaign_id,
                 'agent_id' => $request->user_id,
@@ -157,4 +153,8 @@ class CampaignController extends ApiBaseController
 
             ]);
         } 
+
+    public function dashboard() {
+        echo "this is the dashboard api";
+    }
     }
