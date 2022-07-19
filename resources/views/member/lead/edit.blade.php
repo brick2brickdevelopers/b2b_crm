@@ -43,14 +43,14 @@
                             <div class="row">
                                 <div class="col-md-1 ">
                                     <div class="form-group salutation" style="margin-top: 23px">
-                                        <select name="salutation" id="salutation" class="form-control">
+                                    <select name="salutation" id="salutation" class="form-control">
                                             <option value="">@lang('app.select')</option>
-                                            <option value="mr">@lang('app.mr')</option>
-                                            <option value="mrs">@lang('app.mrs')</option>
-                                            <option value="miss">@lang('app.miss')</option>
-                                            <option value="dr">@lang('app.dr')</option>
-                                            <option value="sir">@lang('app.sir')</option>
-                                            <option value="madam">@lang('app.madam')</option>
+                                            <option value="mr" @if( $lead->client_surname == 'mr' ) selected  @endif  >@lang('app.mr')</option>
+                                            <option value="mrs"  @if( $lead->client_surname == 'mrs' ) selected @endif>@lang('app.mrs')</option>
+                                            <option value="miss"  @if( $lead->client_surname == 'miss' ) selected  @endif>@lang('app.miss')</option>
+                                            <option value="dr"  @if( $lead->client_surname == 'dr' ) selected @endif>@lang('app.dr')</option>
+                                            <option value="sir"  @if( $lead->client_surname == 'sir' ) selected  @endif>@lang('app.sir')</option>
+                                            <option value="madam"  @if( $lead->client_surname == 'madam' ) selected @endif>@lang('app.madam')</option>
                                         </select>
                                     </div>
                                 </div>
