@@ -26,7 +26,7 @@ ApiRoute::group(['namespace' => 'Modules\RestAPI\Http\Controllers'], function ()
 
 ApiRoute::group(['namespace' => 'Modules\RestAPI\Http\Controllers', 'middleware' => 'api.auth'], function () {
 
-    ApiRoute::get('dashboard', ['as' => 'api.dashboard', 'uses' => 'DashboardController@dashboard']);
+    // ApiRoute::get('dashboard', ['as' => 'api.dashboard', 'uses' => 'DashboardController@dashboard']);
     ApiRoute::get('dashboard/me', ['as' => 'api.dashboard', 'uses' => 'DashboardController@myDashboard']);
     ApiRoute::get('auth/me', ['as' => 'api.auth.me', 'uses' => 'AuthController@me']);
     ApiRoute::get('/project/me', ['as' => 'project.me', 'uses' => 'ProjectController@me']);
@@ -46,8 +46,13 @@ ApiRoute::group(['namespace' => 'Modules\RestAPI\Http\Controllers', 'middleware'
     ApiRoute::get('user_lead', 'CampaignController@user_lead');
     ApiRoute::post('update_lead_status', 'CampaignController@update_lead_status');
     ApiRoute::post('call_disposal', 'CampaignController@call_disposal');
-
 //ending the compaign route here
+//Updated dashboard api route starting from here
+    ApiRoute::get('dashboard','CampaignController@dashboard');
+
+//updated dashboard api route ending here
+
+
     ApiRoute::resource('project', 'ProjectController');
     ApiRoute::resource('project-category', 'ProjectCategoryController');
     ApiRoute::resource('currency', 'CurrencyController');

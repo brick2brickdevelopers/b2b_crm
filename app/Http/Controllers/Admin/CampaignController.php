@@ -50,18 +50,44 @@ class CampaignController extends AdminBaseController
 
     public function store(Request $request)
     {
-        // dd($request->all());
+        
+        if($request->type !='') {
+            $campType = $request->type;
+        }
+        else {
+            $campType = 'none';
+        }
 
+        if($request->caller_id !='') {
+            $callerId = $request->caller_id;
+        }
+        else {
+            $callerId = '';
+        }
+
+        if($request->call_to_call_gap !='') {
+            $callToGap = $request->call_to_call_gap;
+        }
+        else {
+            $callToGap = '';
+        }
+
+        if($request->break_time !='') {
+            $breakTime = $request->break_time;
+        }
+        else {
+            $breakTime = '';
+        }
 
         $campaign = new Campaign();
-        $campaign->type = $request->type;
+        $campaign->type = $campType;
         $campaign->name = $request->name;
         $campaign->status = $request->status;
-        $campaign->caller_id = $request->caller_id;
+        $campaign->caller_id = $callerId;
         $campaign->start_date = ($request->start_date != '') ? date('Y-m-d', strtotime($request->start_date)) : NULL;
         $campaign->end_date = ($request->end_date != '') ? date('Y-m-d', strtotime($request->end_date)) : NULL;
-        $campaign->call_to_call_gap = $request->call_to_call_gap;
-        $campaign->break_time = $request->break_time;
+        $campaign->call_to_call_gap = $callToGap;
+        $campaign->break_time = $breakTime;
 
 
         if ($campaign->save()) {
