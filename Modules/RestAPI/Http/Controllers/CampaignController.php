@@ -94,21 +94,45 @@ class CampaignController extends ApiBaseController
                 //0 is Available
                 //1 is Completed
                 //2 is Follow Up
+            $leadStatusText = '';
+            if($request->leadcallstatus) {
+                $callStatus = $request->leadcallstatus;
+            } else {
+                $callStatus = 0;
+            }
 
-        $orders = CampaignLead::where(['campaign_id' => $request->campaign_id, 'agent_id' => $request->user_id,'leadcallstatus' => $request->leadcallstatus])->get();
+            if($callStatus == 0) {
+                $leadStatusText = 'Available';
+            }
+            if($callStatus==1)  {
+                $leadStatusText = 'completed';
+            }
+
+            if($callStatus==2) {
+                $leadStatusText = 'folow up';
+            }
+
+        $orders = CampaignLead::where(['campaign_id' => $request->campaign_id, 'agent_id' => $request->user_id,'leadcallstatus' => $callStatus])->get();
         //$orders = CampaignLead::where('agent_id', $request->user_id)->get();
         $leadId = [];
         foreach($orders as $order) {
                array_push($leadId, $order['lead_id']);
         }
         //per page
+
+       
         $perPage = $request->page_size;
         $clientInfo = Lead::whereIn('id', $leadId)->paginate($perPage);
         if(count($clientInfo)>0) {
             $clientInfo = $clientInfo;
+
+            //$clientInfo['leadCallStatus'] =  $leadStatusText;
+           
         } else {
             $clientInfo = [];
         }
+
+        
             return response()->json([
                 'success'  => true,
                 'status'   => 200,
@@ -277,6 +301,7 @@ class CampaignController extends ApiBaseController
         } else {
             $userEvent = [];
         }
+
         return response()->json([
             'success'  => true,
             'status'   => 200,
