@@ -1366,7 +1366,7 @@
         } else if (checkCurrentUrl == "show") {
             $('.filter-section-show').hide();
             $('.data-section').removeClass("col-md-12")
-            $('.data-section').addClass("col-md-9")
+            $('.data-section').addClass("col-md-12")
             $('.filter-section').show();
         }
     </script>

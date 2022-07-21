@@ -76,49 +76,36 @@
     <div class="col-xs-12">
         <div class="white-box">
 
-            @section('filter-section')
-            <div class="row">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th scope="col">Call Status</th>
-                            <th scope="col">Total Calls</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Total Calls:</td>
-                            <td><label class="label label-inverse"><span class="text-white">4</span></label></td>
-                        </tr>
-                        <tr>
-                            <td>Incomming Calls:</td>
-                            <td><label class="label label-inverse"><span class="text-white">4</span></label></td>
-                        </tr>
-                        <tr>
-                            <td>Outgoing Calls:</td>
-                            <td><label class="label label-inverse"><span class="text-white">4</span></label></td>
-                        </tr>
-                        <tr>
-                            <td>Both Answered:</td>
-                            <td><label class="label label-inverse"><span class="text-white">4</span></label></td>
-                        </tr>
-                        <tr>
-                            <td>Agent UnAnswered:</td>
-                            <td><label class="label label-inverse"><span class="text-white">4</span></label></td>
-                        </tr>
-                        <tr>
-                            <td>Cust. Ans - Agent UnAns:</td>
-                            <td><label class="label label-inverse"><span class="text-white">4</span></label></td>
-                        </tr>
-                        <tr>
-                            <td>Cust. UnAns - Agent Ans:</td>
-                            <td><label class="label label-inverse"><span class="text-white">4</span></label></td>
-                        </tr>
-                    </tbody>
-                </table>
-
+            <div class="col-xs-12">
+                <div class="row dashboard-stats">
+                    <div class="col-md-12 m-b-30">
+                        <div class="white-box">
+                            <div class="col-md-2 text-center">
+                                <h4><span class="text-dark" id="totalWorkingDays">4</span> <span class="font-12 text-muted m-l-5"> Total Calls</span></h4>
+                            </div>
+                            <div class="col-md-2 text-center">
+                                <h4><span class="text-dark" id="totalWorkingDays">4</span> <span class="font-12 text-muted m-l-5"> Incomming Calls</span></h4>
+                            </div>
+                            <div class="col-md-2 b-l text-center">
+                                <h4><span class="text-success" id="daysPresent">4</span> <span class="font-12 text-muted m-l-5"> Outgoing Calls</span></h4>
+                            </div>
+                            <div class="col-md-2 b-l text-center">
+                                <h4><span class="text-danger" id="daysLate">4</span> <span class="font-12 text-muted m-l-5"> Both Answered</span></h4>
+                            </div>
+                            <div class="col-md-2 b-l text-center">
+                                <h4><span class="text-warning" id="halfDays">4</span> <span class="font-12 text-muted m-l-5"> Agent UnAnswered:</span></h4>
+                            </div>
+                            <div class="col-md-2 b-l text-center">
+                                <h4><span class="text-info" id="absentDays">4</span> <span class="font-12 text-muted m-l-5"> Cust. Ans - Agent UnAns</span></h4>
+                            </div>
+                            {{-- <div class="col-md-2 b-l text-center">
+                                <h4><span class="text-primary" id="holidayDays">4</span> <span class="font-12 text-muted m-l-5"> Cust. UnAns - Agent Ans</span></h4>
+                            </div> --}}
+                        </div>
+                    </div>
+    
+                </div>
             </div>
-            @endsection
             {{-- Start Filter --}}
 
             <div class="row m-3">

@@ -6,12 +6,16 @@
         <div class="col-lg-6 col-md-4 col-sm-4 col-xs-12 bg-title-left">
             <h4 class="page-title"><i class="{{ $pageIcon }}"></i> {{ __($pageTitle) }}</h4>
         </div>
+       
         <!-- /.page title -->
         <!-- .breadcrumb -->
         <div class="col-lg-6 col-sm-8 col-md-8 col-xs-12 text-right bg-title-right">
             @if ($user->cans('add_lead'))
                 <a href="{{ route('member.leads.create') }}" class="btn btn-outline btn-success btn-sm">@lang('modules.lead.addNewLead')
                     <i class="fa fa-plus" aria-hidden="true"></i></a>
+
+                    <a href="{{ route('member.leads.dashboard') }}" class="btn btn-outline btn-primary btn-sm">Dashboard
+                        <i class="fa fa-plus" aria-hidden="true"></i></a>
             @endif
             <ol class="breadcrumb">
                 <li><a href="{{ route('member.dashboard') }}">@lang('app.menu.home')</a></li>
@@ -140,7 +144,6 @@
                                     <th>{{ $item->label }}</th>
                                 @endforeach
                                 <th>@lang('app.action')</th>
-
                             </tr>
                         </thead>
                     </table>

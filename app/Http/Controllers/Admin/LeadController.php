@@ -598,9 +598,7 @@ class LeadController extends AdminBaseController
                 ->where('campaigns.id', $request->check_action)
                 ->where('users.id', $request->assign_to_campaign)
                 ->get();
-
-         
-      
+              //  dd($this->leads);
         $view = view('admin.lead.dashboard_data', $this->data)->render();
         return Reply::dataOnly(['status' => 'success', 'data' => $view]);
     }

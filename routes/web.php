@@ -1168,6 +1168,8 @@ Route::group(['middleware' => 'auth'], function () {
             Route::get('leads/follow-up-sort', ['uses' => 'MemberLeadController@followUpSort'])->name('leads.follow-up-sort');
             Route::resource('leads', 'MemberLeadController');
 
+            Route::get('lead/dasboard',['uses' => 'MemberLeadController@dashboard'])->name('leads.dashboard');
+            
             // Lead Files
             Route::get('lead-files/download/{id}', ['uses' => 'LeadFilesController@download'])->name('lead-files.download');
             Route::get('lead-files/thumbnail', ['uses' => 'LeadFilesController@thumbnailShow'])->name('lead-files.thumbnail');

@@ -19,7 +19,7 @@ class CheckAfterDate implements Rule
         $this->format       = $format;
         $this->paraValues   = $paraValues;
         $this->message      = $message;
-        $this->seconValue      = $seconValue;
+        $this->seconValue   = $seconValue;
     }
 
     /**

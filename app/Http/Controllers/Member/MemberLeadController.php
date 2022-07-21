@@ -23,6 +23,8 @@ use App\ManualLoggedCall;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\CampaignLead;
+
 
 class MemberLeadController extends MemberBaseController
 {
@@ -755,5 +757,13 @@ class MemberLeadController extends MemberBaseController
         $view = view('member.lead.followup.task-list-ajax', $this->data)->render();
 
         return Reply::successWithData(__('messages.followUpFilter'), ['html' => $view]);
+    }
+
+    public function dashboard(Request $request)
+    {
+        $id = Auth::user()->id;
+        $this->leads = CampaignLead::where('agent_id','=',$id)->get();
+
+        return view('member.lead.dashboard', $this->data);
     }
 }
