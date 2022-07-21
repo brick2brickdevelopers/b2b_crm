@@ -31,8 +31,24 @@ use Modules\RestAPI\Entities\Invoice;
 use Modules\RestAPI\Entities\Project;
 use Modules\RestAPI\Entities\Task;
 
+
+use App\Event;
+use App\EventAttendee;
+use App\GoogleAccount;
+use App\Http\Requests\Events\StoreEvent;
+use App\Http\Requests\Events\UpdateEvent;
+use App\Notifications\EventInvite;
+use App\Services\Google;
+use App\User;
+use App\EventCategory;
+use App\EventType;
+
+
+
 use Yajra\DataTables\DataTables;
 use Yajra\DataTables\Html\Builder;
+
+
 
 
 
@@ -111,7 +127,7 @@ class CampaignController extends ApiBaseController
         }
 
         //call disposal api
-        public function call_disposal(Request $request) {
+        public function call_disposal(Request $request ) {
             //store the call_purpose and user_id
             $callPurpose  = CallPurpose::create([
                 'company_id' => 1,
@@ -176,28 +192,42 @@ class CampaignController extends ApiBaseController
         } 
 
 
-        //dashboard Api detail
-    public function dashboard() {
-
+    public function employee_dashboard(Request $request) {
+        
         $data = [];
-        //client count 
-        $totalClient    =  ClientDetails::count();
-        //employee Count
-        $totalEmployee  =  EmployeeDetails::count();
-        //total campaign 
-        $totalCampagin  = Campaign::count();   
-        //total Leads
-        $totalLeads     = Lead::count();
+        $contactBySource = [];
+        $totalLeads             = CampaignLead::where('agent_id', $request->user_id)->count();
+        $availableForCallLeads  = CampaignLead::where(['agent_id' => $request->user_id,'leadcallstatus' => 0])->count();
+        $completedLeads         = CampaignLead::where(['agent_id' => $request->user_id,'leadcallstatus' => 1])->count();
+        $followUpLeads          = CampaignLead::where(['agent_id' => $request->user_id,'leadcallstatus' => 2])->count();
+        // $userTask               = Task::where('user_id', $request->user_id)->count();
+
+        //contact by source
+        //1 email
+        //2 google
+        //3 facebook
+        //4 friend
+        //5 direct visit
+        //6 tv ad
+        //38 other
+
+        $otherLeadCount         = Lead::where(['agent_id' => $request->user_id,'source_id' => 38])->count();
+        $emailLeadCount         = Lead::where(['agent_id' => $request->user_id,'source_id' => 1])->count();
+        $googleLeadCount        = Lead::where(['agent_id' => $request->user_id,'source_id' => 2])->count();
+        $facebookLeadCount      = Lead::where(['agent_id' => $request->user_id,'source_id' => 3])->count();
+        $friendLeadCount        = Lead::where(['agent_id' => $request->user_id,'source_id' => 4])->count();
+        $directVisitLeadCount   = Lead::where(['agent_id' => $request->user_id,'source_id' => 5])->count();
+        $tvAdLeadCount          = Lead::where(['agent_id' => $request->user_id,'source_id' => 6])->count();
+
 
         $taskBoardColumn = TaskboardColumn::all();
-
         $completedTaskColumn = $taskBoardColumn->filter(function ($value, $key) {
             return $value->slug == 'completed';
         })->first();
 
         $totalProjects = Project::select('projects.id')
             ->join('project_members', 'project_members.project_id', '=', 'projects.id')
-            ->where('project_members.user_id', '=', api_user()->id)
+            ->where('project_members.user_id', '=', $request->user_id)
             ->groupBy('projects.id')
             ->get()
             ->count();
@@ -205,34 +235,58 @@ class CampaignController extends ApiBaseController
         $pendingTasks = Task::select('tasks.id')
             ->where('board_column_id', '!=', $completedTaskColumn->id)
             ->join('task_users', 'task_users.task_id', '=', 'tasks.id')
-            ->where('task_users.user_id', '=', api_user()->id)
+            ->where('task_users.user_id', '=', $request->user_id)
             ->groupBy('tasks.id')
             ->get()
             ->count();
 
 
-        $unpaidInvoices = Invoice::select('invoices.id')
-            ->where('status', "unpaid")
-            ->get()
-            ->count();
-
-
-        $dashboardData = array(
-            'totalClient'    =>  $totalClient,
-            'totalEmployee'  =>  $totalEmployee,
-            'totalCampaign'  =>  $totalCampagin,
-            'unpaidInvoices' =>  $unpaidInvoices,
-            'totalLeads'     =>  $totalLeads,
-            'totalProjects'  =>  $totalProjects,
-            'pendingTasks'   =>  $pendingTasks
+        $employeeDashboardData = array(
+            'totalLeads'            =>  $totalLeads,
+            'availableForCallLeads' => $availableForCallLeads,
+            'completedLeads'        =>  $completedLeads,
+            'followUpLeads'         => $followUpLeads,
+            'totalProjects'         =>  $totalProjects,
+            'pendingTasks'          =>  $pendingTasks
         );
-        array_push($data,$dashboardData);
+
+        //contact by source 
+        $sourceData = array(
+            'others'      =>  $otherLeadCount,
+            'email'       =>  $emailLeadCount,
+            'google'      =>  $googleLeadCount,
+            'facebook'    =>  $facebookLeadCount,
+            'friend'      =>  $friendLeadCount,
+            'directVisit' =>  $directVisitLeadCount,
+            'tvAd'        =>  $tvAdLeadCount
+        );
+        array_push($data, $employeeDashboardData);
+        array_push($contactBySource, $sourceData);
+
+
+//event functionality
+        $userEvent = Event::join('event_attendees', 'event_attendees.event_id', '=', 'events.id')
+        ->where('event_attendees.user_id', $request->user_id)
+        ->select('events.*')
+        ->limit(4)
+        ->get();
+
+
+        if(count($userEvent)>0) {
+            $userEvent = $userEvent;
+        } else {
+            $userEvent = [];
+        }
         return response()->json([
             'success'  => true,
             'status'   => 200,
             'code'     => "success",
-            'message'  => "dashboard Api has been fetched successfully",
-            'data'=>  $data
+            'message'  => "Employee dashboard has been fetched successfully",
+            'data'     =>  $data,
+            'contactedBySource'   =>  $sourceData,
+            'upcomingEvent' => $userEvent
         ]);   
+
     }
+  
     }
