@@ -764,6 +764,23 @@ class MemberLeadController extends MemberBaseController
         $id = Auth::user()->id;
         $this->leads = CampaignLead::where('agent_id','=',$id)->get();
 
+        $this->callPurposes =CallPurpose::all();
+
+        $this->totalAvailable = CampaignLead::
+        where('campaign_leads.status',1)
+        ->where('agent_id','=',$id)
+        ->count();
+
+        $this->totalCompleted = CampaignLead::
+                where('campaign_leads.status',2)
+                ->where('agent_id','=',$id)
+                ->count();
+
+        $this->totalFollow = CampaignLead::
+            where('campaign_leads.status',3)
+            ->where('agent_id','=',$id)
+            ->count();
+
         return view('member.lead.dashboard', $this->data);
     }
 }
