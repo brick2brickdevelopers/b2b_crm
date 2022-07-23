@@ -22,7 +22,7 @@ use App\AttendanceSetting;
 use App\Holiday;
 use App\Setting;
 use App\TaskboardColumn;
-
+use App\TaskUser;
 use Froiden\RestAPI\ApiResponse;
 use Froiden\RestAPI\Exceptions\ApiException;
 use Illuminate\Support\Facades\DB;
@@ -256,22 +256,55 @@ class CampaignController extends ApiBaseController
             ->get()
             ->count();
 
-        $pendingTasks = Task::select('tasks.id')
-            ->where('board_column_id', '!=', $completedTaskColumn->id)
+
+            $userTask = TaskUser::where('user_id', $request->user_id)->limit(4)->get();
+            $taskIds = [];
+foreach($userTask as $task) {
+       array_push($taskIds, $task['task_id']);
+}
+//per page
+$empTask = Task::whereIn('id', $taskIds)->get();
+$task_data = [];
+if(count($empTask)>0) {
+    $empTask = $empTask;
+
+foreach($empTask as $task) {
+
+    $newData = array(
+        'id'          => $task['id'],
+        'heading'     => $task['heading'],
+        'description' => $task['description'],
+        'start_date'  => $task['start_date'],
+        'due_date'    => $task['due_date'],
+        'priority'    => $task['priority'],
+        'created_at'  => $task['created_at'],
+        'updated_at'  => $task['updated_at'],
+    );
+    array_push($task_data, $newData);
+
+}
+
+
+    //$clientInfo['leadCallStatus'] =  $leadStatusText;
+   
+} else {
+    $empTask = [];
+}
+
+
+        $pendingTasks = Task::select('tasks.id','tasks.heading','tasks.description','tasks.start_date','tasks.due_date')
             ->join('task_users', 'task_users.task_id', '=', 'tasks.id')
             ->where('task_users.user_id', '=', $request->user_id)
-            ->groupBy('tasks.id')
-            ->get()
-            ->count();
+            ->get();
 
-
+        
         $employeeDashboardData = array(
             'totalLeads'            =>  $totalLeads,
             'availableForCallLeads' => $availableForCallLeads,
             'completedLeads'        =>  $completedLeads,
             'followUpLeads'         => $followUpLeads,
             'totalProjects'         =>  $totalProjects,
-            'pendingTasks'          =>  $pendingTasks
+           
         );
 
         //contact by source 
@@ -307,9 +340,10 @@ class CampaignController extends ApiBaseController
             'status'   => 200,
             'code'     => "success",
             'message'  => "Employee dashboard has been fetched successfully",
-            'data'     =>  $data,
+            'upcomingEvent' => $userEvent,
+            'taskList' =>  $task_data,
             'contactedBySource'   =>  $sourceData,
-            'upcomingEvent' => $userEvent
+            'data'     =>  $data,
         ]);   
 
     }
