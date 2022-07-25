@@ -319,7 +319,9 @@
                                     </div>
                                 </div>     
                                 @endforeach
-                            
+                                <div class="table-responsive">
+                                    {!! $dataTable->table(['class' => 'table table-bordered table-hover toggle-circle default footable-loaded footable']) !!}
+                                </div>
                         </div>
                     </div>
                 </div>
@@ -472,6 +474,9 @@
 <script type="text/javascript" src="{{ asset('plugins/daterange-picker/daterangepicker.js') }}"></script>
 <script src="https://voc.tdas.in/plugins/bower_components/custom-select/custom-select.min.js"></script>
 
+{!! $dataTable->scripts() !!}
+
+
 <script>
     $(function() {
         var dateformat = '{{ $global->moment_format }}';
@@ -616,4 +621,5 @@
    
 
 </script>
+
 @endpush

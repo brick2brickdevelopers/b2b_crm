@@ -199,9 +199,14 @@ class CampaignController extends AdminBaseController
     public function callPurpose(Request $request)
     {
 
+     
         $this->callPurpose = CallPurpose::all();
-        // dd($this->call_purposes);
+       
         if ($request->method() == 'POST') {
+            $request->validate([
+                'purpose' => 'required|unique:call_purposes,purpose,' . company()->id
+            ]);
+            
             $call_purposes = CallPurpose::findOrNew($request->id);
             $call_purposes->purpose = $request->purpose;
             if ($call_purposes->save()) {

@@ -72,7 +72,8 @@
                                                     +{{ $item->phonecode . ' (' . $item->iso . ')' }}</option>
                                             @endforeach
                                         </select>
-                                        <input type="tel" name="mobile" value="{{ $lead->mobile }}" id="mobile" class="form-control"
+                                        
+                                        <input type="tel" name="mobile" value="{{ substr($lead->mobile, 3)  }}" id="mobile" class="form-control"
                                             style="border-top-left-radius: 0px;border-bottom-left-radius: 0px;">
                                     </div>
                                 </div>

@@ -8,6 +8,7 @@ use App\Campaign;
 use App\CampaignAgent;
 use App\CampaignLead;
 use App\DataTables\Admin\LeadsDataTable;
+use App\DataTables\Admin\LeadDashboardDataTable;
 use App\Helper\Reply;
 use App\Http\Requests\CommonRequest;
 use App\Http\Requests\FollowUp\UpdateFollowUpRequest;
@@ -90,8 +91,11 @@ class LeadController extends AdminBaseController
         foreach ($leads as $lead) {
 
             $campaign_agent = CampaignAgent::where('campaign_id', $campaign->id)->inRandomOrder()->first();
+
             $lx = Lead::find($lead->id);
-            $lx->agent_id = $campaign_agent->cAgent->id;
+      
+           $lx->agent_id = $campaign_agent->cAgent->id;
+          
             $lx->save();
             $check = CampaignLead::where('campaign_id', $campaign->id)->where('lead_id', $lead->id)->exists();
             if (!$check) {
@@ -579,7 +583,7 @@ class LeadController extends AdminBaseController
     }
 
     //Leads Dasboard
-    public function dashboard()
+    public function dashboard(LeadDashboardDataTable $dataTable)
     {
 
         $this->campaigns = Campaign::get();
@@ -598,7 +602,9 @@ class LeadController extends AdminBaseController
         $this->totalFollow = CampaignLead::
                             where('campaign_leads.status',3)
                             ->count();
-        return view('admin.lead.dashboard', $this->data);
+        // return view('admin.lead.dashboard', $this->data);
+        return $dataTable->render('admin.lead.dashboard', $this->data);
+
     }
 
     public function leadSearch(Request $request)
