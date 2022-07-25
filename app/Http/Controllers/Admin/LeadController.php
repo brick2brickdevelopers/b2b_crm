@@ -712,10 +712,11 @@ class LeadController extends AdminBaseController
     
     public function completed(Request $request)
     {
+        
         $this->leads = CampaignLead::select('campaign_leads.*','campaigns.id as capmaign_id')
         ->join('campaigns', 'campaigns.id', '=', 'campaign_leads.campaign_id')
         ->join('users', 'users.id', '=', 'campaign_leads.agent_id')
-        ->where('campaign_leads.status', 1)
+        ->where('campaign_leads.status', $request->completed)
         ->get();
 
         $this->totalAvailable = CampaignLead::
@@ -742,7 +743,7 @@ class LeadController extends AdminBaseController
         $this->leads = CampaignLead::select('campaign_leads.*','campaigns.id as capmaign_id')
         ->join('campaigns', 'campaigns.id', '=', 'campaign_leads.campaign_id')
         ->join('users', 'users.id', '=', 'campaign_leads.agent_id')
-        ->where('campaign_leads.status', 3)
+        ->where('campaign_leads.status', $request->follow)
         ->get();
 
         $this->totalAvailable = CampaignLead::

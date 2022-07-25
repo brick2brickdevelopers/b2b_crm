@@ -767,7 +767,7 @@ class MemberLeadController extends MemberBaseController
         $this->callPurposes =CallPurpose::all();
 
         $this->totalAvailable = CampaignLead::
-        where('campaign_leads.status',1)
+        where('campaign_leads.status',0)
         ->where('agent_id','=',$id)
         ->count();
 
@@ -777,7 +777,7 @@ class MemberLeadController extends MemberBaseController
                 ->count();
 
         $this->totalFollow = CampaignLead::
-            where('campaign_leads.status',3)
+            where('campaign_leads.status',2)
             ->where('agent_id','=',$id)
             ->count();
 

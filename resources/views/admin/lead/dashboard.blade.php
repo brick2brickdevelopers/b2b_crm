@@ -146,10 +146,7 @@
                     <div class="col-xs-12"  id="search-data"></div>
                 </div>
 
-                <div class="row">
-                    <div class="col-xs-12"  id="available-data"></div>
-                </div>
-                
+
                 <div class="row">
                     <div class="main-search" id="main-search">
                         <div class="col-md-9" style="background-color: #f6f7f9; margin-top:10px; border-radius:10px">
@@ -167,7 +164,7 @@
                                                         <div class="simplebar-content" style="padding: 0px;">
                                                             <ul class="nav nav-tabs nav-justified mb-3">
                                                                 <li class="nav-item active">
-                                                                    <a href="#available" id="available-tab"
+                                                                    <a href="" id="available-tab"
                                                                         data-toggle="tab" aria-expanded="false"
                                                                         class="nav-link ">
                                                                         <i
@@ -177,7 +174,7 @@
                                                                     </a>
                                                                 </li>
                                                                 <li class="nav-item">
-                                                                    <a href="#completed_leads" id="leads-tab"
+                                                                    <a href="" id="leads-tab"
                                                                         data-toggle="tab" aria-expanded="true"
                                                                         class="nav-link">
                                                                         <i
@@ -190,7 +187,7 @@
                                                                     </a>
                                                                 </li>
                                                                 <li class="nav-item">
-                                                                    <a href="#follow_up_leads" id="close-task"
+                                                                    <a href="" id="close-task"
                                                                         data-toggle="tab" aria-expanded="true"
                                                                         class="nav-link">
                                                                         <i
@@ -209,8 +206,17 @@
                                                                     <div class="table-responsive">
                                                                         <div id="avilable-server-datatable_wrapper"
                                                                             class="dataTables_wrapper dt-bootstrap4 no-footer">
-                                                                            <div class="row">
-                                                                                <div class="col-sm-12">
+                                                                            <div class="row" >
+                                                                                <div class="col-sm-12" id="available-data">
+
+                                                                                </div>
+                                                                                <div class="col-sm-12" id="completed-data">
+
+                                                                                </div>
+                                                                                <div class="col-sm-12" id="follow-data">
+
+                                                                                </div>
+                                                                                <div class="col-sm-12" id="statusType">
                                                                                     <table class="table tabel-bordered" id="table_id">
                                                                                         <thead class="thead-light">
                                                                                             <tr role="row">
@@ -596,6 +602,8 @@
      $('#reset-filters').click(function () {
        showTable();
        $('#main-search').hide();
+     
+       
     });
 
     $(".select2").select2({
@@ -649,8 +657,11 @@ $(document).ready( function () {
 <script type="text/javascript">
     
     $('#available-tab').click(function () {
-      showTable2();
-      $('#main-search').hide();
+        showAvailable();
+      $('#statusType').hide();
+      $('#follow-data').hide();
+      $('#completed-data').hide();
+
    });
 
    $(".select2").select2({
@@ -659,7 +670,7 @@ $(document).ready( function () {
        }
    });
 
-   function showTable2() {
+   function showAvailable() {
 
        var available = 0;
      
@@ -685,16 +696,19 @@ $(document).ready( function () {
 
    }
 
-   showTable2();
+   showAvailable();
   
 
 </script>
 
 <script type="text/javascript">
     
-    $('#completed-tab').click(function () {
-      showTable3();
-      $('#main-search').hide();
+    $('#leads-tab').click(function () {
+      showCompleted();
+      $('#statusType').hide();
+      $('#available-data').hide();
+      $('#follow-data').hide();
+
    });
 
    $(".select2").select2({
@@ -703,7 +717,7 @@ $(document).ready( function () {
        }
    });
 
-   function showTable3() {
+   function showCompleted() {
 
        var completed = 1;
      
@@ -729,7 +743,55 @@ $(document).ready( function () {
 
    }
 
-   showTable3();
+   showCompleted();
+  
+
+</script>
+
+<script type="text/javascript">
+    
+    $('#close-task').click(function () {
+      showFollow();
+      $('#statusType').hide();
+      $('#available-data').hide();
+      $('#completed-data').hide();
+      
+
+   });
+
+   $(".select2").select2({
+       formatNoMatches: function () {
+           return "{{ __('messages.noRecordFound') }}";
+       }
+   });
+
+   function showFollow() {
+
+       var follow = 2;
+     
+     
+       //refresh counts
+       var url = '{!!  route('admin.leads.dashboard.follow') !!}';
+
+       var token = "{{ csrf_token() }}";
+
+       $.easyAjax({
+           type: 'POST',
+           data: {
+               '_token': token,
+               follow : follow,
+               
+           },
+           url: url,
+           success: function (response) {
+              $('#follow-data').html(response.data);
+             
+           }
+       });
+
+   }
+
+   showFollow();
   
 
 </script>
