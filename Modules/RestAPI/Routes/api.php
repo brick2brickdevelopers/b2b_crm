@@ -50,6 +50,7 @@ ApiRoute::group(['namespace' => 'Modules\RestAPI\Http\Controllers', 'middleware'
 //Updated dashboard api route starting from here
     ApiRoute::get('dashboard','CampaignController@dashboard');
     ApiRoute::get('employee_dashboard','CampaignController@employee_dashboard');
+    ApiRoute::get('test','CampaignController@test');
 
 //updated dashboard api route ending here
 
