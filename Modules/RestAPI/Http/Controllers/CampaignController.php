@@ -79,7 +79,7 @@ public function test() {
         
         $perPage = $request->page_size;
 
-        $compain = Campaign::paginate($perPage);
+        $compain = Campaign::orderBy('id', 'desc')->paginate($perPage);
 
         if(count($compain)>0) {
             $$compain = $compain;
@@ -102,6 +102,8 @@ public function test() {
         //get the user id from the token
         $user    = auth('api')->user();
         $userId  = $user->id;
+
+     
         $compain = Campaign::where('id', $request->campaign_id)->get();
                 //leadcallstatus 
                 //0 is Available
@@ -125,6 +127,7 @@ public function test() {
                 $leadStatusText = 'folow up';
             }
 
+
         $orders = CampaignLead::where(['campaign_id' => $request->campaign_id, 'agent_id' => $userId,'leadcallstatus' => $callStatus])->get();
         //$orders = CampaignLead::where('agent_id', $request->user_id)->get();
         $leadId = [];
@@ -135,9 +138,18 @@ public function test() {
 
        
         $perPage = $request->page_size;
+    
         $clientInfo = Lead::whereIn('id', $leadId)->paginate($perPage);
+        $abc = [];
         if(count($clientInfo)>0) {
             $clientInfo = $clientInfo;
+
+
+        foreach($clientInfo as $cli) {
+            //assign lead call status to the lead
+                $cli['leadCallStatus'] = $leadStatusText;
+               // array_push($abc,$cli);
+        }
 
             //$clientInfo['leadCallStatus'] =  $leadStatusText;
            
@@ -145,7 +157,6 @@ public function test() {
             $clientInfo = [];
         }
 
-        
             return response()->json([
                 'success'  => true,
                 'status'   => 200,
@@ -155,6 +166,8 @@ public function test() {
                 'lead'=> $clientInfo
             ]);
         }
+
+        
         //update the particular lead status based on lead id , user id and compaign_id
         public function update_lead_status(Request $request) {
             $user    = auth('api')->user();
@@ -278,18 +291,32 @@ public function test() {
             ->count();
 
 
-            $userTask = TaskUser::where('user_id', $userId)->limit(4)->get();
+            $userTask = TaskUser::where('user_id', $userId)
+            ->limit(4)->get();
             $taskIds = [];
 foreach($userTask as $task) {
        array_push($taskIds, $task['task_id']);
 }
 //per page
-$empTask = Task::whereIn('id', $taskIds)->get();
+$empTask = Task::orderBy('id', 'desc')->whereIn('id', $taskIds)->get();
+
 $task_data = [];
 if(count($empTask)>0) {
     $empTask = $empTask;
 
+
+   // print_r($empTask);exit();
+
 foreach($empTask as $task) {
+
+    $createdByuser = User::find($task['created_by']);
+
+  $createdBy = array(
+    'user_id' => $createdByuser->id,
+    'name' => $createdByuser->name,
+    'email' => $createdByuser->email
+  );
+    
 
     $newData = array(
         'id'          => $task['id'],
@@ -298,14 +325,14 @@ foreach($empTask as $task) {
         'start_date'  => $task['start_date'],
         'due_date'    => $task['due_date'],
         'priority'    => $task['priority'],
+        'status'      => $task['status'],
         'created_at'  => $task['created_at'],
         'updated_at'  => $task['updated_at'],
+        'created_by'  => $createdBy 
     );
     array_push($task_data, $newData);
 
 }
-
-
     //$clientInfo['leadCallStatus'] =  $leadStatusText;
    
 } else {
@@ -346,10 +373,10 @@ foreach($empTask as $task) {
         $userEvent = Event::join('event_attendees', 'event_attendees.event_id', '=', 'events.id')
         ->where('event_attendees.user_id', $userId)
         ->select('events.*')
+        ->orderBy('id', 'desc')
         ->limit(4)
         ->get();
-
-
+        
         if(count($userEvent)>0) {
             $userEvent = $userEvent;
         } else {
