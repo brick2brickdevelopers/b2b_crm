@@ -20,6 +20,18 @@
 @endsection
 
 @push('head-script')
+<style>
+.dataTables_wrapper 
+.dataTables_paginate 
+.paginate_button {
+    padding:0px !important;
+}
+
+</style>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css">
+  
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script>
+
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.13/css/dataTables.bootstrap.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.bootstrap.min.css">
 <link rel="stylesheet" href="//cdn.datatables.net/buttons/1.2.2/css/buttons.dataTables.min.css">
@@ -133,6 +145,10 @@
                 <div class="row">
                     <div class="col-xs-12"  id="search-data"></div>
                 </div>
+
+                <div class="row">
+                    <div class="col-xs-12"  id="available-data"></div>
+                </div>
                 
                 <div class="row">
                     <div class="main-search" id="main-search">
@@ -195,7 +211,7 @@
                                                                             class="dataTables_wrapper dt-bootstrap4 no-footer">
                                                                             <div class="row">
                                                                                 <div class="col-sm-12">
-                                                                                    <table class="table tabel-bordered">
+                                                                                    <table class="table tabel-bordered" id="table_id">
                                                                                         <thead class="thead-light">
                                                                                             <tr role="row">
                                                                                                 <th>
@@ -204,10 +220,10 @@
                                                                                                     Name</th>
                                                                                                 <th>
                                                                                                     Phone</th>
-                                                                                                <th>
+                                                                                                {{-- <th>
                                                                                                     Campaign Status</th>
                                                                                                 <th>
-                                                                                                    Lead Status</th>
+                                                                                                    Lead Status</th> --}}
                                                                                                 <th>
                                                                                                     Action</th>
                                                                                             </tr>
@@ -215,17 +231,18 @@
                                                                                         <tbody>
                                                                                             @if (!empty($leads))
                                                                                             @foreach ($leads as $lead)
+                                                                                            
                                                                                             <tr>
                                                                                                 <td>{{ $lead->id}}</td>
                                                                                                 <td>{{
-                                                                                                    $lead->lead->company_name
+                                                                                                    $lead->lead->client_name
                                                                                                     }}
                                                                                                 </td>
                                                                                                 <td>{{
                                                                                                     $lead->lead->mobile}}
                                                                                                 </td>
-                                                                                                <td>
-                                                                                                    <select
+                                                                                                {{-- <td>
+                                                                                                    {{<select
                                                                                                         class="form-control">
                                                                                                         <option>Available
                                                                                                         </option>
@@ -233,7 +250,7 @@
                                                                                                         </option>
                                                                                                         <option>Follow
                                                                                                         </option>
-                                                                                                    </select>
+                                                                                                    </select>}}
                                                                                                 </td>
                                                                                                 <td>
     
@@ -252,7 +269,7 @@
                                                                                                         </option>
                                                                                                     </select>
     
-                                                                                                </td>
+                                                                                                </td> --}}
                                                                                                 <td><a class="mr-1"
                                                                                                         style="margin-right: 5px"
                                                                                                         href="javascript:void(0);"
@@ -319,9 +336,9 @@
                                     </div>
                                 </div>     
                                 @endforeach
-                                <div class="table-responsive">
+                                {{-- <div class="table-responsive">
                                     {!! $dataTable->table(['class' => 'table table-bordered table-hover toggle-circle default footable-loaded footable']) !!}
-                                </div>
+                                </div> --}}
                         </div>
                     </div>
                 </div>
@@ -621,5 +638,101 @@
    
 
 </script>
+
+  <script>
+
+$(document).ready( function () {
+    $('#table_id').DataTable();
+} );
+  </script>
+
+<script type="text/javascript">
+    
+    $('#available-tab').click(function () {
+      showTable2();
+      $('#main-search').hide();
+   });
+
+   $(".select2").select2({
+       formatNoMatches: function () {
+           return "{{ __('messages.noRecordFound') }}";
+       }
+   });
+
+   function showTable2() {
+
+       var available = 0;
+     
+     
+       //refresh counts
+       var url = '{!!  route('admin.leads.dashboard.available') !!}';
+
+       var token = "{{ csrf_token() }}";
+
+       $.easyAjax({
+           type: 'POST',
+           data: {
+               '_token': token,
+               available : available,
+               
+           },
+           url: url,
+           success: function (response) {
+              $('#available-data').html(response.data);
+             
+           }
+       });
+
+   }
+
+   showTable2();
+  
+
+</script>
+
+<script type="text/javascript">
+    
+    $('#completed-tab').click(function () {
+      showTable3();
+      $('#main-search').hide();
+   });
+
+   $(".select2").select2({
+       formatNoMatches: function () {
+           return "{{ __('messages.noRecordFound') }}";
+       }
+   });
+
+   function showTable3() {
+
+       var completed = 1;
+     
+     
+       //refresh counts
+       var url = '{!!  route('admin.leads.dashboard.completed') !!}';
+
+       var token = "{{ csrf_token() }}";
+
+       $.easyAjax({
+           type: 'POST',
+           data: {
+               '_token': token,
+               completed : completed,
+               
+           },
+           url: url,
+           success: function (response) {
+              $('#completed-data').html(response.data);
+             
+           }
+       });
+
+   }
+
+   showTable3();
+  
+
+</script>
+
 
 @endpush

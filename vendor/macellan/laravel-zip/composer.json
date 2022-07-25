@@ -1,0 +1,63 @@
+{
+    "name": "macellan/laravel-zip",
+    "description": "laravel-zip is the world's leading zip utility for file compression and backup.",
+    "license": "MIT",
+    "homepage": "https://macellan.net",
+    "authors": [
+        {
+            "name": "Zany Soft",
+            "email": "info@zanysoft.co",
+            "homepage": "http://www.zanysoft.co"
+        },
+        {
+            "name": "Fatih Aytekin",
+            "email": "fatih.aytekin@macellan.net",
+            "homepage": "https://macellan.net"
+        }
+    ],
+    "keywords": [
+        "laravel-zip",
+        "laravel",
+        "laravel5",
+        "zip",
+        "unzip",
+        "extract",
+        "backup",
+        "ZipArchive",
+        "multiple",
+        "merge"
+    ],
+    "require": {
+        "php": ">=5.6.0",
+        "ext-zip": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.5.19",
+        "orchestra/testbench": "^v6.20.0"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Macellan\\Zip\\ZipServiceProvider"
+            ],
+            "aliases": {
+                "Zip": "Macellan\\Zip\\ZipFacade"
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+           "Macellan\\Zip\\": "src"
+         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Macellan\\Zip\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": [
+            "vendor/bin/phpunit"
+        ]
+    }
+}

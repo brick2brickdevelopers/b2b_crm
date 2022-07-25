@@ -1,0 +1,52 @@
+{
+    "name": "trebol/entrust",
+    "description": "This package provides a flexible way to add role-based permissions to Laravel and is a fork from Zizaco/entrust",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jorge Romero",
+            "email": "jromero@trebolcolombia.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": false,
+    "require": {
+        "php": ">=7.2.5",
+        "illuminate/console": "^7.0",
+        "illuminate/cache": "^7.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.5",
+        "mockery/mockery": "dev-master",
+        "illuminate/database": "^7.0"
+    },
+    "autoload": {
+        "classmap": [
+            "src/commands"
+        ],
+        "psr-4": {
+            "Trebol\\Entrust\\": "src/Entrust/"
+        }
+    },
+    "extra":{
+        "laravel":{
+            "providers":[
+                "Trebol\\Entrust\\EntrustServiceProvider"
+            ],
+            "aliases":{
+                "Entrust": "Trebol\\Entrust\\EntrustFacade"
+            }
+        }
+    },
+    "autoload-dev": {
+        "classmap": [
+            "tests/Middleware/MiddlewareTest.php"
+        ]
+    },
+    "config": {
+        "platform": {
+            "php": "7.2.5"
+        }
+    }
+}

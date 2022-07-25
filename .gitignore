@@ -1,5 +1,5 @@
 .idea
-/vendor
+
 storage/framework/.DS_Store
 storage/
 storage.zip

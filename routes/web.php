@@ -414,6 +414,9 @@ Route::group(['middleware' => 'auth'], function () {
                 Route::post('leads/assign_lead_campaign', ['as' => 'leads.assign_lead_campaign', 'uses' => 'LeadController@assign_lead_campaign']);
                 Route::get('leads/dashboard', 'LeadController@dashboard')->name('leads.dashboard');
                 Route::post('leads/dashboard/search', 'LeadController@leadSearch')->name('leads.dashboard.search');
+                Route::post('leads/dashboard/available', 'LeadController@available')->name('leads.dashboard.available');
+                Route::post('leads/dashboard/completed', 'LeadController@completed')->name('leads.dashboard.completed');
+                Route::post('leads/dashboard/follow', 'LeadController@follow')->name('leads.dashboard.follow');
                 Route::resource('leads', 'LeadController');
 
 

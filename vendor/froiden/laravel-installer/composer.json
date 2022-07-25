@@ -1,0 +1,23 @@
+{
+  "name": "froiden/laravel-installer",
+  "description": "Laravel web installer",
+  "license": "MIT",
+  "type": "library",
+
+  "authors": [
+    {
+      "name": "Ajay Kumar Choudhary",
+      "email": "ajay@froiden.com"
+    }
+  ],
+  "require": {},
+  "autoload": {
+    "psr-4": {
+      "Froiden\\LaravelInstaller\\": "src/"
+    },
+    "files": [
+      "src/functions.php"
+    ]
+  },
+  "minimum-stability": "dev"
+}

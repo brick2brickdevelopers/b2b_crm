@@ -41,8 +41,9 @@ class LeadDashboardDataTable extends BaseDataTable
         $this->campaigns = Campaign::get();
         $this->agents = EmployeeDetails::get();
         $this->leads = CampaignLead::get();
-        $this->callPurposes =CallPurpose::all();
-        return $this->data;
+        $this->callPurposes = CallPurpose::all();
+        dd($this->data);
+        // return $this->data;
     }
 
     /**
@@ -53,24 +54,17 @@ class LeadDashboardDataTable extends BaseDataTable
     public function html()
     {
         return $this->builder()
-                    ->setTableId('leaddashboard-table')
-                    ->columns($this->processTitle($this->getColumns()))
-                    ->minifiedAjax()
-                    ->dom("<'row'<'col-md-6'l><'col-md-6'Bf>><'row'<'col-sm-12'tr>><'row'<'col-sm-5'i><'col-sm-7'p>>")
-                    ->orderBy(0)
-                    ->destroy(true)
-                    ->responsive(true)
-                    ->serverSide(true)
-                    ->stateSave(true)
-                    ->processing(true)
-                    ->language(__('app.datatable'))
-                    ->buttons(
-                        Button::make('create'),
-                        Button::make('export'),
-                        Button::make('print'),
-                        Button::make('reset'),
-                        Button::make('reload')
-                    );
+            ->setTableId('leaddashboard-table')
+            ->columns($this->processTitle($this->getColumns()))
+            ->minifiedAjax()
+            ->dom("<'row'<'col-md-6'l><'col-md-6'Bf>><'row'<'col-sm-12'tr>><'row'<'col-sm-5'i><'col-sm-7'p>>")
+            ->orderBy(0)
+            ->destroy(true)
+            ->responsive(true)
+            ->serverSide(true)
+            ->stateSave(true)
+            ->processing(true)
+            ->language(__('app.datatable'));
     }
 
     /**
@@ -82,12 +76,12 @@ class LeadDashboardDataTable extends BaseDataTable
     {
         return [
             Column::computed('action')
-                  ->exportable(false)
-                  ->printable(false)
-                  ->orderable(false)
-                  ->searchable(false)
-                  ->width(150)
-                  ->addClass('text-center'),
+                ->exportable(false)
+                ->printable(false)
+                ->orderable(false)
+                ->searchable(false)
+                ->width(150)
+                ->addClass('text-center'),
             Column::make('id'),
             Column::make('name'),
             Column::make('phone'),

@@ -2,6 +2,7 @@
     <div class="col-md-9" style="background-color: #f6f7f9; margin-top:10px; border-radius:10px">
         <div class="card">
             <div class="card-body">
+                
                 <div>
                     <div class="simplebar-wrapper" style="margin: 0px;">
                         <div class="simplebar-height-auto-observer-wrapper">
@@ -58,7 +59,7 @@
                                                         class="dataTables_wrapper dt-bootstrap4 no-footer">
                                                         <div class="row">
                                                             <div class="col-sm-12">
-                                                                <table class="table tabel-bordered">
+                                                                <table class="table tabel-bordered" id="table_id">
                                                                     <thead class="thead-light">
                                                                         <tr role="row">
                                                                             <th>
