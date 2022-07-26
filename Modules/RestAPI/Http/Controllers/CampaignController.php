@@ -110,25 +110,34 @@ public function test() {
                 //1 is Completed
                 //2 is Follow Up
             $leadStatusText = '';
-            if($request->leadcallstatus) {
-                $callStatus = $request->leadcallstatus;
-            } else {
-                $callStatus = 0;
-            }
+            $callStatus = $request->leadcallstatus;
+       // echo $callStatus;exit();
 
-            if($callStatus == 0) {
+            if($callStatus==='0') {
+               // echo "here is 0";
+                //exit();
+                $callStatus = ['0'];
                 $leadStatusText = 'Available';
             }
+
             if($callStatus==1)  {
+                $callStatus = [1];
                 $leadStatusText = 'completed';
             }
 
             if($callStatus==2) {
+                $callStatus = [2];
                 $leadStatusText = 'folow up';
+            }
+            if(!$callStatus) {
+                $callStatus = [0,1,2];
             }
 
 
-        $orders = CampaignLead::where(['campaign_id' => $request->campaign_id, 'agent_id' => $userId,'leadcallstatus' => $callStatus])->get();
+           //print_r($callStatus);exit();
+        $orders = CampaignLead::where(['campaign_id' => $request->campaign_id, 'agent_id' => $userId])
+        ->whereIn('leadcallstatus',$callStatus)
+        ->get();
         //$orders = CampaignLead::where('agent_id', $request->user_id)->get();
         $leadId = [];
         foreach($orders as $order) {
@@ -147,7 +156,19 @@ public function test() {
 
         foreach($clientInfo as $cli) {
             //assign lead call status to the lead
-                $cli['leadCallStatus'] = $leadStatusText;
+
+
+                if($cli['status_id']==4) {
+                    $cli['leadCallStatus'] = 'Available';
+                }
+                if($cli['status_id']==1) {
+                    $cli['leadCallStatus'] = 'Completed';
+                }
+                if($cli['status_id']==2 ) {
+                    $cli['leadCallStatus'] = 'follow up';
+                }
+
+                
                // array_push($abc,$cli);
         }
 
@@ -194,15 +215,19 @@ public function test() {
                 //0 is Available
                 //1 is Completed
                 //2 is Follow Up
-         $callingData  = CampaignLead::create([
-                'lead_id' =>  $request->lead_id,
-                'campaign_id' => $request->campaign_id,
-                'agent_id' => $userId,
-                'status' => $request->leadcallstatus,
-                'leadcallstatus'=> $request->leadcallstatus,
-                'company_id' => 1
-            ]);
+        //  $callingData  = CampaignLead::create([
+        //         'lead_id' =>  $request->lead_id,
+        //         'campaign_id' => $request->campaign_id,
+        //         'agent_id' => $userId,
+        //         'status' => $request->leadcallstatus,
+        //         'leadcallstatus'=> $request->leadcallstatus,
+        //         'company_id' => 1
+        //     ]);
 
+
+            CampaignLead::where('lead_id', $request->lead_id)->update(array('leadcallstatus' => $request->leadcallstatus));
+            //update the lead status 
+            Lead::where('id', $request->lead_id)->update(array('status_id' => $request->leadcallstatus));
 
             //store the other calling data and other 
             $callingData  = Callingdata::create([
@@ -216,10 +241,10 @@ public function test() {
 
             $data = [];
 
-            if($request->leadcallstatus==1) {
+            if($request->leadcallstatus==0) {
                 $updatedLeadStatus = 'Available';
             }
-            elseif($request->leadcallstatus==2) {
+            elseif($request->leadcallstatus==1) {
                 $updatedLeadStatus = 'Completed';
             }
             else {
@@ -235,7 +260,6 @@ public function test() {
                 'purpose' => $request->call_purpose,
                 'leadcall_status'=> $updatedLeadStatus
             );
-
             array_push($data,$newData);
             return response()->json([
                 'success'  => true,
@@ -376,7 +400,7 @@ foreach($empTask as $task) {
         ->orderBy('id', 'desc')
         ->limit(4)
         ->get();
-        
+
         if(count($userEvent)>0) {
             $userEvent = $userEvent;
         } else {
