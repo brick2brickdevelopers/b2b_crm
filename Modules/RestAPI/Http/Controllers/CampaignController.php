@@ -322,7 +322,15 @@ foreach($userTask as $task) {
        array_push($taskIds, $task['task_id']);
 }
 //per page
-$empTask = Task::orderBy('id', 'desc')->whereIn('id', $taskIds)->get();
+
+$ldate      = date('Y-m-d');
+$startDate  = Carbon::createFromFormat('Y-m-d', $ldate)->startOfDay();
+
+    $empTask = Task::orderBy('id', 'desc')
+    ->whereIn('id', $taskIds)
+    ->WhereDate('start_date','>=',$startDate)
+    ->get();
+
 
 $task_data = [];
 if(count($empTask)>0) {
@@ -391,11 +399,13 @@ foreach($empTask as $task) {
         );
         array_push($data, $employeeDashboardData);
         array_push($contactBySource, $sourceData);
-
+        $ldate = date('Y-m-d');
+        $startDate = Carbon::createFromFormat('Y-m-d', $ldate)->startOfDay();
 
 //event functionality
         $userEvent = Event::join('event_attendees', 'event_attendees.event_id', '=', 'events.id')
         ->where('event_attendees.user_id', $userId)
+        ->WhereDate('events.start_date_time','>=',$startDate)
         ->select('events.*')
         ->orderBy('id', 'desc')
         ->limit(4)
@@ -417,7 +427,45 @@ foreach($empTask as $task) {
             'contactedBySource'   =>  $sourceData,
             'dasboardData'     =>  $data,
         ]);   
-
     }
-  
+
+    //call purpose api
+    public function call_purpose(Request $request) {
+        $perPage = $request->page_size;
+        $data = CallPurpose::orderBy('id', 'desc')->paginate($perPage);
+        return response()->json([
+            'success'     => true,
+            'status'      => 200,
+            'message'     => "call Purpose data has been fetched successfully",
+            'callPurpose' =>  $data,
+        ]);   
+    }
+
+    //event Api
+
+    public function event_list(Request $request) {
+        $user    = auth('api')->user();
+        $userId  = $user->id;
+        $ldate = date('Y-m-d');
+        if($request->start_date) {
+            $startDate = Carbon::createFromFormat('Y-m-d', $request->start_date)->startOfDay();
+        } else {
+            $startDate = Carbon::createFromFormat('Y-m-d', $ldate)->startOfDay();
+        }
+    
+        $userEvent = Event::join('event_attendees', 'event_attendees.event_id', '=', 'events.id')
+        // ->where(['event_attendees.user_id','=', $userId],['events.start_date_time','>=',$startDate])
+        ->where('event_attendees.user_id', $userId)
+        ->WhereDate('events.start_date_time','=',$startDate)
+        ->select('events.*')
+        ->orderBy('id', 'desc')
+        ->get();
+        return response()->json([
+            'success'       => true,
+            'status'        => 200,
+            'code'          => "success",
+            'message'       => "Event List has been fetched successfully",
+            'upcomingEvent' => $userEvent
+        ]);   
+    }
     }
