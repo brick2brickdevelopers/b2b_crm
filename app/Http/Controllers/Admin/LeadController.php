@@ -91,9 +91,9 @@ class LeadController extends AdminBaseController
         foreach ($leads as $lead) {
 
             $campaign_agent = CampaignAgent::where('campaign_id', $campaign->id)->inRandomOrder()->first();
-
+;
             $lx = Lead::find($lead->id);
-      
+    //   dd($campaign_agent->cAgent->id);
            $lx->agent_id = $campaign_agent->cAgent->id;
           
             $lx->save();
