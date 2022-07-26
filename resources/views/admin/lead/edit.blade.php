@@ -137,13 +137,7 @@
                                         <select class="select2 form-control" data-placeholder="@lang('modules.tickets.chooseAgents')"
                                             id="agent_id" name="agent_id">
                                             <option value="">@lang('modules.tickets.chooseAgents')</option>
-                                                        {# @foreach ($leadAgents as $emp)
-                                                            <option value="{{ $emp->id }}">{{ ucwords($emp->user->name) }}
-                                                                @if ($emp->user->id == $user->id)
-                                                                    (YOU)
-                                                                @endif
-                                                            </option>
-                                                        @endforeach #}
+
 
                                             @foreach ($leadAgents as $emp)
                                                 <option @if ($emp->id == $lead->agent_id) selected @endif

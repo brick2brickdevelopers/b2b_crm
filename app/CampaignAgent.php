@@ -24,6 +24,6 @@ class CampaignAgent extends Model
 
     public function cAgent()
     {
-        return $this->belongsTo(LeadAgent::class, 'employee_id', 'user_id');
+        return $this->belongsTo(LeadAgent::class, 'employee_id','user_id');
     }
 }

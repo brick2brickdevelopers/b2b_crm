@@ -1,51 +1,156 @@
-2022-05-19 09:28:46 pid:26452 Workerman[websocket.php] start in DEBUG mode
-2022-05-19 09:30:41 pid:26452 Workerman[websocket.php] stopping ...
-2022-05-19 09:30:41 pid:26452 Workerman[websocket.php] has been stopped
-2022-05-19 09:30:42 pid:26615 Workerman[websocket.php] start in DEBUG mode
-2022-05-19 15:10:44 pid:26615 Workerman[websocket.php] stopping ...
-2022-05-19 15:10:44 pid:26615 Workerman[websocket.php] has been stopped
-2022-05-23 08:47:39 pid:15063 Workerman[websocket.php] start in DEBUG mode
-2022-05-23 16:11:13 pid:15063 Workerman[websocket.php] stopping ...
-2022-05-23 16:11:13 pid:15063 Workerman[websocket.php] stopping ...
-2022-05-23 16:11:13 pid:15063 Workerman[websocket.php] has been stopped
-2022-05-24 06:19:18 pid:24477 Workerman[websocket.php] start in DEBUG mode
-2022-05-24 12:40:10 pid:24477 Workerman[websocket.php] stopping ...
-2022-05-24 12:40:10 pid:24477 Workerman[websocket.php] has been stopped
-2022-05-25 08:13:35 pid:21295 Workerman[websocket.php] start in DEBUG mode
-2022-05-25 10:56:10 pid:21295 Workerman[websocket.php] stopping ...
-2022-05-25 10:56:10 pid:21295 Workerman[websocket.php] has been stopped
-2022-05-26 11:14:44 pid:3147 Workerman[websocket.php] start in DEBUG mode
-2022-05-26 21:18:34 pid:3147 Workerman[websocket.php] stopping ...
-2022-05-26 21:18:34 pid:3147 Workerman[websocket.php] stopping ...
-2022-05-26 21:18:34 pid:3147 Workerman[websocket.php] has been stopped
-2022-06-01 10:54:07 pid:24091 Workerman[websocket.php] start in DEBUG mode
-2022-06-01 11:45:41 pid:24091 Workerman[websocket.php] stopping ...
-2022-06-01 11:45:41 pid:24091 Workerman[websocket.php] has been stopped
-2022-06-01 13:04:46 pid:4120 Workerman[websocket.php] start in DEBUG mode
-2022-06-01 13:32:28 pid:4120 Workerman[websocket.php] stopping ...
-2022-06-01 13:32:28 pid:4120 Workerman[websocket.php] has been stopped
-2022-06-02 08:22:03 pid:10985 Workerman[websocket.php] start in DEBUG mode
-2022-06-02 12:27:51 pid:10985 Workerman[websocket.php] stopping ...
-2022-06-02 12:27:51 pid:10985 Workerman[websocket.php] has been stopped
-2022-06-06 10:04:13 pid:1460 Workerman[websocket.php] start in DEBUG mode
-2022-06-06 11:13:39 pid:1460 Workerman[websocket.php] stopping ...
-2022-06-06 11:13:39 pid:1460 Workerman[websocket.php] has been stopped
-2022-06-06 11:33:31 pid:11099 Workerman[websocket.php] start in DEBUG mode
-2022-06-07 00:25:48 pid:11099 Workerman[websocket.php] stopping ...
-2022-06-07 00:25:48 pid:11099 Workerman[websocket.php] stopping ...
-2022-06-07 00:25:48 pid:11099 Workerman[websocket.php] has been stopped
-2022-06-09 08:05:53 pid:30158 Workerman[websocket.php] start in DEBUG mode
-2022-06-09 08:38:30 pid:30158 Workerman[websocket.php] stopping ...
-2022-06-09 08:38:30 pid:30158 Workerman[websocket.php] has been stopped
-2022-06-09 08:38:40 pid:30667 Workerman[websocket.php] start in DEBUG mode
-2022-06-09 11:25:20 pid:30667 Workerman[websocket.php] stopping ...
-2022-06-09 11:25:20 pid:30667 Workerman[websocket.php] has been stopped
-2022-06-12 10:23:01 pid:11954 Workerman[websocket.php] start in DEBUG mode
-2022-06-12 11:04:15 pid:11954 Workerman[websocket.php] stopping ...
-2022-06-12 11:04:15 pid:11954 Workerman[websocket.php] has been stopped
-2022-06-28 08:42:24 pid:15736 Workerman[websocket.php] start in DEBUG mode
-2022-06-28 09:59:35 pid:15736 Workerman[websocket.php] stopping ...
-2022-06-28 09:59:35 pid:15736 Workerman[websocket.php] has been stopped
-2022-07-06 11:02:38 pid:20977 Workerman[websocket.php] start in DEBUG mode
-2022-07-06 14:43:35 pid:20977 Workerman[websocket.php] stopping ...
-2022-07-06 14:43:35 pid:20977 Workerman[websocket.php] has been stopped
+2022-07-26 06:32:01 pid:19428 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 06:33:02 pid:19471 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 06:34:01 pid:19497 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 06:35:01 pid:19510 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 06:36:01 pid:19517 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 06:37:01 pid:19524 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 06:38:01 pid:19531 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 06:39:01 pid:19538 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 06:40:02 pid:19546 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 06:41:01 pid:19554 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 06:42:01 pid:19562 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 06:43:01 pid:19570 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 06:44:01 pid:19577 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 06:45:01 pid:19609 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 06:46:01 pid:19617 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 06:47:02 pid:19624 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 06:48:01 pid:19631 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 06:49:01 pid:19638 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 06:50:01 pid:19646 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 06:51:01 pid:19675 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 06:52:01 pid:19682 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 06:53:01 pid:19689 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 06:54:02 pid:19705 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 06:55:01 pid:19716 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 06:56:01 pid:19728 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 06:57:01 pid:19738 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 06:58:01 pid:19747 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 06:59:01 pid:19760 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:00:01 pid:19771 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:01:02 pid:19788 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:02:01 pid:19831 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:03:01 pid:19849 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:04:01 pid:19865 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:05:01 pid:19883 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:06:01 pid:19901 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:07:01 pid:19915 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:08:02 pid:19933 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:09:01 pid:19968 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:10:01 pid:19982 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:11:01 pid:19996 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:12:01 pid:20027 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:13:01 pid:20053 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:14:01 pid:20075 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:15:02 pid:20095 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:16:01 pid:20111 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:17:01 pid:20131 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:18:01 pid:20192 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:19:01 pid:20211 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:20:01 pid:20227 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:21:01 pid:20246 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:22:02 pid:20263 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:23:01 pid:20280 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:24:01 pid:20294 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:25:01 pid:20306 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:26:01 pid:20320 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:27:01 pid:20333 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:28:01 pid:20346 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:29:02 pid:20358 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:30:01 pid:20371 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:31:01 pid:20385 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:32:01 pid:20396 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:33:01 pid:20406 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:34:01 pid:20417 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:35:01 pid:20428 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:36:02 pid:20441 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:37:01 pid:20450 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:38:01 pid:20462 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:39:01 pid:20471 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:40:01 pid:20482 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:41:01 pid:20494 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:42:01 pid:20503 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:43:02 pid:20514 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:44:01 pid:20547 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:45:01 pid:20558 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:46:01 pid:20568 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:47:01 pid:20591 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:48:01 pid:20603 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:49:01 pid:20614 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:50:02 pid:20625 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:51:01 pid:20637 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:52:01 pid:20650 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:53:01 pid:20664 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:54:01 pid:20673 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:55:01 pid:20682 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:56:01 pid:20693 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:57:02 pid:20706 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:58:01 pid:20718 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 07:59:01 pid:20727 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:00:01 pid:20739 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:01:01 pid:20755 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:02:01 pid:20778 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:03:01 pid:20787 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:04:02 pid:20799 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:05:01 pid:20810 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:06:01 pid:20822 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:07:01 pid:20833 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:08:01 pid:20866 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:09:01 pid:20875 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:10:01 pid:20887 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:11:02 pid:20898 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:12:01 pid:20908 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:13:01 pid:20919 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:14:01 pid:20932 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:15:01 pid:20944 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:16:01 pid:20954 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:17:01 pid:20966 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:18:02 pid:20975 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:19:01 pid:20984 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:20:01 pid:20995 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:21:01 pid:21006 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:22:01 pid:21017 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:23:01 pid:21031 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:24:01 pid:21040 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:25:02 pid:21049 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:26:01 pid:21056 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:27:01 pid:21065 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:28:01 pid:21075 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:29:01 pid:21084 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:30:01 pid:21093 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:31:01 pid:21100 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:32:02 pid:21107 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:33:01 pid:21137 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:34:01 pid:21144 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:35:01 pid:21151 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:36:01 pid:21158 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:37:01 pid:21166 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:38:01 pid:21174 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:39:02 pid:21181 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:40:01 pid:21188 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:41:01 pid:21197 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:42:01 pid:21204 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:43:01 pid:21212 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:44:01 pid:21219 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:45:01 pid:21228 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:46:01 pid:21235 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:47:02 pid:21662 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:48:01 pid:21758 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:49:01 pid:21816 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:50:01 pid:21894 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:51:01 pid:21951 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:52:01 pid:22000 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:53:02 pid:22128 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:54:01 pid:22277 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:55:01 pid:22433 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:56:01 pid:22530 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:57:01 pid:22629 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:58:01 pid:22734 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 08:59:01 pid:22882 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 09:00:02 pid:23032 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 09:01:01 pid:23156 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 09:02:01 pid:23294 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 09:03:01 pid:23400 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 09:04:01 pid:23560 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 09:05:01 pid:23859 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 09:06:01 pid:24047 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 09:07:01 pid:24191 Workerman[websocket.php] start in DEBUG mode
