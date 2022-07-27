@@ -78,7 +78,7 @@ class CampaignController extends AdminBaseController
         else {
             $breakTime = '';
         }
-
+       // return ($request->all());
         $campaign = new Campaign();
         $campaign->type = $campType;
         $campaign->name = $request->name;
@@ -91,7 +91,9 @@ class CampaignController extends AdminBaseController
 
 
         if ($campaign->save()) {
+           
             if ($request->agent != null) {
+               
                 foreach ($request->agent as $ag) {
                     CampaignAgent::create([
                         'campaign_id' => $campaign->id,
@@ -101,6 +103,7 @@ class CampaignController extends AdminBaseController
                 }
             }
             if ($request->agentGroup != null) {
+               
                 $team = Team::find($request->agentGroup);
 
                 if (!empty($team)) {

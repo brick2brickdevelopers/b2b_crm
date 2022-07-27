@@ -927,13 +927,14 @@
 
 
         <script>
-            function updateCallDetail(log_id) {
+            function updateCallDetail(log_id, type = "log") {
                 $('#callDetails').modal('show');
                 $.ajax({
                     url: "{{ route('member.leads.callingLeadDetails') }}",
                     type: "GET",
                     data: {
-                        log_id: log_id
+                        log_id: log_id,
+                        type: type,
                     },
                     success: function(data) {
                         $('#calling_lead_details').html(data);

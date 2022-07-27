@@ -26,16 +26,17 @@
                             value="{{ $lead ? $lead->client_name : '' }}" name="name" id="incoming_name"></input>
                     </div>
                 </div>
-                <div class="col-lg-12">
+                {{-- <div class="col-lg-12">
                     <div class="form-group">
                         <label for="description">Email *</label>
                         <input class="form-control" {{ $lead ? 'readonly' : '' }}
                             value="{{ $lead ? $lead->email : '' }}" name="email" id="incoming_name"></input>
                     </div>
-                </div>
+                </div> --}}
                 @if (!$lead)
                     <div class="col-lg-12">
-                        <center><button type="submit" id="" class="btn btn-success btn-sm">SAVE</button></center>
+                        <center><button type="submit" id="" class="btn btn-success btn-sm">SAVE</button>
+                        </center>
                     </div>
                 @endif
             </form>
@@ -96,7 +97,8 @@
                     </div>
 
                     <div class="col-lg-12">
-                        <center><button type="submit" id="" class="btn btn-success btn-sm">SAVE</button></center>
+                        <center><button type="submit" id="" class="btn btn-success btn-sm">SAVE</button>
+                        </center>
                     </div>
 
                 </div>
@@ -159,7 +161,6 @@
             padding: 10px;
             margin: 10px;
         }
-
     </style>
 
 
@@ -394,8 +395,7 @@
                                 value="{{ $editUser->custom_fields_data['field_' . $field->id] ?? '' }}">
                         @elseif($field->type == 'textarea')
                             <textarea name="custom_fields_data[{{ $field->name . '_' . $field->id }}]" class="form-control"
-                                id="{{ $field->name }}"
-                                cols="3">{{ $editUser->custom_fields_data['field_' . $field->id] ?? '' }}</textarea>
+                                id="{{ $field->name }}" cols="3">{{ $editUser->custom_fields_data['field_' . $field->id] ?? '' }}</textarea>
                         @elseif($field->type == 'radio')
                             <div class="radio-list">
                                 @foreach ($field->values as $key => $value)
@@ -413,10 +413,16 @@
                                 @endforeach
                             </div>
                         @elseif($field->type == 'select')
-                            {!! Form::select('custom_fields_data[' . $field->name . '_' . $field->id . ']', $field->values, isset($editUser) ? $editUser->custom_fields_data['field_' . $field->id] : '', ['class' => 'form-control gender']) !!}
+                            {!! Form::select(
+                                'custom_fields_data[' . $field->name . '_' . $field->id . ']',
+                                $field->values,
+                                isset($editUser) ? $editUser->custom_fields_data['field_' . $field->id] : '',
+                                ['class' => 'form-control gender'],
+                            ) !!}
                         @elseif($field->type == 'checkbox')
                             <div class="mt-checkbox-inline custom-checkbox checkbox-{{ $field->id }}">
-                                <input type="hidden" name="custom_fields_data[{{ $field->name . '_' . $field->id }}]"
+                                <input type="hidden"
+                                    name="custom_fields_data[{{ $field->name . '_' . $field->id }}]"
                                     id="{{ $field->name . '_' . $field->id }}" value=" ">
                                 @foreach ($field->values as $key => $value)
                                     <label class="mt-checkbox mt-checkbox-outline">

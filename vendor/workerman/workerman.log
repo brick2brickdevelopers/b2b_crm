@@ -154,3 +154,12 @@
 2022-07-26 09:05:01 pid:23859 Workerman[websocket.php] start in DEBUG mode
 2022-07-26 09:06:01 pid:24047 Workerman[websocket.php] start in DEBUG mode
 2022-07-26 09:07:01 pid:24191 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 12:26:45 pid:6934 Workerman[websocket.php] start in DEBUG mode
+2022-07-26 17:41:17 pid:6934 Workerman[websocket.php] stopping ...
+2022-07-26 17:41:17 pid:6934 Workerman[websocket.php] has been stopped
+2022-07-27 05:56:11 pid:29314 Workerman[websocket.php] start in DEBUG mode
+2022-07-27 06:48:53 pid:29314 Workerman[websocket.php] stopping ...
+2022-07-27 06:48:53 pid:29314 Workerman[websocket.php] has been stopped
+2022-07-27 10:21:33 pid:12137 Workerman[websocket.php] start in DEBUG mode
+2022-07-27 14:41:47 pid:12137 Workerman[websocket.php] stopping ...
+2022-07-27 14:41:47 pid:12137 Workerman[websocket.php] has been stopped

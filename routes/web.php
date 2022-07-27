@@ -1171,6 +1171,9 @@ Route::group(['middleware' => 'auth'], function () {
             Route::get('leads/follow-up-sort', ['uses' => 'MemberLeadController@followUpSort'])->name('leads.follow-up-sort');
             Route::resource('leads', 'MemberLeadController');
 
+            Route::post('leads/dashboard/search', 'MemberLeadController@leadSearch')->name('leads.dashboard.search');
+
+
             Route::get('lead/dasboard',['uses' => 'MemberLeadController@dashboard'])->name('leads.dashboard');
             
             // Lead Files

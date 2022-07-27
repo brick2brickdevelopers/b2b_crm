@@ -102,6 +102,7 @@
                                 <div class="col-lg-10" id="agentselect">
                                     <select class="select2 select2-multiple" multiple="multiple" id="agent"
                                         name="agent[]" data-placeholder="Choose Agent ...">
+                                        <option value="">Select Agent</option>
                                         @foreach ($employee as $item)
                                             <option value="{{ $item->user_id }}">{{ $item->user->name }}
                                                 {{ $item->user_id == Auth::user()->id ? '(YOU)' : '' }} </option>
@@ -112,6 +113,7 @@
                                 <div class="col-lg-10" id="agentgroupselect">
                                     <select class="select2 select2-multiple" name="agentGroup"
                                         data-placeholder="Choose Agent Group ...">
+                                        <option value="">Select Agent group</option>
                                         @foreach ($teams as $item)
                                             <option value="{{ $item->id }}">{{ $item->team_name }}</option>
                                         @endforeach

@@ -32,6 +32,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
+use Yajra\DataTables\Html\Builder;
 
 class LeadController extends AdminBaseController
 {
@@ -91,13 +92,12 @@ class LeadController extends AdminBaseController
         foreach ($leads as $lead) {
 
             $campaign_agent = CampaignAgent::where('campaign_id', $campaign->id)->inRandomOrder()->first();
-            if(!$campaign_agent->cAgent){
+            if (!$campaign_agent->cAgent) {
                 return Reply::redirect(route('admin.leads.index'), 'Leads Agent Not Configured');
             }
             $lx = Lead::find($lead->id);
-    //   dd($campaign_agent->cAgent->id);
-           $lx->agent_id = $campaign_agent->cAgent->id;
-          
+            $lx->agent_id = $campaign_agent->cAgent->id;
+
             $lx->save();
             $check = CampaignLead::where('campaign_id', $campaign->id)->where('lead_id', $lead->id)->exists();
             if (!$check) {
@@ -584,186 +584,200 @@ class LeadController extends AdminBaseController
         return Reply::dataOnly(['status' => 'success', 'columnData' => $valueData]);
     }
 
+
+
+    public function leadSearch(Request $request)
+    {
+       
+
+
+            
+                    // $data =  CampaignLead::query()
+                    //                 ->select('campaign_leads.*', 'campaigns.id as capmaign_id')
+                    //                 ->join('campaigns', 'campaigns.id', '=', 'campaign_leads.campaign_id')
+                    //                 ->join('users', 'users.id', '=', 'campaign_leads.agent_id');
+                    //                 if(!empty($request->check_action)){
+                    //                         $data->where('campaigns.id', $request->check_action);
+                    //                     }
+                    //                     if (!empty($request->check_action)) {
+                    //                         $data->where('users.id', $request->assign_to_campaign);
+                    //                     }
+                    // $data->get();
+                //          $this->leads = CampaignLead::select('campaign_leads.*', 'campaigns.id as capmaign_id')
+                // ->join('campaigns', 'campaigns.id', '=', 'campaign_leads.campaign_id')
+                // ->join('users', 'users.id', '=', 'campaign_leads.agent_id')
+                // ->whereIfIsNotEmpty('campaigns.id', $request->check_action)
+                // ->whereIfIsNotEmpty('users.id', $request->assign_to_campaign)
+                // ->get();
+                //     return($this->leads);
+                //     $this->totalAvailable =0;
+                //     $this->totalCompleted =0;
+                //     $this->totalFollow =0;
+
+
+        if ($request->check_action && $request->assign_to_campaign) {
+            $this->leads = CampaignLead::select('campaign_leads.*', 'campaigns.id as capmaign_id')
+                ->join('campaigns', 'campaigns.id', '=', 'campaign_leads.campaign_id')
+                ->join('users', 'users.id', '=', 'campaign_leads.agent_id')
+                ->where('campaigns.id', $request->check_action)
+                ->where('users.id', $request->assign_to_campaign)
+                ->get();
+
+
+            $this->totalAvailable = CampaignLead::select('campaign_leads.*', 'campaigns.id as capmaign_id')
+                ->join('campaigns', 'campaigns.id', '=', 'campaign_leads.campaign_id')
+                ->join('users', 'users.id', '=', 'campaign_leads.agent_id')
+                ->where('campaigns.id', $request->check_action)
+                ->where('users.id', $request->assign_to_campaign)
+                ->where('campaign_leads.status', 0)
+                ->count();
+
+            $this->totalCompleted = CampaignLead::select('campaign_leads.*', 'campaigns.id as capmaign_id')
+                ->join('campaigns', 'campaigns.id', '=', 'campaign_leads.campaign_id')
+                ->join('users', 'users.id', '=', 'campaign_leads.agent_id')
+                ->where('campaigns.id', $request->check_action)
+                ->where('users.id', $request->assign_to_campaign)
+                ->where('campaign_leads.status', 1)
+                ->count();
+
+            $this->totalFollow = CampaignLead::select('campaign_leads.*', 'campaigns.id as capmaign_id')
+                ->join('campaigns', 'campaigns.id', '=', 'campaign_leads.campaign_id')
+                ->join('users', 'users.id', '=', 'campaign_leads.agent_id')
+                ->where('campaigns.id', $request->check_action)
+                ->where('users.id', $request->assign_to_campaign)
+                ->where('campaign_leads.status', 2)
+                ->count();
+        } else {
+            $this->leads = CampaignLead::select('campaign_leads.*', 'campaigns.id as capmaign_id')
+                ->join('campaigns', 'campaigns.id', '=', 'campaign_leads.campaign_id')
+                ->join('users', 'users.id', '=', 'campaign_leads.agent_id')
+                ->where('campaigns.id', $request->check_action)
+                ->get();
+
+            $this->totalAvailable = CampaignLead::select('campaign_leads.*', 'campaigns.id as capmaign_id')
+                ->join('campaigns', 'campaigns.id', '=', 'campaign_leads.campaign_id')
+                ->join('users', 'users.id', '=', 'campaign_leads.agent_id')
+                ->where('campaigns.id', $request->check_action)
+                ->where('campaign_leads.status', 0)
+                ->count();
+
+            $this->totalCompleted = CampaignLead::select('campaign_leads.*', 'campaigns.id as capmaign_id')
+                ->join('campaigns', 'campaigns.id', '=', 'campaign_leads.campaign_id')
+                ->join('users', 'users.id', '=', 'campaign_leads.agent_id')
+                ->where('campaigns.id', $request->check_action)
+                ->where('campaign_leads.status', 1)
+                ->count();
+
+            $this->totalFollow = CampaignLead::select('campaign_leads.*', 'campaigns.id as capmaign_id')
+                ->join('campaigns', 'campaigns.id', '=', 'campaign_leads.campaign_id')
+                ->join('users', 'users.id', '=', 'campaign_leads.agent_id')
+                ->where('campaigns.id', $request->check_action)
+                ->where('campaign_leads.status', 2)
+                ->count();
+        }
+        $this->callPurposes = CallPurpose::all();
+        //  dd($this->leads);
+        //   ->where('users.id', $request->assign_to_campaign)
+        $view = view('admin.lead.dashboard_data', $this->data)->render();
+        return Reply::dataOnly(['status' => 'success', 'data' => $view]);
+    }
+
+
     //Leads Dasboard
-    public function dashboard(LeadDashboardDataTable $dataTable)
+    public function dashboard(Builder $builder, Request $request)
     {
 
         $this->campaigns = Campaign::get();
         $this->agents = EmployeeDetails::get();
         $this->leads = CampaignLead::get();
-        $this->callPurposes =CallPurpose::all();
+        $this->callPurposes = CallPurpose::all();
 
-        $this->totalAvailable = CampaignLead::
-                                where('campaign_leads.status',0)
-                                ->count();
+        $this->totalAvailable = CampaignLead::where('campaign_leads.status', 0)
+            ->count();
 
-        $this->totalCompleted = CampaignLead::
-                                where('campaign_leads.status',1)
-                                ->count();
+        $this->totalCompleted = CampaignLead::where('campaign_leads.status', 1)
+            ->count();
 
-        $this->totalFollow = CampaignLead::
-                            where('campaign_leads.status',2)
-                            ->count();
-        // return view('admin.lead.dashboard', $this->data);
-        return $dataTable->render('admin.lead.dashboard', $this->data);
+        $this->totalFollow = CampaignLead::where('campaign_leads.status', 2)
+            ->count();
+            if($request->check_action){
+                if (request()->ajax()) {
 
-    }
+                    $leads = CampaignLead::select('campaign_leads.*', 'campaigns.id as capmaign_id')
+                    ->join('campaigns', 'campaigns.id', '=', 'campaign_leads.campaign_id')
+                    ->join('users', 'users.id', '=', 'campaign_leads.agent_id')
+                    ->where('campaigns.id', $request->check_action)
+                    ->where('campaign_leads.status', $request->type)
+                    ->with('lead')->get();
+                    return DataTables::of($leads)
+                        ->editColumn('action', function ($lead) {
+                            return view('admin.lead.action', compact('lead'));
+                        })
+                        
+                        ->toJson();
+                }
+            }elseif($request->assign_to_campaign && $request->check_action){
+                if (request()->ajax()) {
 
-    public function leadSearch(Request $request)
-    {
-        //return($request->all()); 
-       
-            if($request->check_action && $request->assign_to_campaign){
-                $this->leads = CampaignLead::select('campaign_leads.*','campaigns.id as capmaign_id')
-                ->join('campaigns', 'campaigns.id', '=', 'campaign_leads.campaign_id')
-                ->join('users', 'users.id', '=', 'campaign_leads.agent_id')
-                ->where('campaigns.id', $request->check_action)
-                ->where('users.id', $request->assign_to_campaign)
-                ->get();
-
-                
-                $this->totalAvailable = CampaignLead::select('campaign_leads.*','campaigns.id as capmaign_id')
-                ->join('campaigns', 'campaigns.id', '=', 'campaign_leads.campaign_id')
-                ->join('users', 'users.id', '=', 'campaign_leads.agent_id')
-                ->where('campaigns.id', $request->check_action)
-                ->where('users.id', $request->assign_to_campaign)
-                ->where('campaign_leads.status',0)
-                ->count();
-
-                $this->totalCompleted = CampaignLead::select('campaign_leads.*','campaigns.id as capmaign_id')
-                ->join('campaigns', 'campaigns.id', '=', 'campaign_leads.campaign_id')
-                ->join('users', 'users.id', '=', 'campaign_leads.agent_id')
-                ->where('campaigns.id', $request->check_action)
-                ->where('users.id', $request->assign_to_campaign)
-                ->where('campaign_leads.status',1)
-                ->count();
-
-                $this->totalFollow = CampaignLead::select('campaign_leads.*','campaigns.id as capmaign_id')
-                ->join('campaigns', 'campaigns.id', '=', 'campaign_leads.campaign_id')
-                ->join('users', 'users.id', '=', 'campaign_leads.agent_id')
-                ->where('campaigns.id', $request->check_action)
-                ->where('users.id', $request->assign_to_campaign)
-                ->where('campaign_leads.status',2)
-                ->count();
-                
-                
-                
+                    $leads = CampaignLead::select('campaign_leads.*', 'campaigns.id as capmaign_id')
+                    ->join('campaigns', 'campaigns.id', '=', 'campaign_leads.campaign_id')
+                    ->join('users', 'users.id', '=', 'campaign_leads.agent_id')
+                    ->where('campaigns.id', $request->check_action)
+                    ->where('users.id', $request->assign_to_campaign)
+                    ->where('campaign_leads.status', $request->type)
+                    ->with('lead')->get();
+                    return DataTables::of($leads)
+                        ->editColumn('action', function ($lead) {
+                            return view('admin.lead.action', compact('lead'));
+                        })
+                        
+                        ->toJson();
+                }
             }else{
-                $this->leads = CampaignLead::select('campaign_leads.*','campaigns.id as capmaign_id')
-                ->join('campaigns', 'campaigns.id', '=', 'campaign_leads.campaign_id')
-                ->join('users', 'users.id', '=', 'campaign_leads.agent_id')
-                ->where('campaigns.id', $request->check_action)
-                ->get();
+                if (request()->ajax()) {
 
-                $this->totalAvailable = CampaignLead::select('campaign_leads.*','campaigns.id as capmaign_id')
-                ->join('campaigns', 'campaigns.id', '=', 'campaign_leads.campaign_id')
-                ->join('users', 'users.id', '=', 'campaign_leads.agent_id')
-                ->where('campaigns.id', $request->check_action)
-                ->where('campaign_leads.status',0)
-                ->count();
-
-                $this->totalCompleted = CampaignLead::select('campaign_leads.*','campaigns.id as capmaign_id')
-                ->join('campaigns', 'campaigns.id', '=', 'campaign_leads.campaign_id')
-                ->join('users', 'users.id', '=', 'campaign_leads.agent_id')
-                ->where('campaigns.id', $request->check_action)
-                ->where('campaign_leads.status',1)
-                ->count();
-
-                $this->totalFollow = CampaignLead::select('campaign_leads.*','campaigns.id as capmaign_id')
-                ->join('campaigns', 'campaigns.id', '=', 'campaign_leads.campaign_id')
-                ->join('users', 'users.id', '=', 'campaign_leads.agent_id')
-                ->where('campaigns.id', $request->check_action)
-                ->where('campaign_leads.status',2)
-                ->count();
-                
-            }
-            $this->callPurposes =CallPurpose::all();
-              //  dd($this->leads);
-            //   ->where('users.id', $request->assign_to_campaign)
-        $view = view('admin.lead.dashboard_data', $this->data)->render();
-        return Reply::dataOnly(['status' => 'success', 'data' => $view]);
-    }
-
-    public function available(Request $request)
-    {
-        $this->leads = CampaignLead::select('campaign_leads.*','campaigns.id as capmaign_id')
-        ->join('campaigns', 'campaigns.id', '=', 'campaign_leads.campaign_id')
-        ->join('users', 'users.id', '=', 'campaign_leads.agent_id')
-        ->where('campaign_leads.status', $request->available)
-        ->get();
-
-        $this->totalAvailable = CampaignLead::
-                where('campaign_leads.status',0)
-                ->count();
-
-        $this->totalCompleted = CampaignLead::
-                where('campaign_leads.status',1)
-                ->count();
-
-        $this->totalFollow = CampaignLead::
-            where('campaign_leads.status',2)
-            ->count();
-
-            $this->callPurposes =CallPurpose::all();
-
-
-        $view = view('admin.lead.available', $this->data)->render();
-        return Reply::dataOnly(['status' => 'success', 'data' => $view]);
-    }
-
-    
-    public function completed(Request $request)
-    {
+                    $leads = CampaignLead::select('campaign_leads.*', 'campaigns.id as capmaign_id')
+                        ->join('campaigns', 'campaigns.id', '=', 'campaign_leads.campaign_id')
+                        ->join('users', 'users.id', '=', 'campaign_leads.agent_id')
+                        ->where('campaign_leads.status', $request->type)
+                        ->with('lead')->get();
+                    return DataTables::of($leads)
+                        ->editColumn('action', function ($lead) {
+                            return view('admin.lead.action', compact('lead'));
+                        })
+                        
+                        ->toJson();
+                }
         
-        $this->leads = CampaignLead::select('campaign_leads.*','campaigns.id as capmaign_id')
-        ->join('campaigns', 'campaigns.id', '=', 'campaign_leads.campaign_id')
-        ->join('users', 'users.id', '=', 'campaign_leads.agent_id')
-        ->where('campaign_leads.status', $request->completed)
-        ->get();
+            }
+        
+        $this->html = $builder->columns([
+            ['data' => 'id', 'name' => 'id', 'title' => 'Id'],
+            ['data' => 'lead.client_name', 'name' => 'name', 'title' => 'Name'],
+            ['data' => 'lead.mobile', 'name' => 'Phone', 'title' => 'Phone'],
+            ['data' => 'action', 'name' => 'action', 'title' => 'action'],
 
-        $this->totalAvailable = CampaignLead::
-                where('campaign_leads.status',0)
-                ->count();
+        ])->setTableId('tab-table');
 
-        $this->totalCompleted = CampaignLead::
-                where('campaign_leads.status',1)
-                ->count();
+       
 
-        $this->totalFollow = CampaignLead::
-            where('campaign_leads.status',2)
-            ->count();
-
-            $this->callPurposes =CallPurpose::all();
-
-
-        $view = view('admin.lead.completed', $this->data)->render();
-        return Reply::dataOnly(['status' => 'success', 'data' => $view]);
+        return view('admin.lead.dashboard', $this->data);
     }
 
-    public function follow(Request $request)
+    function getLeads()
     {
-        $this->leads = CampaignLead::select('campaign_leads.*','campaigns.id as capmaign_id')
-        ->join('campaigns', 'campaigns.id', '=', 'campaign_leads.campaign_id')
-        ->join('users', 'users.id', '=', 'campaign_leads.agent_id')
-        ->where('campaign_leads.status', $request->follow)
-        ->get();
 
-        $this->totalAvailable = CampaignLead::
-                where('campaign_leads.status',0)
-                ->count();
-
-        $this->totalCompleted = CampaignLead::
-                where('campaign_leads.status',1)
-                ->count();
-
-        $this->totalFollow = CampaignLead::
-            where('campaign_leads.status',2)
+        $this->totalAvailable = CampaignLead::where('campaign_leads.status', 0)
             ->count();
 
-            $this->callPurposes =CallPurpose::all();
+        $this->totalCompleted = CampaignLead::where('campaign_leads.status', 1)
+            ->count();
 
+        $this->totalFollow = CampaignLead::where('campaign_leads.status', 2)
+            ->count();
 
-        $view = view('admin.lead.follow', $this->data)->render();
-        return Reply::dataOnly(['status' => 'success', 'data' => $view]);
+        $this->callPurposes = CallPurpose::all();
+        return $this->data;
     }
+
 }
