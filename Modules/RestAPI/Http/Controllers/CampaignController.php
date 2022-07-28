@@ -30,7 +30,6 @@ use Modules\RestAPI\Entities\Invoice;
 use Modules\RestAPI\Entities\Project;
 use Modules\RestAPI\Entities\Task;
 
-
 use App\Event;
 use App\EventAttendee;
 use App\GoogleAccount;
@@ -509,9 +508,8 @@ foreach($empTask as $task) {
         }
     
         $userEvent = Event::join('event_attendees', 'event_attendees.event_id', '=', 'events.id')
-        // ->where(['event_attendees.user_id','=', $userId],['events.start_date_time','>=',$startDate])
         ->where('event_attendees.user_id', $userId)
-        ->WhereDate('events.start_date_time','=',$startDate)
+       ->WhereDate('events.start_date_time','=',$startDate)
         ->select('events.*')
         ->orderBy('id', 'desc')
         ->get();
@@ -523,4 +521,72 @@ foreach($empTask as $task) {
             'upcomingEvent' => $userEvent
         ]);   
     }
+
+
+//call log Reports Api
+
+        public function call_log_reports(Request $request) {
+
+            $perPage = $request->page_size;
+            $user         = auth('api')->user();
+            $userId       = $user->id;
+            $agentNumber  = $user->mobile;
+            if(!$agentNumber) {
+                $agentNumber = 12345678;
+            }
+            $callReportData = ManualLoggedCall::where('agent_number', $agentNumber)->paginate($perPage);
+
+
+            $datanew = [];
+            foreach($callReportData as $data) {
+                if($data['call_type']==1) {
+                    $data['call_type'] = 'Auto';
+                }
+                else {
+                    $data['call_type'] = 'Mannual';
+                }
+                if($data['call_source']==1) {
+                    $data['call_source'] = 'Incoming';
+                }
+                else {
+                    $data['call_source'] = 'Outgoing';
+                }
+                if($data['status']==1) {
+                    $data['call_status'] = 'Completed';
+                }
+                elseif($data['status']==2) {
+                    $data['call_status'] = 'follow Up';
+                }
+                else {
+                    $data['call_status'] = 'available';
+                }
+
+                $data['created_by'] = $user->name;
+        //unset some variable
+                unset($data['date']);
+                unset($data['description']);
+                unset($data['status']);
+                unset($data['terminate']);
+                unset($data['recordings_file']);
+                unset($data['did']);
+                unset($data['session_id']);
+                unset($data['reason_text']);
+                unset($data['outcome']);
+
+            }
+
+
+
+
+            return response()->json([
+                'success'       => true,
+                'status'        => 200,
+                'code'          => "success",
+                'message'       => "call log report fetched successfully",
+                'callReportData' => $callReportData
+            ]);
+            
+        
+        }
+
     }
