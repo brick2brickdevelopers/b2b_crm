@@ -16,8 +16,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\CustomField;
 use App\CustomFieldGroup;
-
-
+use App\ManualLoggedCall;
 use App\AttendanceSetting;
 use App\Holiday;
 use App\Setting;
@@ -42,7 +41,6 @@ use App\Services\Google;
 use App\User;
 use App\EventCategory;
 use App\EventType;
-
 
 
 use Yajra\DataTables\DataTables;
@@ -203,62 +201,122 @@ public function test() {
         //call disposal api
         public function call_disposal(Request $request ) {
 
-            $user    = auth('api')->user();
-            $userId  = $user->id;
-            //store the call_purpose and user_id
-            $callPurpose  = CallPurpose::create([
-                'company_id' => 1,
-                'purpose' => $request->call_purpose,
-                'from_id' =>  $userId,
-            ]);
-                //leadcallstatus 
+            $user           = auth('api')->user();
+            $userId         = $user->id;
+            $agentNumber    = $user->mobile;
+            $campaignId     = $request->campaign_id;
+            $leadId         = $request->lead_id;
+            $callPurpose    = $request->call_purpose;
+            $leadMobile     = $request->lead_mobile;
+            // $callStatus     = $request->call_status;
+            $callType       = $request->call_type;
+            $callSource     = $request->call_source; 
+            $leadcallstatus = $request->leadcallstatus;
+            $outcome        = $request->outcome;
+            if(!$agentNumber) {
+                $agentNumber = 12345678;
+            } 
+            // $description    = $request->description;
+             //leadcallstatus 
                 //0 is Available
                 //1 is Completed
                 //2 is Follow Up
-        //  $callingData  = CampaignLead::create([
-        //         'lead_id' =>  $request->lead_id,
-        //         'campaign_id' => $request->campaign_id,
-        //         'agent_id' => $userId,
-        //         'status' => $request->leadcallstatus,
-        //         'leadcallstatus'=> $request->leadcallstatus,
-        //         'company_id' => 1
-        //     ]);
+        
+            // call Status is database
+            //     1- available,2- completed,3- follow 
+
+            //call Type
+             //0=Manual,1=Auto
+
+            //call_source
+            //1=Incoming,0=Outgoing
+
+            if($leadcallstatus==='0') {
+                $callStatus = 1;
+            }
+            if($leadcallstatus==1) {
+                $callStatus = 2;
+            }
+            if($leadcallstatus == 2) {
+                $callStatus = 3;
+            }
+            
+            //Out come status
+            // 1 => 'in Process'; 2 => 'Running'; 3 => 'Both Answered';
+            // 4 => 'To (Customer) Answered - From (Agent) Unanswered'; 
+            // 5 => 'To (Customer) Answered';
+            // 6 => 'To (Customer) Unanswered - From (Agent) Answered.'; 
+            // 7 => 'From (Agent) Unanswered';
+            // 8 => 'To (Customer) Unanswered.';
+            // 9 => 'Both Unanswered'; 
+            // 10 => 'From (Agent) Answered.';
+            // 11 => 'Rejected Call'; 
+            // 12 => 'Skipped';
+            // 13 => 'From (Agent) Failed.';
+            // 14 => 'To (Customer) Failed - From (Agent) Answered';
+            // 15 => 'To (Customer) Failed'; 16 => 'To (Customer) Answered - From (Agent) Failed';
+            //need to store the all disposal form data in the database
+            //in the table mannual_logged_calls
+
+            $duration = '00:00:00';
+           // $recordingsFile
+            $manualLoggedCallData = ManualLoggedCall::create([
+                'company_id'       => 1,
+                'lead_id'          => $leadId,
+                'lead_number'      => $leadMobile,
+                'agent_number'     => $agentNumber,
+                'created_by'       => $userId,
+                'outcome'          => $outcome,
+                'call_status'      => $callStatus,
+                'duration'         => $duration,
+                'status'           => $leadcallstatus,
+                'call_type'        => $callType,
+                'call_source'      => $callSource,
+                'call_purpose'     => $callPurpose,
+                'campaign_id'      => $campaignId
+               
+            ]);
 
 
-            CampaignLead::where('lead_id', $request->lead_id)->update(array('leadcallstatus' => $request->leadcallstatus));
+            //store the call_purpose and user_id
+            $callPurpose  = CallPurpose::create([
+                'company_id' => 1,
+                'purpose' => $callPurpose,
+                'from_id' =>  $userId,
+            ]);
+               
+            CampaignLead::where('lead_id', $leadId)->update(array('leadcallstatus' => $leadcallstatus));
             //update the lead status 
-            Lead::where('id', $request->lead_id)->update(array('status_id' => $request->leadcallstatus));
-
+            Lead::where('id', $leadId)->update(array('status_id' => $leadcallstatus));
             //store the other calling data and other 
             $callingData  = Callingdata::create([
-                'lead_id' =>  $request->lead_id,
-                'campaign_id' => $request->campaign_id,
-                'mobile' =>  $request->lead_mobile,
-                'agent_id' => $userId,
-                'agent_mobile' => $request->agent_mobile,
-                'company_id' => 1
+                'lead_id'       =>  $leadId,
+                'campaign_id'   =>  $campaignId,
+                'mobile'        =>  $leadMobile,
+                'agent_id'      =>  $userId,
+                'agent_mobile'  =>  $agentNumber,
+                'company_id'    =>  1
             ]);
 
             $data = [];
 
-            if($request->leadcallstatus==0) {
+            if($leadcallstatus==0) {
                 $updatedLeadStatus = 'Available';
             }
-            elseif($request->leadcallstatus==1) {
+            elseif($leadcallstatus==1) {
                 $updatedLeadStatus = 'Completed';
             }
             else {
                 $updatedLeadStatus = 'Follow Up';
             }
-
             $newData = array(
-                'lead_id' =>  $request->lead_id,
-                'campaign_id' => $request->campaign_id,
-                'lead_mobile' =>  $request->lead_mobile,
-                'agent_id' => $userId,
-                'agent_mobile' => $request->agent_mobile,
-                'purpose' => $request->call_purpose,
-                'leadcall_status'=> $updatedLeadStatus
+                'lead_id'         =>  $leadId,
+                'campaign_id'     => $campaignId,
+                'lead_mobile'     =>  $leadMobile,
+               // 'agent_id'        => $userId,
+                // 'agent_mobile'    => $agentNumber,
+                // 'purpose'         =>  $callPurpose,
+                'leadcall_status' => $updatedLeadStatus
             );
             array_push($data,$newData);
             return response()->json([
@@ -267,15 +325,14 @@ public function test() {
                 'code'     => "success",
                 'message'  => "call disposal has been initiated successfully",
                 'data'=>  $data
-
             ]);
         } 
 
+//employee dashboard Api
 
     public function employee_dashboard(Request $request) {
         $user    = auth('api')->user();
         $userId  = $user->id;
-        
         $data = [];
         $contactBySource = [];
         $totalLeads             = CampaignLead::where('agent_id', $userId)->count();
@@ -283,7 +340,6 @@ public function test() {
         $completedLeads         = CampaignLead::where(['agent_id' => $userId,'leadcallstatus' => 1])->count();
         $followUpLeads          = CampaignLead::where(['agent_id' => $userId,'leadcallstatus' => 2])->count();
         // $userTask               = Task::where('user_id', $request->user_id)->count();
-
         //contact by source
         //1 email
         //2 google
@@ -380,9 +436,9 @@ foreach($empTask as $task) {
         
         $employeeDashboardData = array(
             'totalLeads'            =>  $totalLeads,
-            'availableForCallLeads' => $availableForCallLeads,
+            'availableForCallLeads' =>  $availableForCallLeads,
             'completedLeads'        =>  $completedLeads,
-            'followUpLeads'         => $followUpLeads,
+            'followUpLeads'         =>  $followUpLeads,
             'totalProjects'         =>  $totalProjects,
            
         );
@@ -401,7 +457,6 @@ foreach($empTask as $task) {
         array_push($contactBySource, $sourceData);
         $ldate = date('Y-m-d');
         $startDate = Carbon::createFromFormat('Y-m-d', $ldate)->startOfDay();
-
 //event functionality
         $userEvent = Event::join('event_attendees', 'event_attendees.event_id', '=', 'events.id')
         ->where('event_attendees.user_id', $userId)
