@@ -60,40 +60,35 @@ class CampaignController extends ApiBaseController
         
     }
 
-
-
-public function test() {
-   
-    
-}
-
-
-
-
 //all campign list
     public function campign_list(Request $request)
     {
-        
-        $perPage = $request->page_size;
+        $user      = auth('api')->user();
+        $userId    = $user->id;
+        $perPage   = $request->page_size;
 
-        $compain = Campaign::orderBy('id', 'desc')->paginate($perPage);
 
+        $compain = Campaign::join('campaign_leads', 'campaign_leads.campaign_id', '=', 'campaigns.id')
+        ->where('campaign_leads.agent_id', $userId)
+        ->select('campaigns.*')
+        ->groupby('campaigns.id')
+        ->orderBy('campaigns.id', 'desc')
+        ->paginate($perPage);
+        // $compain   = Campaign::orderBy('id', 'desc')->paginate($perPage);
         if(count($compain)>0) {
-            $$compain = $compain;
+            $compain = $compain;
         } else {
-            $$compain = [];
+            $compain = [];
         }
-
             return response()->json([
                 'success'  => true,
                 'status'   => 200,
                 'code'     => "success",
                 'message'  => "Campaign retrieved successfully",
-                'campaign' => $compain,
+                'campaign' =>  $compain
+              //  'count'    => $data 
         ]);
     }
-
-
     //list of lead assingned to particular user
     public function user_lead(Request $request) {
         //get the user id from the token
@@ -198,7 +193,7 @@ public function test() {
         }
 
         //call disposal api
-        public function call_disposal(Request $request ) {
+        public function call_disposal(Request $request) {
 
             $user           = auth('api')->user();
             $userId         = $user->id;
@@ -212,9 +207,30 @@ public function test() {
             $callSource     = $request->call_source; 
             $leadcallstatus = $request->leadcallstatus;
             $outcome        = $request->outcome;
+
             if(!$agentNumber) {
                 $agentNumber = 12345678;
             } 
+
+            //return the lead name and the lead email based on the lead id
+           $leadData  = Lead::where('id', $leadId)->first();
+           $leadName  = $leadData->client_name;
+           $leadEmail = $leadData->client_email;
+           if($request->lead_name) {
+                $leadName = $request->lead_name;
+           }
+           else {
+            $leadName = $leadName;
+           }
+           if($request->lead_email) {
+                $leadEmail = $request->lead_email;
+            }
+             else {
+                 $leadEmail = $leadEmail;
+            }
+            
+           //update the lead data based on the lead id 
+           Lead::where('id', $leadId)->update(array('client_name' => $leadName, 'client_email'=> $leadEmail));
             // $description    = $request->description;
              //leadcallstatus 
                 //0 is Available
@@ -287,6 +303,9 @@ public function test() {
             CampaignLead::where('lead_id', $leadId)->update(array('leadcallstatus' => $leadcallstatus));
             //update the lead status 
             Lead::where('id', $leadId)->update(array('status_id' => $leadcallstatus));
+        //get single lead data
+        $leadRecord =  Lead::where('id', $leadId)->first();
+
             //store the other calling data and other 
             $callingData  = Callingdata::create([
                 'lead_id'       =>  $leadId,
@@ -310,8 +329,10 @@ public function test() {
             }
             $newData = array(
                 'lead_id'         =>  $leadId,
-                'campaign_id'     => $campaignId,
+                'campaign_id'     =>  $campaignId,
                 'lead_mobile'     =>  $leadMobile,
+                'lead_name'       =>  $leadRecord->client_name,
+                'lead_email'      =>  $leadRecord->client_email, 
                // 'agent_id'        => $userId,
                 // 'agent_mobile'    => $agentNumber,
                 // 'purpose'         =>  $callPurpose,
@@ -323,10 +344,10 @@ public function test() {
                 'status'   => 200,
                 'code'     => "success",
                 'message'  => "call disposal has been initiated successfully",
-                'data'=>  $data
+                'data'     =>  $data,
+                // 'leadData' => $leadRecord
             ]);
         } 
-
 //employee dashboard Api
 
     public function employee_dashboard(Request $request) {
@@ -347,7 +368,6 @@ public function test() {
         //5 direct visit
         //6 tv ad
         //38 other
-
         $otherLeadCount         = Lead::where(['agent_id' => $userId,'source_id' => 38])->count();
         $emailLeadCount         = Lead::where(['agent_id' => $userId,'source_id' => 1])->count();
         $googleLeadCount        = Lead::where(['agent_id' => $userId,'source_id' => 2])->count();
@@ -495,8 +515,6 @@ foreach($empTask as $task) {
         ]);   
     }
 
-    //event Api
-
     public function event_list(Request $request) {
         $user    = auth('api')->user();
         $userId  = $user->id;
@@ -574,9 +592,6 @@ foreach($empTask as $task) {
                 unset($data['outcome']);
 
             }
-
-
-
 
             return response()->json([
                 'success'       => true,
