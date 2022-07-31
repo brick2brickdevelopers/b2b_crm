@@ -94,12 +94,12 @@
                                         <span class="font-12 text-muted m-l-5"> Both Answered</span>
                                     </h4>
                                 </div>
-                               
+
                             </div>
                         </div>
                         <div class="col-md-12 m-b-30">
                             <div class="white-box">
-                          
+
                                 <div class="col-md-3  ">
                                     <h4>
                                         <span class="text-warning" id="totalAgent"></span>
@@ -108,15 +108,15 @@
                                 </div>
                                 <div class="col-md-3 b-l ">
                                     <h4>
-                                        <span class="text-info" id="totalCustUnAns"></span> 
+                                        <span class="text-info" id="totalCustUnAns"></span>
                                         <span class="font-12 text-muted m-l-5"> Cust. Ans - Agent UnAns</span>
                                     </h4>
                                 </div>
                                 <div class="col-md-3 b-l ">
                                     <h4>
                                         <span class="text-primary" id="totalCustAns"></span>
-                                         <span class="font-12 text-muted m-l-5"> Cust. UnAns - Agent Ans</span>
-                                        </h4>
+                                        <span class="font-12 text-muted m-l-5"> Cust. UnAns - Agent Ans</span>
+                                    </h4>
                                 </div>
                                 {{-- <div class="col-md-3 b-l text-center">
                                     <h4>
@@ -313,14 +313,13 @@
                 </div>
 
 
-                {{-- </div> --}}
 
 
             </div>
         </div>
     </div>
     <!-- .row -->
-
+    {{-- //modal --}}
     <div id="callLogEditModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-top">
             <!-- Modal content-->
@@ -572,12 +571,12 @@
                             $(name).text(tab_count[name])
                         })
                         $('#totalCalls').text(totalCalls)
-                       $('#totalIncomming').text(totalIncomming)
-                       $('#totalOutgoing').text(totalOutgoing)
-                       $('#totalBoth').text(totalBoth)
-                       $('#totalAgent').text(totalAgent)
-                       $('#totalCustUnAns').text(totalCustUnAns)
-                       $('#totalCustAns').text(totalCustAns)
+                        $('#totalIncomming').text(totalIncomming)
+                        $('#totalOutgoing').text(totalOutgoing)
+                        $('#totalBoth').text(totalBoth)
+                        $('#totalAgent').text(totalAgent)
+                        $('#totalCustUnAns').text(totalCustUnAns)
+                        $('#totalCustAns').text(totalCustAns)
 
                         fnCallback(data.original)
                     }
