@@ -95,7 +95,7 @@ class CallReportDataTable extends BaseDataTable
             ->dom('Bfrtip')
             ->orderBy(0)
             ->buttons(
-                Button::make('create'),
+                // Button::make('create'),
                 Button::make('export'),
                 Button::make('print'),
                 // Button::make('reset'),

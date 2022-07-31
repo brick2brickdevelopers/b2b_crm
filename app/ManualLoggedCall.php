@@ -23,4 +23,7 @@ class ManualLoggedCall extends Model
     {
         return $this->belongsTo(CallPurpose::class, 'call_purpose');
     }
+
+    protected $guarded = [];  
+
 }

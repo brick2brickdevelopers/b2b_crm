@@ -48,6 +48,8 @@ ApiRoute::group(['namespace' => 'Modules\RestAPI\Http\Controllers', 'middleware'
     ApiRoute::post('call_disposal', 'CampaignController@call_disposal');
     ApiRoute::get('call_purpose', 'CampaignController@call_purpose');
     ApiRoute::get('event_list', 'CampaignController@event_list');
+    ApiRoute::get('call_log_reports', 'CampaignController@call_log_reports');
+    
 //ending the compaign route here
 //Updated dashboard api route starting from here
     ApiRoute::get('dashboard','CampaignController@dashboard');
