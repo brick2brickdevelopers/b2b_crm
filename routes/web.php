@@ -1160,6 +1160,7 @@ Route::group(['middleware' => 'auth'], function () {
             Route::any('leads/getform', ['uses' => 'MemberLeadController@getForm'])->name('leads.getForm');
             Route::any('leads/callingMode', ['uses' => 'MemberLeadController@callingMode'])->name('leads.callingMode');
             Route::any('leads/storeLoggedCallDetails', ['uses' => 'MemberLeadController@storeLoggedCallDetails'])->name('leads.storeLoggedCallDetails');
+            Route::any('leads/removeLog', ['uses' => 'MemberLeadController@removeLog'])->name('leads.removeLog');
             Route::any('leads/callEndReport', ['uses' => 'MemberLeadController@callEndReport'])->name('leads.callEndReport');
             Route::post('leads/change-status', ['uses' => 'MemberLeadController@changeStatus'])->name('leads.change-status');
             Route::get('leads/follow-up/{leadID}', ['uses' => 'MemberLeadController@followUpCreate'])->name('leads.follow-up');

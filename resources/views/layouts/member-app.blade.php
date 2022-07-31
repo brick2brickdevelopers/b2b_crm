@@ -869,15 +869,14 @@
     {{-- Ajax Modal Ends --}}
     @if (in_array('calling', $modules))
         @if (user()->sip_pass)
-            <div id="callDetails" class="modal fade" role="dialog" aria-labelledby="myModalLabel"
-                aria-hidden="true">
+            <div id="callDetails" class="modal fade" role="dialog"
+                aria-labelledby="myModalLabel"data-backdrop="static" data-keyboard="false" aria-hidden="true">
                 <div class="modal-dialog modal-lg" style="width: 1250px !important;max-width: 1250px !important;">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h4 class="modal-title" id="myModalLabel"><i class="uil-question-circle mr-1"></i>Add
                                 Call
                                 Details</h4>
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                         </div>
                         <div class="modal-body">
                             <div id="calling_lead_details"></div>
@@ -927,7 +926,7 @@
 
 
         <script>
-            function updateCallDetail(log_id, type = "log") {
+            function updateCallDetail(log_id, type = "log", campaign_id = null) {
                 $('#callDetails').modal('show');
                 $.ajax({
                     url: "{{ route('member.leads.callingLeadDetails') }}",
@@ -935,6 +934,7 @@
                     data: {
                         log_id: log_id,
                         type: type,
+                        campaign_id: campaign_id,
                     },
                     success: function(data) {
                         $('#calling_lead_details').html(data);

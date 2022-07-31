@@ -291,14 +291,16 @@ class MemberLeadController extends MemberBaseController
 
 
             $this->lead = Lead::find($request->log_id);
+
             $log = new ManualLoggedCall();
             $log->lead_id = $this->lead->id;
             $log->lead_number = $this->lead->mobile;
-            $log->agent_number = $this->lead->mobile;
+            $log->agent_number = empty(auth()->user()->sip_user) ? auth()->user()->mobile : auth()->user()->sip_user;
             $log->created_by = auth()->user()->id;
             $log->call_status = 0;
             $log->call_source = 1;
             $log->status = 0;
+            $log->campaign_id = $request->campaign_id;
             $log->session_id =  uniqid();
             $log->call_type = isset($request->call_type) ? $request->call_type : 0;
             $log->save();
@@ -315,6 +317,7 @@ class MemberLeadController extends MemberBaseController
             // $this->callperposes = CustomFieldGroup::where('model', 'App\ManualLoggedCall')->get();
             $this->callperposes = CallPurpose::all();
             $this->type = 'call';
+            $this->isManual = true;
         } else {
             $this->log = ManualLoggedCall::find($request->log_id);
             $this->mobile = trim($this->log->lead_number);
@@ -431,6 +434,8 @@ class MemberLeadController extends MemberBaseController
         $log->call_source = $request->call_source;
         $log->call_purpose = $request->call_purpose;
         $log->outcome = $request->outcome;
+        $log->duration = $request->duration;
+        $log->call_status = $request->call_status;
         $log->save();
         if ($request->get('custom_fields_data')) {
             $this->updateCustomFieldData($request->get('custom_fields_data'), $callP->id);
@@ -481,6 +486,15 @@ class MemberLeadController extends MemberBaseController
                     ]);
             }
         }
+    }
+
+
+    public function removeLog(Request $request)
+    {
+        ManualLoggedCall::find($request->log_id)->delete();
+        return response()->json([
+            'success' => true
+        ]);
     }
     function getCustomFieldGroupsWithFieldsById($group)
     {
@@ -796,74 +810,87 @@ class MemberLeadController extends MemberBaseController
     }
 
 
+
     public function dashboard(Builder $builder, Request $request)
     {
         $id = Auth::user()->id;
-        $this->campaigns = Campaign::all();
-
-
+        $this->campaigns = Campaign::get();
         $this->callPurposes = CallPurpose::all();
+        if (request()->ajax()) {
 
-        $this->totalAvailable = CampaignLead::where('campaign_leads.status', 0)
-            ->where('agent_id', '=', $id)
-            ->count();
+            $callPurposes = CallPurpose::all('id');
+            $counter = array();
+            foreach ($callPurposes as $callPurpose) {
+                $logsCount = ManualLoggedCall::where('call_purpose', $callPurpose->id)->where('created_by', $id)->count();
 
-        $this->totalCompleted = CampaignLead::where('campaign_leads.status', 1)
-            ->where('agent_id', '=', $id)
-            ->count();
-
-        $this->totalFollow = CampaignLead::where('campaign_leads.status', 2)
-            ->where('agent_id', '=', $id)
-            ->count();
-
-        if (!empty($request->check_action)) {
-            if (request()->ajax()) {
-                $leads = CampaignLead::select('campaign_leads.*', 'campaigns.id as capmaign_id')
-                    ->join('campaigns', 'campaigns.id', '=', 'campaign_leads.campaign_id')
-                    ->join('users', 'users.id', '=', 'campaign_leads.agent_id')
-                    ->where('campaigns.id', $request->check_action)
-                    ->where('agent_id', '=', $id)
-                    ->with('lead')->get();
-                return DataTables::of($leads)
-                    ->editColumn('action', function ($lead) {
-                        return view('member.lead.action', compact('lead'));
-                    })
-
-                    ->toJson();
+                array_push($counter, array("id" => "#call_$callPurpose->id", 'count' => $logsCount));
             }
-        } else {
-            if (request()->ajax()) {
-                    $callPurposes = CallPurpose::all('id');
-                    $counter = array();
-                    foreach($callPurposes as $callPurpose){
-                        $logsCount = ManualLoggedCall::select('manual_logged_calls.*')
-                        ->join('leads','leads.id','=','manual_logged_calls.lead_id')
-                        ->join('call_purposes','call_purposes.id','=','manual_logged_calls.call_purpose')
-                        ->where('manual_logged_calls.call_purpose',$callPurpose->id)
-                        ->count();
-
-                        array_push($counter,array("id"=>"#call_$callPurpose->id",'count'=>$logsCount));
-                      //  $manual_call[] = $callPurpose->id;
-                    }
-
-                $leads = CampaignLead::select('campaign_leads.*', 'campaigns.id as capmaign_id')
-                    ->join('campaigns', 'campaigns.id', '=', 'campaign_leads.campaign_id')
-                    ->join('users', 'users.id', '=', 'campaign_leads.agent_id')
-                    ->where('campaign_leads.status', $request->type)
-                    ->where('agent_id', '=', $id)
-                    ->with('lead')->get();
-                $dTable = DataTables::of($leads)
-                    ->editColumn('action', function ($lead) {
-                        return view('member.lead.action', compact('lead'));
-                    })
-
-                    ->toJson();
-
-                return response()->json([
-                    'data' => $dTable,
-                    'additional' => $counter,
-                ]);
+            array_push($counter, array("id" => "#call_null", 'count' => ManualLoggedCall::whereNull('call_purpose')->count()));
+            $leads = CampaignLead::query()->where('status', $request->type);
+            if ($request->check_action) {
+                $leads->where('campaign_id', $request->check_action);
             }
+            $leads->where('agent_id', '=', $id);
+            $leads->with('lead');
+
+            $dTable = DataTables::of($leads)
+                ->editColumn('action', function ($lead) {
+                    return view('member.lead.action', compact('lead'));
+                })
+                ->toJson();
+
+            // Counting Start
+            $totalAvailable = CampaignLead::query();
+            if ($request->check_action) {
+                $totalAvailable->where('campaign_id', $request->check_action)->where('agent_id', $id);
+            }
+            
+            $totalCompleted = CampaignLead::query();
+            if ($request->check_action) {
+                $totalCompleted->where('campaign_id', $request->check_action)->where('agent_id', $id);
+            }
+           
+            $totalFollow = CampaignLead::query();
+            if ($request->check_action) {
+                $totalFollow->where('campaign_id', $request->check_action)->where('agent_id', $id);
+            }
+            
+
+            $this->totalAvailable = $totalAvailable->where('status', 0)->where('agent_id', '=', $id)->count();
+            $this->totalCompleted = $totalCompleted->where('status', 1)->where('agent_id', '=', $id)->count();
+            $this->totalFollow = $totalFollow->where('status', 2)->where('agent_id', '=', $id)->count();
+
+            // Counting End
+
+            // call details start
+
+                $this->totalCalls = ManualLoggedCall::where('created_by', '=', $id)->count();
+                $this->totalIncomming = ManualLoggedCall::where('created_by', '=', $id)->where('call_source',1)->count();
+                $this->totalOutgoing = ManualLoggedCall::where('created_by', '=', $id)->where('call_source',0)->count();
+                $this->totalBoth = ManualLoggedCall::where('created_by', '=', $id)->where('outcome',3)->count();
+                $this->totalAgent = ManualLoggedCall::where('created_by', '=', $id)->where('outcome',7)->count();
+                $this->totalCustUnAns = ManualLoggedCall::where('created_by', '=', $id)->where('outcome',4)->count();
+                $this->totalCustAns = ManualLoggedCall::where('created_by', '=', $id)->where('outcome',6)->count();
+
+            // call details end
+
+            return response()->json([
+                'data' => $dTable,
+                'additional' => $counter,
+                'totalCalls' => $this->totalCalls,
+                'totalIncomming' =>$this->totalIncomming,
+                'totalOutgoing' =>$this->totalOutgoing,
+                'totalBoth' =>$this->totalBoth,
+                'totalAgent' =>$this->totalAgent,
+                'totalCustUnAns' =>$this->totalCustUnAns,
+                'totalCustAns' =>$this->totalCustAns,
+                'tab_count' => array(
+                    '#total_leads_count' => $this->totalAvailable,
+                    '#complete_leads_count' => $this->totalCompleted,
+                    '#follow_leads_count' => $this->totalFollow,
+                ),
+
+            ]);
         }
 
 
@@ -875,50 +902,11 @@ class MemberLeadController extends MemberBaseController
 
         ])->setTableId('tab-table');
 
+
+
         return view('member.lead.dashboard', $this->data);
     }
 
 
-    public function leadSearch(Request $request)
-    {
-        $id = Auth::user()->id;
-
-        $this->leads = CampaignLead::select('campaign_leads.*', 'campaigns.id as capmaign_id')
-            ->join('campaigns', 'campaigns.id', '=', 'campaign_leads.campaign_id')
-            ->join('users', 'users.id', '=', 'campaign_leads.agent_id')
-            ->where('campaigns.id', $request->check_action)
-            ->where('agent_id', '=', $id)
-            ->get();
-
-
-        $this->totalAvailable = CampaignLead::select('campaign_leads.*', 'campaigns.id as capmaign_id')
-            ->join('campaigns', 'campaigns.id', '=', 'campaign_leads.campaign_id')
-            ->join('users', 'users.id', '=', 'campaign_leads.agent_id')
-            ->where('campaigns.id', $request->check_action)
-            ->where('campaign_leads.status', 0)
-            ->where('agent_id', '=', $id)
-            ->count();
-
-        $this->totalCompleted = CampaignLead::select('campaign_leads.*', 'campaigns.id as capmaign_id')
-            ->join('campaigns', 'campaigns.id', '=', 'campaign_leads.campaign_id')
-            ->join('users', 'users.id', '=', 'campaign_leads.agent_id')
-            ->where('campaigns.id', $request->check_action)
-            ->where('campaign_leads.status', 1)
-            ->where('agent_id', '=', $id)
-            ->count();
-
-        $this->totalFollow = CampaignLead::select('campaign_leads.*', 'campaigns.id as capmaign_id')
-            ->join('campaigns', 'campaigns.id', '=', 'campaign_leads.campaign_id')
-            ->join('users', 'users.id', '=', 'campaign_leads.agent_id')
-            ->where('campaigns.id', $request->check_action)
-            ->where('campaign_leads.status', 2)
-            ->where('agent_id', '=', $id)
-            ->count();
-
-        $this->callPurposes = CallPurpose::all();
-        //  dd($this->leads);
-        //   ->where('users.id', $request->assign_to_campaign)
-        $view = view('member.lead.dashboard_data', $this->data)->render();
-        return Reply::dataOnly(['status' => 'success', 'data' => $view]);
-    }
+  
 }

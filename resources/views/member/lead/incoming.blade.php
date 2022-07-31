@@ -12,6 +12,7 @@
             <form id="incoming_call_lead_details_save">
                 @csrf
                 <input type="hidden" name="log_id" value="{{ $log->id }}">
+
                 <div class="col-lg-12">
                     <div class="form-group">
                         <label for="description">Mobile *</label>
@@ -24,6 +25,7 @@
                         <label for="description">Name *</label>
                         <input class="form-control" {{ $lead ? 'readonly' : '' }}
                             value="{{ $lead ? $lead->client_name : '' }}" name="name" id="incoming_name"></input>
+
                     </div>
                 </div>
                 {{-- <div class="col-lg-12">
@@ -35,7 +37,9 @@
                 </div> --}}
                 @if (!$lead)
                     <div class="col-lg-12">
-                        <center><button type="submit" id="" class="btn btn-success btn-sm">SAVE</button>
+                        <center>
+                            <button type="submit" id="" class="btn btn-success btn-sm">SAVE</button>
+
                         </center>
                     </div>
                 @endif
@@ -89,6 +93,30 @@
                         </div>
                     </div>
 
+                    @isset($isManual)
+                        @if ($isManual)
+                            <div class="col-lg-12">
+                                <div class="form-group">
+
+                                    <label for="create_at">Call Status</label>
+                                    <select {{ $lead ? '' : 'disabled' }} class="form-control select2" name="call_status"
+                                        data-toggle="select2" data-placeholder="Please select.." required>
+                                        <option value="">Please select..</option>
+                                        <option value="0">Available</option>
+                                        <option value="1">Completed</option>
+                                        <option value="2">Follow</option>
+
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="description">Call Duration *</label>
+                                    <input class="form-control" name="duration" type="time" />
+                                </div>
+                            </div>
+                        @endif
+                    @endisset
+
                     <div class="col-lg-12" id="incoming_add_donation_div">
 
                     </div>
@@ -97,7 +125,10 @@
                     </div>
 
                     <div class="col-lg-12">
-                        <center><button type="submit" id="" class="btn btn-success btn-sm">SAVE</button>
+                        <center>
+                            <button type="submit" id="" class="btn btn-success btn-sm">SAVE</button>
+                            <a href="#" onclick="removeCallLog({{ $log->id }})"
+                                class="btn btn-danger btn-sm">Close</a>
                         </center>
                     </div>
 
@@ -194,7 +225,7 @@
                 data: $('#incoming_call_details_save').serialize(),
                 success: function(response) {
                     if (response.status == 'success') {
-                        console.warn();
+                        $("#callDetails").modal('hide');
                         (response)
                         setTimeout(function() {}, 3500);
                     }
@@ -273,6 +304,21 @@
             //     //$('#will_donate_type_div').show();
             // }
 
+        }
+
+        function removeCallLog(id) {
+            $.ajax({
+                type: "POST",
+                url: "{{ route('member.leads.removeLog') }}",
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    log_id: "{{ $log->id }}"
+                },
+                success: function(data) {
+                    $("#callDetails").modal('hide');
+                },
+                error: function(data) {},
+            });
         }
     </script>
 

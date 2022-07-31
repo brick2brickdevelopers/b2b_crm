@@ -70,36 +70,62 @@
                     <div class="row dashboard-stats">
                         <div class="col-md-12 m-b-30">
                             <div class="white-box">
-                                <div class="col-md-2 text-center">
-                                    <h4><span class="text-dark" id="totalWorkingDays">4</span> <span
-                                            class="font-12 text-muted m-l-5"> Total Calls</span></h4>
+                                <div class="col-md-3 ">
+                                    <h4>
+                                        <span class="text-dark" id="totalCalls"></span>
+                                        <span class="font-12 text-muted m-l-5"> Total Calls</span>
+                                    </h4>
                                 </div>
-                                <div class="col-md-2 text-center">
-                                    <h4><span class="text-dark" id="totalWorkingDays">4</span> <span
-                                            class="font-12 text-muted m-l-5"> Incomming Calls</span></h4>
+                                <div class="col-md-3 b-l ">
+                                    <h4>
+                                        <span class="text-dark" id="totalIncomming"></span>
+                                        <span class="font-12 text-muted m-l-5"> Incomming Calls</span>
+                                    </h4>
                                 </div>
-                                <div class="col-md-2 b-l text-center">
-                                    <h4><span class="text-success" id="daysPresent">4</span> <span
-                                            class="font-12 text-muted m-l-5"> Outgoing Calls</span></h4>
+                                <div class="col-md-3 b-l ">
+                                    <h4>
+                                        <span class="text-success" id="totalOutgoing"></span>
+                                        <span class="font-12 text-muted m-l-5"> Outgoing Calls</span>
+                                    </h4>
                                 </div>
-                                <div class="col-md-2 b-l text-center">
-                                    <h4><span class="text-danger" id="daysLate">4</span> <span
-                                            class="font-12 text-muted m-l-5"> Both Answered</span></h4>
+                                <div class="col-md-3 b-l ">
+                                    <h4>
+                                        <span class="text-danger" id="totalBoth"></span>
+                                        <span class="font-12 text-muted m-l-5"> Both Answered</span>
+                                    </h4>
                                 </div>
-                                <div class="col-md-2 b-l text-center">
-                                    <h4><span class="text-warning" id="halfDays">4</span> <span
-                                            class="font-12 text-muted m-l-5"> Agent UnAnswered:</span></h4>
-                                </div>
-                                <div class="col-md-2 b-l text-center">
-                                    <h4><span class="text-info" id="absentDays">4</span> <span
-                                            class="font-12 text-muted m-l-5"> Cust. Ans - Agent UnAns</span></h4>
-                                </div>
-                                {{-- <div class="col-md-2 b-l text-center">
-                                <h4><span class="text-primary" id="holidayDays">4</span> <span class="font-12 text-muted m-l-5"> Cust. UnAns - Agent Ans</span></h4>
-                            </div> --}}
+                               
                             </div>
                         </div>
-
+                        <div class="col-md-12 m-b-30">
+                            <div class="white-box">
+                          
+                                <div class="col-md-3  ">
+                                    <h4>
+                                        <span class="text-warning" id="totalAgent"></span>
+                                        <span class="font-12 text-muted m-l-5"> Agent UnAnswered:</span>
+                                    </h4>
+                                </div>
+                                <div class="col-md-3 b-l ">
+                                    <h4>
+                                        <span class="text-info" id="totalCustUnAns"></span> 
+                                        <span class="font-12 text-muted m-l-5"> Cust. Ans - Agent UnAns</span>
+                                    </h4>
+                                </div>
+                                <div class="col-md-3 b-l ">
+                                    <h4>
+                                        <span class="text-primary" id="totalCustAns"></span>
+                                         <span class="font-12 text-muted m-l-5"> Cust. UnAns - Agent Ans</span>
+                                        </h4>
+                                </div>
+                                {{-- <div class="col-md-3 b-l text-center">
+                                    <h4>
+                                        <span class="text-primary" id="holidayDays">4</span> 
+                                        <span class="font-12 text-muted m-l-5"> Cust. UnAns - Agent Ans</span>
+                                    </h4>
+                                </div> --}}
+                            </div>
+                        </div>
                     </div>
                 </div>
                 {{-- Start Filter --}}
@@ -124,24 +150,15 @@
                             @endif
                         </select>
                     </div>
-                    <div class="col-md-3" id="assign_to_campaign_section">
-                        <select class="form-control" id="assign_to_campaign" data-toggle="select2"
-                            data-placeholder="Choose Campaigns">
-                            <option value="">Choose Agent</option>
-                            @if (!empty($agents))
-                                @foreach ($agents as $agent)
-                                    <option value="{{ $agent->user_id }}">{{ $agent->user->name }}</option>
-                                @endforeach
-                            @endif
-                        </select>
-                    </div>
+
                     <div class="col-md-2">
                         <button type="button" id="apply-filter" class="btn btn-primary btn-sm"><i
-                            class="fa fa-sliders"></i> Filter</button>
+                                class="fa fa-sliders"></i> Filter</button>
                     </div>
                 </div>
 
                 {{-- End Filter --}}
+
                 {{-- <div class="px-2"> --}}
                 <div class="row">
                     <div class="col-xs-12" id="leadSeache-data"></div>
@@ -172,7 +189,11 @@
                                                                             data-name="available-data" data-type="0"
                                                                             aria-controls="available-tab" role="tab"
                                                                             data-toggle="tab" aria-expanded="true"><i
-                                                                                class="ti-ticket"></i> Available</a>
+                                                                                class="ti-ticket"></i> <span
+                                                                                class="d-none d-md-block">Available (<span
+                                                                                    id="total_leads_count"></span>)
+                                                                            </span>
+                                                                        </a>
                                                                     </li>
                                                                     <li role="presentation" class=""><a
                                                                             href="#completed-tab"
@@ -181,7 +202,11 @@
                                                                             data-type="1" aria-controls="completed-tab"
                                                                             role="tab" data-toggle="tab"
                                                                             aria-expanded="false"><i
-                                                                                class="icon-graph"></i> Completed</a>
+                                                                                class="icon-graph"></i>
+                                                                            <span class="d-none d-md-block">Completed
+                                                                                (<span id="complete_leads_count"></span>)
+                                                                            </span>
+                                                                        </a>
                                                                     </li>
                                                                     <li role="presentation" class=""><a
                                                                             href="#follow-tab" data-name="follow-data"
@@ -189,7 +214,12 @@
                                                                             data-type="2" aria-controls="follow-tab"
                                                                             role="tab" data-toggle="tab"
                                                                             aria-expanded="false"><i
-                                                                                class="icon-graph"></i> Followup</a>
+                                                                                class="icon-graph"></i>
+                                                                            <span class="d-none d-md-block">Follow Up
+
+                                                                                (<span id="follow_leads_count"></span>)
+                                                                            </span>
+                                                                        </a>
                                                                     </li>
                                                                 </ul>
                                                             </div>
@@ -241,9 +271,8 @@
                                             <div class="col-lg-6">
                                                 <h5 class="text-muted font-weight-normal mt-0 text-truncate"
                                                     title="Campaign Sent">{{ $callPurpose->purpose }}</h5>
-                                                <a class="btn btn-light prayer_request_redirect"
-                                                    href="http://crm-dev.cleverstack.in/crm/admin/leads/call-log-reports?startdate=05/15/2022&amp;enddate=05/15/2022&amp;purpose=1"><span
-                                                        id="prayer_request_count">0</span></a>
+                                                <a class="btn btn-light prayer_request_redirect" href="#">
+                                                    <span id="call_{{ $callPurpose->id }}">0</span></a>
                                             </div>
                                             <div class="col-lg-6">
                                                 <div class="text-right" style="position: relative;">
@@ -256,6 +285,26 @@
                                     </div>
                                 </div>
                             @endforeach
+                            <div class="card" style="background-color: #f6f7f9; margin-top:10px; border-radius:10px">
+                                <div class="card-body">
+                                    <div class="row align-items-center my-2">
+
+                                        <div class="col-lg-6">
+                                            <h5 class="text-muted font-weight-normal mt-0 text-truncate"
+                                                title="Campaign Sent">Unknown</h5>
+                                            <a class="btn btn-light prayer_request_redirect" href="#">
+                                                <span id="call_null">0</span></a>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="text-right" style="position: relative;">
+                                                <div id="campaign-sent-chart" data-colors="#727cf5"
+                                                    style="min-height: 60px;">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             {{-- <div class="table-responsive">
                                     {!! $dataTable->table(['class' => 'table table-bordered table-hover toggle-circle default footable-loaded footable']) !!}
                                 </div> --}}
@@ -263,69 +312,7 @@
                     </div>
                 </div>
 
-                <div class="row" style="background-color: #f6f7f9; margin-top:10px; border-radius:10px">
-                    <div class="col-lg-12">
-                        <div class="card">
-                            <div class="card-body">
 
-                                <div class="col-md-1">
-                                    <h4 class="mt-0">Session</h4>
-                                </div>
-                                <div class="col-md-1">Active : <span class="mt-0" id="sessionActiveCount">0</span>
-                                </div>
-                                <div class="col-md-1">Inactive : <span class="mt-0" id="sessionInactiveCount">9</span>
-                                </div>
-                                <div class="col-md-3">
-                                    <select class="selectpicker form-control" data-placeholder="Choose Agents"
-                                        id="agent_id" name="agent_id" style="display: none;">
-                                        <option value="all">All</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-3">
-                                    <select class="selectpicker form-control" data-placeholder="Choose Agents"
-                                        id="agent_id" name="agent_id" style="display: none;">
-                                        <option value="all">Select Campaign</option>
-                                        @if (!empty($campaigns))
-                                            @foreach ($campaigns as $campaign)
-                                                <option value="{{ $campaign->id }}">{{ $campaign->name }}</option>
-                                            @endforeach
-                                        @endif
-                                    </select>
-                                </div>
-                                <div class="col-md-3">
-
-                                    <select class="selectpicker form-control" data-placeholder="Choose Agents"
-                                        id="agent_id" name="agent_id" style="display: none;">
-                                        <option value="all">Select Call Type</option>
-                                    </select>
-                                </div>
-
-                                <hr>
-
-
-                                <table class="table table-bordered table-hover">
-                                    <thead>
-
-                                        <th>Name</th>
-                                        <th>Mobile</th>
-                                        <th>Session</th>
-                                        <th>Total Calls</th>
-                                        <th>Total Received</th>
-                                        <th>Total Missed calls</th>
-                                        <th>Total Call Duration</th>
-                                        <th>Total Manual Dial</th>
-                                        <th>Total Auto Dial</th>
-                                        <th>Total Prayer Request</th>
-                                        <th>Total Donations</th>
-                                        <th>Total Will Donate</th>
-                                    </thead>
-                                </table>
-
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
                 {{-- </div> --}}
 
 
@@ -512,56 +499,165 @@
         });
     </script>
 
-
-
-
-
-    {!! $html->scripts() !!}
     <script>
-        const tableHtml = {
-            "serverSide": true,
-            "processing": true,
-            "ajax": "",
-            "columns": [{
-                "name": "id",
-                "data": "id",
-                "title": "Id",
-                "orderable": true,
-                "searchable": true
-            }, {
-                "name": "name",
-                "data": "lead.client_name",
-                "title": "Name",
-                "orderable": true,
-                "searchable": true
-            }, {
-                "name": "Phone",
-                "data": "lead.mobile",
-                "title": "Phone",
-                "orderable": true,
-                "searchable": true
-            }, {
-                "name": "action",
-                "data": "action",
-                "title": "action",
-                "orderable": true,
-                "searchable": true
-            }]
+        const convertAoData = (data) => {
+            if (data && Array.isArray(data)) {
+                var tmp = {};
+                var rbracket = /(.*?)\[\]$/;
+
+                $.each(data, function(key, val) {
+                    var match = val.name.match(rbracket);
+
+                    if (match) {
+                        // Support for arrays
+                        var name = match[0];
+
+                        if (!tmp[name]) {
+                            tmp[name] = [];
+                        }
+                        tmp[name].push(val.value);
+                    } else {
+                        tmp[val.name] = val.value;
+                    }
+                });
+                data = tmp;
+                return data;
+            }
         }
 
-        $('#tab-table').on('preXhr.dt', function(e, settings, data) {
 
-            data['type'] = 0;
-            var start_date = $('#start-date').val();
-            var end_date = $('#end-date').val();
-            var assign_to_campaign = $('#assign_to_campaign').val();
-            var check_action = $('#check_action').val();
-            data['start-date'] = start_date;
-            data['end-date'] = end_date;
-            data['assign_to_campaign'] = assign_to_campaign;
-            data['check_action'] = check_action;
+        const serverProcessing = (type) => {
+            return function(sSource, aoData, fnCallback) {
+                aoData.push({
+                    "name": "type",
+                    "value": type
+                });
+                aoData.push({
+                    "name": "start-date",
+                    "value": $("#start-date").val()
+                });
+                aoData.push({
+                    "name": "end-date",
+                    "value": $("#end-date").val()
+                });
+                aoData.push({
+                    "name": "assign_to_campaign",
+                    "value": $("#assign_to_campaign").val()
+                });
+                aoData.push({
+                    "name": "check_action",
+                    "value": $("#check_action").val()
+                });
+                $.ajax({
+                    "dataType": 'json',
+                    "url": "",
+                    "data": convertAoData(aoData),
+                    "success": function({
+                        data,
+                        additional,
+                        tab_count,
+                        totalCalls,
+                        totalIncomming,
+                        totalOutgoing,
+                        totalBoth,
+                        totalAgent,
+                        totalCustUnAns,
+                        totalCustAns,
 
+                    }) {
+                        additional?.forEach(element => {
+                            $(element.id).html(element.count)
+                        });
+                        Object.keys(tab_count).map((name) => {
+                            $(name).text(tab_count[name])
+                        })
+                        $('#totalCalls').text(totalCalls)
+                       $('#totalIncomming').text(totalIncomming)
+                       $('#totalOutgoing').text(totalOutgoing)
+                       $('#totalBoth').text(totalBoth)
+                       $('#totalAgent').text(totalAgent)
+                       $('#totalCustUnAns').text(totalCustUnAns)
+                       $('#totalCustAns').text(totalCustAns)
+
+                        fnCallback(data.original)
+                    }
+                })
+            }
+        }
+
+
+        $(function() {
+            window.LaravelDataTables = window.LaravelDataTables || {};
+            window.LaravelDataTables["tab-table"] = $("#tab-table").DataTable({
+                "serverSide": true,
+                "processing": true,
+                "ajax": "",
+                "fnServerData": serverProcessing(0),
+                "columns": [{
+                    "name": "id",
+                    "data": "id",
+                    "title": "Id",
+                    "orderable": true,
+                    "searchable": true
+                }, {
+                    "name": "name",
+                    "data": "lead.client_name",
+                    "title": "Name",
+                    "orderable": true,
+                    "searchable": true
+                }, {
+                    "name": "Phone",
+                    "data": "lead.mobile",
+                    "title": "Phone",
+                    "orderable": true,
+                    "searchable": true
+                }, {
+                    "name": "action",
+                    "data": "action",
+                    "title": "action",
+                    "orderable": true,
+                    "searchable": true
+                }]
+            });
         });
+    </script>
+
+
+    {{-- {!! $html->scripts() !!} --}}
+    <script>
+        const tableHtml = (dataType) => {
+            return {
+                "serverSide": true,
+                "processing": true,
+                "ajax": "",
+                "fnServerData": serverProcessing(dataType),
+                "columns": [{
+                    "name": "id",
+                    "data": "id",
+                    "title": "Id",
+                    "orderable": true,
+                    "searchable": true
+                }, {
+                    "name": "name",
+                    "data": "lead.client_name",
+                    "title": "Name",
+                    "orderable": true,
+                    "searchable": true
+                }, {
+                    "name": "Phone",
+                    "data": "lead.mobile",
+                    "title": "Phone",
+                    "orderable": true,
+                    "searchable": true
+                }, {
+                    "name": "action",
+                    "data": "action",
+                    "title": "action",
+                    "orderable": true,
+                    "searchable": true
+                }]
+            }
+        }
 
         function tableLoad() {
             window.LaravelDataTables["tab-table"].draw();
@@ -570,118 +666,37 @@
 
 
         function loadTabData(name, type) {
-            // 'available-data'
-            // 'completed-data'
-            // 'follow-data'
+
             if (name === 'completed-data') {
                 $('.available-data').html(null)
                 $("." + name).html('{!! $html->table() !!}')
-                $('#tab-table').on('preXhr.dt', function(e, settings, data) {
-                    data['type'] = 1;
-                    var start_date = $('#start-date').val();
-                    var end_date = $('#end-date').val();
-                    var assign_to_campaign = $('#assign_to_campaign').val();
-                    var check_action = $('#check_action').val();
-                    data['start-date'] = start_date;
-                    data['end-date'] = end_date;
-                    data['assign_to_campaign'] = assign_to_campaign;
-                    data['check_action'] = check_action;
-                });
-                $('#tab-table').DataTable(tableHtml);
+                $('#tab-table').DataTable(tableHtml(1));
             }
             if (name === 'follow-data') {
                 $('.available-data').html(null)
                 $('.completed-data').html(null)
                 $("." + name).html('{!! $html->table() !!}')
-                $('#tab-table').on('preXhr.dt', function(e, settings, data) {
-                    data['type'] = 2;
-                    var start_date = $('#start-date').val();
-                    var end_date = $('#end-date').val();
-                    var assign_to_campaign = $('#assign_to_campaign').val();
-                    var check_action = $('#check_action').val();
-                    data['start-date'] = start_date;
-                    data['end-date'] = end_date;
-                    data['assign_to_campaign'] = assign_to_campaign;
-                    data['check_action'] = check_action;
-                });
-                $('#tab-table').DataTable(tableHtml);
+                $('#tab-table').DataTable(tableHtml(2));
             }
             if (name === 'available-data') {
                 $('.follow-data').html(null)
                 $('.completed-data').html(null)
                 $("." + name).html('{!! $html->table() !!}')
-                $('#tab-table').on('preXhr.dt', function(e, settings, data) {
-                    data['type'] = 0;
-                    var start_date = $('#start-date').val();
-                    var end_date = $('#end-date').val();
-                    var assign_to_campaign = $('#assign_to_campaign').val();
-                    var check_action = $('#check_action').val();
-                    data['start-date'] = start_date;
-                    data['end-date'] = end_date;
-                    data['assign_to_campaign'] = assign_to_campaign;
-                    data['check_action'] = check_action;
-                });
-                $('#tab-table').DataTable(tableHtml);
+
+                $('#tab-table').DataTable(tableHtml(0));
             }
 
         }
 
-        // $('a[data-toggle="tab"').on('shown.bs.tab', function(event) {
-        //     console.log(event.relatedTarget)
-
-        // })
         let name = 'available-data'
         let type = "0"
         $('a[data-toggle="tab"').on('click', function(event) {
-
             name = $(this).data('name')
             type = $(this).data('type')
-
-
-
         })
 
         $('#apply-filter').click(function() {
             loadTabData(name, type)
-            
         });
     </script>
-
-    {{-- <script>
-          $('#apply-filter').click(function () {
-             $('#main-search').hide();
-       showTable();
-    });
-
-   
-
-    function showTable() {
-
-        var check_action = $('#check_action').val();
-        var assign_to_campaign = $('#assign_to_campaign').val();
-
-       
-        var url = '{{route('admin.leads.dashboard.search')}}';
-
-        var token = "{{ csrf_token() }}";
-
-        $.easyAjax({
-            type: 'POST',
-            data: {
-                '_token': "{{ csrf_token() }}",
-                check_action: check_action,
-                assign_to_campaign: assign_to_campaign
-                
-            },
-            url: url,
-            success: function (response) {
-               $('#leadSeache-data').html(response.data);
-            }
-        });
-       
-    }
-
-    showTable();
-
-    </script> --}}
 @endpush
