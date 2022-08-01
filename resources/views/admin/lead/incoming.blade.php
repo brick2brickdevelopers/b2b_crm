@@ -117,6 +117,34 @@
                         @endif
                     @endisset
 
+                    <div class="col-lg-12">
+                        <div class="form-group">
+
+                            <label for="create_at">Add Event</label>
+                            <select {{ $lead ? '' : 'disabled' }} class="form-control select2" id="add_event" name="call_status"
+                            data-toggle="select2" data-placeholder="Please select.." required>
+                            <option value="">Please select..</option>
+                            <option value="1">Add Event</option>
+                            <option value="2">Not Add Event</option>
+
+                        </select>
+<script>
+$("#add_event").change(function () {
+  if ($(this).val() == 1) {
+    console.log("you pressed one");
+  }else{
+    console.log("you changed the value");
+  }
+  
+});
+</script>                        </div>
+
+                        <div class="form-group">
+                            <label for="description">Call Duration *</label>
+                            <input class="form-control" name="duration" type="time" />
+                        </div>
+                    </div>
+
                     <div class="col-lg-12" id="incoming_add_donation_div">
 
                     </div>

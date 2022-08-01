@@ -698,4 +698,211 @@
             loadTabData(name, type)
         });
     </script>
+
+<script>
+    calender();
+    var getEventDetail = function (id, start, end) {
+        var url = '{{ route('admin.events.show', ':id')}}?start='+start+'&end='+end;
+        url = url.replace(':id', id);
+
+        $('#modelHeading').html('Event');
+        $.ajaxModal('#eventDetailModal', url);
+    }
+
+    var calendarLocale = '{{ $global->locale }}';
+    var firstDay = '{{ $global->week_start }}';
+    jQuery('#start_date, #end_date').datepicker({
+        autoclose: true,
+        todayHighlight: true,
+        weekStart:'{{ $global->week_start }}',
+        format: '{{ $global->date_picker_format }}',
+
+    }).on('changeDate', function (selected) {
+        $('#end_date').datepicker({
+            autoclose: true,
+            todayHighlight: true,
+            weekStart:'{{ $global->week_start }}',
+            format: '{{ $global->date_picker_format }}',
+        });
+        var minDate = new Date(selected.date.valueOf());
+        $('#end_date').datepicker("update", minDate);
+        $('#end_date   ').datepicker('setStartDate', minDate);
+    });
+
+    $('#colorselector').colorselector();
+
+    $('#start_time, #end_time').timepicker({
+        
+        @if($global->time_format == 'H:i')  
+        
+        showMeridian: false
+        @endif
+    });
+
+    $(".select2").select2({
+        formatNoMatches: function () {
+            return "{{ __('messages.noRecordFound') }}";
+        }
+    });
+    $('#createEventType').click(function(){
+            var url = '{{ route('admin.events-type.create')}}';
+            $('#modelHeading').html("@lang('modules.contracts.manageContractType')");
+            $.ajaxModal('#projectCategoryModal', url);
+        })
+        $('#add_category').click(function () {
+            var url = '{{ route('admin.events-category.create')}}';
+            $('#modelHeading').html('...');
+            $.ajaxModal('#projectCategoryModal', url);
+         })
+
+    var url = '{{route('admin.events.get-filter')}}';
+    var employee = '';
+    var client = '';
+    var category = '';
+    var event_type = '';
+    function addEventModal(start, end, allDay){
+        if(start){
+            
+            var sd = new Date(start);
+           var momemtFormat = "{{ $global->moment_format }}";
+           if(momemtFormat!= null ){
+            var mDate = moment(sd).format("{{ $global->moment_format }}");
+           }else{
+            $('#start_date').val('{{ \Carbon\Carbon::now()->format($global->date_format) }}');
+            $('#end_date').val('{{ \Carbon\Carbon::now()->format($global->date_format) }}');
+           }
+           
+            var curr_date = sd.getDate();
+            if(curr_date < 10){
+                curr_date = '0'+curr_date;
+            }
+            var curr_month = sd.getMonth();
+            curr_month = curr_month+1;
+            if(curr_month < 10){
+                curr_month = '0'+curr_month;
+            }
+            var curr_year = sd.getFullYear();
+
+            $('#start_date').val(mDate);
+
+            var ed = new Date(start);
+            var curr_date = sd.getDate();
+            if(curr_date < 10){
+                curr_date = '0'+curr_date;
+            }
+            var curr_month = sd.getMonth();
+            curr_month = curr_month+1;
+            if(curr_month < 10){
+                curr_month = '0'+curr_month;
+            }
+            var curr_year = ed.getFullYear();
+            $('#end_date').val(mDate);
+
+            // $('#start_date, #end_date').datepicker('destroy');
+            jQuery('#start_date, #end_date').datepicker({
+                autoclose: true,
+                todayHighlight: true,
+                weekStart:'{{ $global->week_start }}',
+                format: '{{ $global->date_picker_format }}',
+            })
+        }
+
+        $('#my-event').modal('show');
+
+    }
+    $('.toggle-filter').click(function () {
+        $('#ticket-filters').slideToggle();
+    })
+    $('.save-event').click(function () {
+        $.easyAjax({
+            url: '{{route('admin.events.store')}}',
+            container: '#createEvent',
+            type: "POST",
+            data: $('#createEvent').serialize(),
+            success: function (response) {
+                if(response.status == 'success'){
+                    window.location.reload();
+                }
+            }
+        })
+    })
+
+    $('#repeat-event').change(function () {
+        if($(this).is(':checked')){
+            $('#repeat-fields').show();
+        }
+        else{
+            $('#repeat-fields').hide();
+        }
+    })
+   
+     function calender(employee,client,category,event_type){
+
+    }
+    var initialTimeZone = 'UTC';
+    var initialLocaleCode = '{{ $global->locale }}';
+    var calendarEl = document.getElementById('calendar');
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+        firstDay: firstDay,
+        locale: initialLocaleCode,
+        timeZone: initialTimeZone,
+        headerToolbar: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+        },
+        
+        // initialDate: '2020-09-12',
+        navLinks: true, // can click day/week names to navigate views
+        selectable: true,
+        selectMirror: true,
+        select: function(arg) {
+          addEventModal(arg.start, arg.end, arg.allDay);
+          calendar.unselect()
+        },
+        eventClick: function(arg) {
+            getEventDetail(arg.event.id, arg.event.startStr, arg.event.endStr);
+        }, 
+            
+        editable: false,
+        dayMaxEvents: true, // allow "more" link when too many events  
+        events: {
+            url: '{{ route("admin.events.get-filter") }}',
+            extraParams: function() { // a function that returns an object
+                return {
+                    employee: employee,
+                    client: client,
+                    category: category,
+                    event_type: event_type
+                };
+            }
+
+      }
+        
+      });
+      $('#reset-filters').click(function () {
+        $('.select2').val('all');
+        $('.select2').trigger('change')
+        employee = $('#employeeID').val();
+         client = $('#clientID').val();
+         category = $('#category').val();
+         event_type = $('#event_type').val();
+        calendar.refetchEvents();        
+    });
+      $('#apply-filters').click(function () {
+         employee = $('#employeeID').val();
+         client = $('#clientID').val();
+         category = $('#category_id').val();
+         event_type = $('#event_type').val();
+
+        calendar.refetchEvents();
+        url = url+'?employee=' + employee + '&client=' + client + '&category=' + category + '&event_type=' + event_type;
+    });
+    document.addEventListener('DOMContentLoaded', function() { 
+      calendar.render();
+    });
+      
+</script>
+
+
 @endpush
