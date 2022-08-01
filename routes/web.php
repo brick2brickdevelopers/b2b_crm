@@ -1184,6 +1184,9 @@ Route::group(['middleware' => 'auth'], function () {
 
             Route::resource('task-label', 'TaskLabelController');
 
+             //Call Record Route
+             Route::resource('call-log-reports', 'CallRecordController');
+
             // FAQ
             Route::get('faqs/{id}', ['uses' => 'FaqController@details'])->name('faqs.details');
             Route::get('faqs', ['uses' => 'FaqController@index'])->name('faqs.index');

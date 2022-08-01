@@ -749,7 +749,6 @@ dd($getIndex);
                                 </div>
                             </li>
                         @endif
-
                     </ul>
                 </div>
             </div>

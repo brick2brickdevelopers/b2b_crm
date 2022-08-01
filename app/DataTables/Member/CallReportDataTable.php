@@ -1,16 +1,14 @@
 <?php
 
-namespace App\DataTables\Admin;
+namespace App\DataTables\Member;
 
+use App\DataTables\BaseDataTable;
+
+use Illuminate\Support\Facades\Auth;
 use App\ManualLoggedCall;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Html\Button;
-use Yajra\DataTables\Html\Column;
-use Yajra\DataTables\Html\Editor\Editor;
-use Yajra\DataTables\Html\Editor\Fields;
-use Yajra\DataTables\Services\DataTable;
-use App\DataTables\BaseDataTable;
+
 
 class CallReportDataTable extends BaseDataTable
 {
@@ -102,13 +100,15 @@ class CallReportDataTable extends BaseDataTable
     /**
      * Get query source of dataTable.
      *
-     * @param \App\App\Admin/CallReportDataTable $model
+     * @param \App\App\Member/CallReportDataTable $model
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function query(ManualLoggedCall $report)
     {
         $setting = company();
         $currentDate = Carbon::now()->timezone($setting->timezone)->format('Y-m-d H:i');
+        $report = $report->where('created_by', '=', Auth::user()->id);
+
         if ($this->request()->endDate !== null && $this->request()->endDate != 'null' && $this->request()->endDate != '') {
 
             if ($this->request()->startDate !== null && $this->request()->startDate != 'null' && $this->request()->startDate != '') {
@@ -117,9 +117,8 @@ class CallReportDataTable extends BaseDataTable
                 $report = $report->whereBetween('created_at', [$startDate, $endDate]);
             }
         }
-        if ($this->request()->agent != 'all' && $this->request()->agent != '') {
-            $report = $report->where('created_by', $this->request()->agent);
-        }
+            $report = $report->where('created_by', Auth::user()->id);
+        
         if ($this->request()->call_type != 'all' && $this->request()->call_type != '') {
             $report = $report->where('call_type', $this->request()->call_type);
         }
@@ -138,8 +137,7 @@ class CallReportDataTable extends BaseDataTable
         if ($this->request()->campaign_id!= 'all' && $this->request()->campaign_id != '') {
             $report = $report->where('campaign_id', $this->request()->campaign_id);
         }
-
-
+        
         return $report;
     }
 

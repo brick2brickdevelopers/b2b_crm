@@ -316,6 +316,15 @@
 
             @endif
 
+            @if (in_array('calling', $modules))
+            {{-- @if (user()->sip_pass) --}}
+            <li><a href="{{ route('member.call-log-reports.index') }}" class="waves-effect"><i
+                class="icon-docs fa-fw"></i> <span class="hide-menu">Call Log Reports</span></a> </li>
+            {{-- @endif --}}
+
+            @endif
+
+
             {{-- Call Log --}}
         </ul>
 

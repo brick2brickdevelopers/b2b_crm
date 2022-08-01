@@ -1,5 +1,5 @@
-@extends('layouts.app')
-
+@extends('layouts.member-app')
+ 
 @section('page-title')
     <div class="row bg-title">
         <!-- .page title -->
@@ -10,7 +10,7 @@
         <!-- .breadcrumb -->
         <div class="col-lg-8 col-sm-8 col-md-8 col-xs-12 text-right bg-title-right">
             <ol class="breadcrumb">
-                <li><a href="{{ route('admin.dashboard') }}">@lang('app.menu.home')</a></li>
+                <li><a href="{{ route('member.dashboard') }}">@lang('app.menu.home')</a></li>
                 <li class="active">{{ __($pageTitle) }}</li>
             </ol>
         </div>
@@ -45,17 +45,6 @@
                                 value="" />
                             <input type="hidden" class="form-control" id="end-date" placeholder="@lang('app.endDate')"
                                 value="" />
-                        </div>
-                        <div class="col-xs-12 m-t-20">
-                            <div class="form-group">
-                                <label class="control-label">Select Agent</label>
-                                <select class="selectpicker form-control" name="" id="agent_id" data-style="">
-                                    <option value="all">@lang('modules.lead.all')</option>
-                                    @foreach ($employees as $item)
-                                        <option value="{{ $item->id }}">{{ $item->user->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
                         </div>
                         <div class="col-xs-12">
                             <div class="form-group">
@@ -262,7 +251,6 @@
                     endDate = null;
                 }
                 var client = $('#client').val();
-                var agent = $('#agent_id').val();
                 var call_outcome = $('#call_outcome').val();
                 var call_type = $('#call_type').val();
                 var call_source = $('#call_source').val();
@@ -274,7 +262,6 @@
                 data['startDate'] = startDate;
                 data['endDate'] = endDate;
                 data['call_type'] = call_type;
-                data['agent'] = agent;
                 data['call_source'] = call_source;
                 data['call_outcome'] = call_outcome;
                 data['campaign_status'] = campaign_status;
@@ -302,7 +289,7 @@
             }, function(isConfirm) {
                 if (isConfirm) {
 
-                    var url = "{{ route('admin.leads.destroy', ':id') }}";
+                    var url = "{{ route('member.leads.destroy', ':id') }}";
                     url = url.replace(':id', id);
 
                     var token = "{{ csrf_token() }}";
@@ -335,7 +322,7 @@
     });
 
     function changeStatus(leadID, statusID) {
-        var url = "{{ route('admin.leads.change-status') }}";
+        var url = "{{ route('member.leads.change-status') }}";
         var token = "{{ csrf_token() }}";
 
         $.easyAjax({
@@ -358,7 +345,7 @@
 
     $('.edit-column').click(function() {
         var id = $(this).data('column-id');
-        var url = '{{ route('admin.taskboard.edit', ':id') }}';
+        var url = '{{ route('member.taskboard.edit', ':id') }}';
         url = url.replace(':id', id);
 
         $.easyAjax({
@@ -374,7 +361,7 @@
 
     function followUp(leadID) {
 
-        var url = '{{ route('admin.leads.follow-up', ':id') }}';
+        var url = '{{ route('member.leads.follow-up', ':id') }}';
         url = url.replace(':id', leadID);
 
         $('#modelHeading').html('Add Follow Up');
@@ -384,16 +371,5 @@
         $('#ticket-filters').toggle('slide');
     })
 
-    function exportData() {
-
-        var client = $('#client').val();
-        var followUp = $('#followUp').val();
-
-        var url = '{{ route('admin.leads.export', [':followUp', ':client']) }}';
-        url = url.replace(':client', client);
-        url = url.replace(':followUp', followUp);
-
-        window.location.href = url;
-    }
 </script>
 @endpush
