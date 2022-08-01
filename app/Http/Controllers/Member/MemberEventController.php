@@ -11,9 +11,12 @@ use App\Http\Requests\Events\UpdateEvent;
 use App\Notifications\EventInvite;
 use App\Services\Google;
 use App\User;
+use App\Lead;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Auth;
+
 
 class MemberEventController extends MemberBaseController
 {
@@ -34,6 +37,7 @@ class MemberEventController extends MemberBaseController
 
     public function index()
     {
+        $this->leads = Lead::all();
         if($this->user->cans('view_events')){
             $this->events = Event::all();
         }
@@ -77,6 +81,9 @@ class MemberEventController extends MemberBaseController
         $event->repeat_cycles = $request->repeat_cycles;
         $event->repeat_type = $request->repeat_type;
         $event->label_color = $request->label_color;
+        $event->created_by = Auth::user()->id;
+        $event->lead_id = json_encode($request->lead_id);
+
         $event->save();
 
         $event->event_id = $this->googleCalendarEvent($event);

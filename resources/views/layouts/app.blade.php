@@ -592,6 +592,28 @@
     </div>
     {{-- Ajax Modal Ends --}}
 
+    {{-- Ajax Modal Ends --}}
+   
+            <div id="callDetails" class="modal fade" role="dialog"
+                aria-labelledby="myModalLabel"data-backdrop="static" data-keyboard="false" aria-hidden="true">
+                <div class="modal-dialog modal-lg" style="width: 1250px !important;max-width: 1250px !important;">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="myModalLabel"><i class="uil-question-circle mr-1"></i>Add
+                                Call
+                                Details</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div id="calling_lead_details"></div>
+                            <div class="modal-footer">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+   
+
     <!-- jQuery -->
     <script src="{{ asset('plugins/bower_components/jquery/dist/jquery.min.js') }}"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
@@ -621,6 +643,95 @@
     <script src="{{ asset('js/jquery.magnific-popup-init.js') }}"></script>
     <script src="{{ asset('plugins/bower_components/moment/moment.js') }}"></script>
     <script src="https://js.pusher.com/5.0/pusher.min.js"></script>
+
+    <script>
+        function updateCallDetail(log_id, type = "log", campaign_id = null) {
+            $('#callDetails').modal('show');
+            $.ajax({
+                url: "{{ route('admin.leads.callingLeadDetails') }}",
+                type: "GET",
+                data: {
+                    log_id: log_id,
+                    type: type,
+                    campaign_id: campaign_id,
+                },
+                success: function(data) {
+                    $('#calling_lead_details').html(data);
+                },
+                error: function(arr_response) {
+                    $.NotificationApp.send("Error", "Calling API Failed !", "top-center", "red", "error");
+                }
+            });
+        }
+    </script>
+
+<script>
+    var socket = io.connect("{{ env('SIP_SOCKET') }}");
+
+    function click2Call(number) {
+        // alert(number)
+        socket.emit('click2call', {
+            data: number,
+            auth: '{{ Auth::user()->sip_user }}'
+        })
+        toggleWebcallModel()
+    }
+
+    function toggleWebcallModel() {
+        const regex = /display: none;/gm;
+        var isOpen = regex.exec($('#webcall-list').attr('style'))
+
+        if (isOpen) {
+            $('#webcall-list').toggle(function() {
+                $(this).animate({
+                    height: (viewportHeight - 150)
+                })
+            });
+        }
+    }
+
+    function entryCallLog(mobile, call_mode, call_type, session_id) {
+        if (session_id !== "") {
+            return $.post('{{ route('member.leads.load_api') }}', {
+                _token: '{{ csrf_token() }}',
+                mobile: mobile,
+                call_mode: call_mode,
+                call_source: call_type,
+                session_id: session_id
+
+            })
+        }
+
+    }
+
+
+    let callmodeChange = false
+    socket.on('call', function(data) {
+        if (data.type === 'outbound' && data.source === "{{ Auth::user()->sip_user }}") {
+            toggleWebcallModel()
+
+            entryCallLog(data.user, 0, 0, data.session_id).then(res => {
+                const details =
+                    '<button class="btn btn-rounded btn-primary float-left px-1 py-0 m-2" onclick="updateCallDetail(' +
+                    res.log_id + ')">Call Detials</button>';
+                $('#call-details').html(details);
+
+            })
+
+        }
+        if (data.type === 'inbound' && data.source === "{{ Auth::user()->sip_user }}") {
+            toggleWebcallModel()
+            const details =
+                '<button class="btn btn-rounded btn-primary float-left px-1 py-0 m-2" onclick="updateCallDetail(' +
+                data.user + ')">Call Detials</button>';
+            // entryCallLog(data.user, 0, 1)
+            $('#call-details').html(details);
+        }
+    });
+    socket.on('callEnd', function(data) {
+        $('#call-details').html('');
+    });
+</script>
     <script>
         //reload page if landed via back button
         if (window.performance && window.performance.navigation.type === window.performance.navigation.TYPE_BACK_FORWARD) {

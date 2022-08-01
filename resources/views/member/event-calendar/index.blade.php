@@ -149,6 +149,17 @@
                                     </select>
 
                                 </div>
+
+                                <div class="form-group">
+                                    <label class="col-xs-3 m-t-10 required">Add Leads</label>
+                                    <select class="select2 m-b-10 select2-multiple " multiple="multiple"
+                                            data-placeholder="select Leads" name="lead_id[]">
+                                        @foreach($leads as $lead)
+                                            <option value="{{ $lead->id }}">{{ $lead->client_name }} </option>
+                                        @endforeach
+                                    </select>
+
+                                </div>
                             </div>
 
                         </div>

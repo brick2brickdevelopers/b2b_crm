@@ -615,7 +615,7 @@ class LeadController extends AdminBaseController
 
             $dTable = DataTables::of($leads)
                 ->editColumn('action', function ($lead) {
-                    return view('member.lead.action', compact('lead'));
+                    return view('admin.lead.action', compact('lead'));
                 })
                 ->toJson();
 
@@ -704,4 +704,78 @@ class LeadController extends AdminBaseController
         $this->callPurposes = CallPurpose::all();
         return $this->data;
     }
+
+
+    public function callingLeadDetails(Request $request)
+    {
+
+
+        if ($request->type === 'lead') {
+
+
+            $this->lead = Lead::find($request->log_id);
+
+            $log = new ManualLoggedCall();
+            $log->lead_id = $this->lead->id;
+            $log->lead_number = $this->lead->mobile;
+            $log->agent_number = empty(auth()->user()->sip_user) ? auth()->user()->mobile : auth()->user()->sip_user;
+            $log->created_by = auth()->user()->id;
+            $log->call_status = 0;
+            $log->call_source = 1;
+            $log->status = 0;
+            $log->campaign_id = $request->campaign_id;
+            $log->session_id =  uniqid();
+            $log->call_type = isset($request->call_type) ? $request->call_type : 0;
+            $log->save();
+            $this->log = ManualLoggedCall::find($log->id);
+            $this->mobile = trim($this->lead->mobile);
+
+
+            $this->calls = ManualLoggedCall::where('lead_number', '123')
+                ->where('status', 0)
+                ->orderBy('id', 'desc')
+                ->first();
+
+            $this->recent_calls = ManualLoggedCall::where('lead_id', $this->lead->id)->get();
+            // $this->callperposes = CustomFieldGroup::where('model', 'App\ManualLoggedCall')->get();
+            $this->callperposes = CallPurpose::all();
+            $this->type = 'call';
+            $this->isManual = true;
+        } else {
+            $this->log = ManualLoggedCall::find($request->log_id);
+            $this->mobile = trim($this->log->lead_number);
+
+            $this->lead = Lead::find($this->log->lead_id);
+            $this->calls = ManualLoggedCall::where('lead_number', '123')
+                ->where('status', 0)
+                ->orderBy('id', 'desc')
+                ->first();
+
+            $this->recent_calls = ManualLoggedCall::where('lead_number', $this->log->lead_number)->get();
+            // $this->callperposes = CustomFieldGroup::where('model', 'App\ManualLoggedCall')->get();
+            $this->callperposes = CallPurpose::all();
+            $this->type = 'call';
+        }
+        
+        return view('admin.lead.incoming', $this->data);
+    }
+
+
+    public function storeLoggedCallDetails(Request $request)
+    {
+        $callP = CallPurpose::find($request->call_purpose);
+        $log = ManualLoggedCall::find($request->log_id);
+        $log->call_source = $request->call_source;
+        $log->call_purpose = $request->call_purpose;
+        $log->outcome = $request->outcome;
+        $log->duration = $request->duration;
+        $log->call_status = $request->call_status;
+        $log->save();
+        if ($request->get('custom_fields_data')) {
+            $this->updateCustomFieldData($request->get('custom_fields_data'), $callP->id);
+        }
+        return Reply::successWithData('Call Log entry Completed', ['data' => $request->all()]);
+    }
+
+
 }

@@ -413,6 +413,10 @@ Route::group(['middleware' => 'auth'], function () {
                 Route::post('leads/updateIndex', ['as' => 'leads.updateIndex', 'uses' => 'LeadController@updateIndex']);
                 Route::post('leads/assign_lead_campaign', ['as' => 'leads.assign_lead_campaign', 'uses' => 'LeadController@assign_lead_campaign']);
                 Route::get('leads/dashboard', 'LeadController@dashboard')->name('leads.dashboard');
+                Route::get('leads/callingLeadDetails', ['uses' => 'LeadController@callingLeadDetails'])->name('leads.callingLeadDetails');
+                Route::any('leads/storeLoggedCallDetails', ['uses' => 'LeadController@storeLoggedCallDetails'])->name('leads.storeLoggedCallDetails');
+
+
                 Route::post('leads/dashboard/search', 'LeadController@leadSearch')->name('leads.dashboard.search');
                 Route::post('leads/dashboard/available', 'LeadController@available')->name('leads.dashboard.available');
                 Route::post('leads/dashboard/completed', 'LeadController@completed')->name('leads.dashboard.completed');
