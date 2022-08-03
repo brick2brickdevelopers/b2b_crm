@@ -28,14 +28,14 @@ class StoreEvent extends CoreRequest
      */
     public function rules()
     {
-        $startDateTime = $this->start_date.' '.$this->start_time;
-        $endDateTime = $this->end_date.' '.$this->end_time;
+        $startDateTime = $this->start_date . ' ' . $this->start_time;
+        $endDateTime = $this->end_date . ' ' . $this->end_time;
         return [
             'event_name' => 'required',
             'start_date' => 'required',
-            'end_date' => ['required' , new CheckDateFormat(null, company()->date_format) , new CheckEqualAfterDate('start_date', company()->date_format)],
+            'end_date' => ['required', new CheckDateFormat(null, company()->date_format), new CheckEqualAfterDate('start_date', company()->date_format)],
             'start_time' => 'required',
-            'end_time' => ['required',new CheckAfterDate('', company()->date_format.' '.company()->time_format, $startDateTime, null, $endDateTime)],
+            'end_time' => ['required', new CheckAfterDate('', company()->date_format . ' ' . company()->time_format, $startDateTime, null, $endDateTime)],
             'all_employees' => 'sometimes',
             'user_id.0' => 'required_unless:all_employees,true',
             'where' => 'required',
@@ -50,5 +50,4 @@ class StoreEvent extends CoreRequest
             'end_time.after' => __('messages.endTimeGreaterThenStart')
         ];
     }
-
 }

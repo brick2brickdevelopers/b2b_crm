@@ -124,9 +124,9 @@ class EndpointGenerator extends \Nwidart\Modules\Generators\ModuleGenerator
 
     public function generateResources()
     {
-//        $this->console->call('module:make-migration', [
-//            'name'     => 'create_' . $this->getEndpoint() . '_table',
-//            'module'   => $this->getName(),
-//        ]);
+        //        $this->console->call('module:make-migration', [
+        //            'name'     => 'create_' . $this->getEndpoint() . '_table',
+        //            'module'   => $this->getName(),
+        //        ]);
     }
 }

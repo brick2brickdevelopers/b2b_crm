@@ -336,6 +336,7 @@
                                 class="btn btn-default waves-effect waves-light">@lang('app.back')</a>
                             {!! Form::close() !!}
                         </div>
+
                     </div>
                 </div>
             </div>

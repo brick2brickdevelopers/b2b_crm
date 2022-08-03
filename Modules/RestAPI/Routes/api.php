@@ -1,5 +1,6 @@
 <?php
 
+use Froiden\RestAPI\Facades\ApiRoute;
 use Modules\RestAPI\Http\Controllers\CampaignController;
 
 ApiRoute::group(['namespace' => 'Modules\RestAPI\Http\Controllers'], function () {
@@ -41,7 +42,7 @@ ApiRoute::group(['namespace' => 'Modules\RestAPI\Http\Controllers', 'middleware'
         ]
     );
 
- //Campaign api route tarting from here 
+    //Campaign api route tarting from here 
     ApiRoute::get('campaign', 'CampaignController@campign_list');
     ApiRoute::get('user_lead', 'CampaignController@user_lead');
     ApiRoute::post('update_lead_status', 'CampaignController@update_lead_status');
@@ -49,16 +50,25 @@ ApiRoute::group(['namespace' => 'Modules\RestAPI\Http\Controllers', 'middleware'
     ApiRoute::get('call_purpose', 'CampaignController@call_purpose');
     ApiRoute::get('event_list', 'CampaignController@event_list');
     ApiRoute::get('call_log_reports', 'CampaignController@call_log_reports');
-    
-//ending the compaign route here
-//Updated dashboard api route starting from here
-    ApiRoute::get('dashboard','CampaignController@dashboard');
-    ApiRoute::get('employee_dashboard','CampaignController@employee_dashboard');
-    ApiRoute::get('test','CampaignController@test');
+
+    //Campaign api route tarting from here 
+    // ApiRoute::get('campaign', 'CampaignController@campign_list');
+    // ApiRoute::get('user_lead', 'CampaignController@user_lead');
+    ApiRoute::post('event_create', 'MeetingController@event_store');
+    // ApiRoute::post('call_disposal', 'CampaignController@call_disposal');
+    // ApiRoute::get('call_purpose', 'CampaignController@call_purpose');
+    // ApiRoute::get('event_list', 'CampaignController@event_list');
+    // ApiRoute::get('call_log_reports', 'CampaignController@call_log_reports');
+
+    //ending the compaign route here
+    //Updated dashboard api route starting from here
+    ApiRoute::get('dashboard', 'CampaignController@dashboard');
+    ApiRoute::get('employee_dashboard', 'CampaignController@employee_dashboard');
+    ApiRoute::get('test', 'CampaignController@test');
 
 
 
-//updated dashboard api route ending here
+    //updated dashboard api route ending here
 
 
     ApiRoute::resource('project', 'ProjectController');
@@ -91,8 +101,10 @@ ApiRoute::group(['namespace' => 'Modules\RestAPI\Http\Controllers', 'middleware'
     ApiRoute::resource('contract', 'ContractController');
 
     ApiRoute::resource('notice', 'NoticeController');
-    ApiRoute::resource('event', 'EventController');
+    // ApiRoute::resource('event', 'EventController');
     ApiRoute::get('/me/calendar', 'EventController@me');
+  
+    
 
     ApiRoute::get('/estimate/send/{id}', ['as' => 'estimate.send', 'uses' => 'EstimateController@sendEstimate']);
     ApiRoute::resource('estimate', 'EstimateController');

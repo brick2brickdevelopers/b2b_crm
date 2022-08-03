@@ -25,6 +25,9 @@ class CreateEventsTable extends Migration
             $table->integer('repeat_every')->nullable();
             $table->integer('repeat_cycles')->nullable();
             $table->enum('repeat_type', ['day', 'week', 'month', 'year'])->default('day');
+            $table->json('lead_id');
+            $table->integer('created_by');
+            $table->enum('status', ['completed', 'pending'])->default('pending');
             $table->timestamps();
         });
     }

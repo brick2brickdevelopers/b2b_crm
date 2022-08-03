@@ -16,7 +16,11 @@ use App\Http\Requests\FollowUp\UpdateFollowUpRequest;
 use App\Http\Requests\Gdpr\SaveConsentLeadDataRequest;
 use App\Http\Requests\Lead\StoreRequest;
 use App\Http\Requests\Lead\UpdateRequest;
+use App\User;
+use App\Event;
 use App\Lead;
+use App\EventCategory;
+use App\EventType;           
 use App\Country;
 use App\EmployeeDetails;
 use App\LeadAgent;
@@ -590,7 +594,14 @@ class LeadController extends AdminBaseController
     //Leads Dasboard
     public function dashboard(Builder $builder, Request $request)
     {
-
+        $this->unique_id = uniqid();
+        $this->employees = User::allEmployees();
+        $this->events = Event::all();
+        $this->clients = User::allClients();
+        $this->categories = EventCategory::all();
+        
+        $this->eventTypes = EventType::all();
+        $this->leads = Lead::all();
         $this->campaigns = Campaign::get();
         $this->agents = EmployeeDetails::get();
         $this->callPurposes = CallPurpose::all();
@@ -709,6 +720,7 @@ class LeadController extends AdminBaseController
     public function callingLeadDetails(Request $request)
     {
 
+       
 
         if ($request->type === 'lead') {
 

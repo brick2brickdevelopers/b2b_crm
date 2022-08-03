@@ -44,6 +44,7 @@ class AdminEventCalendarController extends AdminBaseController
         $this->eventTypes = EventType::all();
         $this->leads = Lead::all();
         $this->unique_id = uniqid();
+       
         return view('admin.event-calendar.index', $this->data);
     }
 
@@ -121,7 +122,8 @@ class AdminEventCalendarController extends AdminBaseController
     }
 
     public function store(StoreEvent $request)
-    {
+    { 
+        
         $eventIds = [];
         $event = new Event();
         $event->event_name = $request->event_name;

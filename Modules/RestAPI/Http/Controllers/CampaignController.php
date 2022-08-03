@@ -42,7 +42,6 @@ use App\User;
 use App\EventCategory;
 use App\EventType;
 
-
 use Yajra\DataTables\DataTables;
 use Yajra\DataTables\Html\Builder;
 
@@ -59,9 +58,11 @@ class CampaignController extends ApiBaseController
     {
     }
 
+
     //all campign list
     public function campign_list(Request $request)
     {
+
         $user      = auth('api')->user();
         $userId    = $user->id;
         $perPage   = $request->page_size;
@@ -196,6 +197,14 @@ class CampaignController extends ApiBaseController
     //call disposal api
     public function call_disposal(Request $request)
     {
+        $request->validate([
+            'lead_name' => 'required',
+            'lead_email' => 'required',
+            'call_status' => 'required',
+            'call_type' => 'required',
+            'call_source' => 'required',
+            'call_outcome' => 'required',
+        ]);
 
         $user           = auth('api')->user();
         $userId         = $user->id;
@@ -204,30 +213,30 @@ class CampaignController extends ApiBaseController
         $leadId         = $request->lead_id;
         $callPurpose    = $request->call_purpose;
         $leadMobile     = $request->lead_mobile;
-        // $callStatus     = $request->call_status;
+        $callStatus     = $request->call_status;
         $callType       = $request->call_type;
         $callSource     = $request->call_source;
         $leadcallstatus = $request->leadcallstatus;
-        $outcome        = $request->outcome;
+        $outcome        = $request->call_outcome;
 
         if (!$agentNumber) {
             $agentNumber = 12345678;
         }
 
         //return the lead name and the lead email based on the lead id
-        $leadData  = Lead::where('id', $leadId)->first();
-        $leadName  = $leadData->client_name;
-        $leadEmail = $leadData->client_email;
-        if ($request->lead_name) {
-            $leadName = $request->lead_name;
-        } else {
-            $leadName = $leadName;
-        }
-        if ($request->lead_email) {
-            $leadEmail = $request->lead_email;
-        } else {
-            $leadEmail = $leadEmail;
-        }
+       // $leadData  = Lead::where('id', $leadId)->first();
+        $leadName  = $request->lead_name;
+        $leadEmail = $request->lead_email;
+        // if ($request->lead_name) {
+        //     $leadName = $request->lead_name;
+        // } else {
+        //     $leadName = $leadName;
+        // }
+        // if ($request->lead_email) {
+        //     $leadEmail = $request->lead_email;
+        // } else {
+        //     $leadEmail = $leadEmail;
+        // }
 
         //update the lead data based on the lead id 
         Lead::where('id', $leadId)->update(array('client_name' => $leadName, 'client_email' => $leadEmail));
@@ -482,7 +491,7 @@ class CampaignController extends ApiBaseController
             ->orderBy('id', 'desc')
             ->limit(4)
             ->get();
-
+        // return $userEvent;
         if (count($userEvent) > 0) {
             $userEvent = $userEvent;
         } else {
@@ -518,6 +527,7 @@ class CampaignController extends ApiBaseController
     {
         $user    = auth('api')->user();
         $userId  = $user->id;
+       
         $ldate = date('Y-m-d');
         if ($request->start_date) {
             $startDate = Carbon::createFromFormat('Y-m-d', $request->start_date)->startOfDay();
@@ -525,12 +535,19 @@ class CampaignController extends ApiBaseController
             $startDate = Carbon::createFromFormat('Y-m-d', $ldate)->startOfDay();
         }
 
-        $userEvent = Event::join('event_attendees', 'event_attendees.event_id', '=', 'events.id')
-            ->where('event_attendees.user_id', $userId)
-            ->WhereDate('events.start_date_time', '=', $startDate)
-            ->select('events.*')
-            ->orderBy('id', 'desc')
-            ->get();
+        // $userEvent = Event::join('event_attendees', 'event_attendees.event_id', '=', 'events.id')
+        //     ->where('event_attendees.user_id', $userId)
+        //     ->WhereDate('events.start_date_time', '=', $startDate)
+        //     ->select('events.*')
+        //     ->orderBy('id', 'desc')
+        //     ->get();
+        if (!empty($request->start_date)){
+            $userEvent = Event::WhereDate('start_date_time', '=', $startDate)->get();
+        }else{
+            $userEvent = Event::where('status','=','pending')->get();
+        }
+        
+
         return response()->json([
             'success'       => true,
             'status'        => 200,

@@ -31,6 +31,7 @@ class AuthController extends ApiBaseController
     }
     public function login(LoginRequest $request)
     {
+        
         // Modifications to this function may also require modifications to
         $email = $request->get('email');
         $password = $request->get('password');
