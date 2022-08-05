@@ -5,7 +5,6 @@ namespace Modules\RestAPI\Http\Requests\Event;
 use App\Rules\CheckAfterDate;
 use App\Rules\CheckDateFormat;
 use App\Rules\CheckEqualAfterDate;
-use Illuminate\Support\Facades\Auth;
 use Modules\RestAPI\Http\Requests\BaseRequest;
 
 class CreateRequest extends BaseRequest
@@ -24,19 +23,24 @@ class CreateRequest extends BaseRequest
         $startDateTime = $this->start_date . ' ' . $this->start_time;
         $endDateTime = $this->end_date . ' ' . $this->end_time;
         return [
-            'event_name' => 'required',
-            'start_date_time' => 'required',
-            'end_date_time' => 'required',
-            'event_name' => 'required',
-            'description' => 'required',
-            'where' => 'required',
+            // 'event_name' => 'required',
+            // // 'start_date' => 'required',
+            // // 'end_date' => ['required', new CheckDateFormat(null, company()->date_format), new CheckEqualAfterDate('start_date', company()->date_format)],
+            // // 'start_time' => 'required',
+            // // 'end_time' => ['required', new CheckAfterDate('', company()->date_format . ' ' . company()->time_format, $startDateTime, null, $endDateTime)],
+            // // 'all_employees' => 'sometimes',
+            // // 'user_id.0' => 'required_unless:all_employees,true',
+            // // 'where' => 'required',
+            // 'created_by' => 'required',
+            // // 'description' => 'required',
         ];
     }
 
     public function messages()
     {
         return [
-           
+            'user_id.0.required_unless' => __('messages.atleastOneValidation'),
+            'end_time.after' => __('messages.endTimeGreaterThenStart')
         ];
     }
 }

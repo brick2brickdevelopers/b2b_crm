@@ -57,7 +57,8 @@ class MemberLeadController extends MemberBaseController
         if (!$this->user->cans('view_lead')) {
             $this->totalLeads = Lead::where('leads.agent_id', $agentId)->get();
         } else {
-            $this->totalLeads = Lead::all();
+            // $this->totalLeads = Lead::all();
+            $this->totalLeads = Lead::where('leads.agent_id', $agentId)->get();
         }
 
         $this->totalClientConverted = $this->totalLeads->filter(function ($value, $key) {
@@ -78,7 +79,7 @@ class MemberLeadController extends MemberBaseController
         $this->leadAgents = LeadAgent::with('user')->has('user')->get();
         $formLead = new Lead();
         $this->column = $formLead->getCustomFieldGroupsWithFields()->fields;
-        // dd($this->column);
+        // dd($this->data);
 
         return view('member.lead.index', $this->data);
     }
@@ -143,7 +144,7 @@ class MemberLeadController extends MemberBaseController
             $lead = $lead->where('agent_id', $request->agent);
         }
 
-        if (!$this->user->cans('view_lead')) {
+        if ($this->user->cans('view_lead')) {
             $agent = LeadAgent::where('user_id', $this->user->id)->first();
             $agentId = ($agent) ? $agent->id : '';
             $lead = $lead->where('leads.agent_id', $agentId);
@@ -844,17 +845,17 @@ class MemberLeadController extends MemberBaseController
             if ($request->check_action) {
                 $totalAvailable->where('campaign_id', $request->check_action)->where('agent_id', $id);
             }
-            
+
             $totalCompleted = CampaignLead::query();
             if ($request->check_action) {
                 $totalCompleted->where('campaign_id', $request->check_action)->where('agent_id', $id);
             }
-           
+
             $totalFollow = CampaignLead::query();
             if ($request->check_action) {
                 $totalFollow->where('campaign_id', $request->check_action)->where('agent_id', $id);
             }
-            
+
 
             $this->totalAvailable = $totalAvailable->where('status', 0)->where('agent_id', '=', $id)->count();
             $this->totalCompleted = $totalCompleted->where('status', 1)->where('agent_id', '=', $id)->count();
@@ -864,13 +865,13 @@ class MemberLeadController extends MemberBaseController
 
             // call details start
 
-                $this->totalCalls = ManualLoggedCall::where('created_by', '=', $id)->count();
-                $this->totalIncomming = ManualLoggedCall::where('created_by', '=', $id)->where('call_source',1)->count();
-                $this->totalOutgoing = ManualLoggedCall::where('created_by', '=', $id)->where('call_source',0)->count();
-                $this->totalBoth = ManualLoggedCall::where('created_by', '=', $id)->where('outcome',3)->count();
-                $this->totalAgent = ManualLoggedCall::where('created_by', '=', $id)->where('outcome',7)->count();
-                $this->totalCustUnAns = ManualLoggedCall::where('created_by', '=', $id)->where('outcome',4)->count();
-                $this->totalCustAns = ManualLoggedCall::where('created_by', '=', $id)->where('outcome',6)->count();
+            $this->totalCalls = ManualLoggedCall::where('created_by', '=', $id)->count();
+            $this->totalIncomming = ManualLoggedCall::where('created_by', '=', $id)->where('call_source', 1)->count();
+            $this->totalOutgoing = ManualLoggedCall::where('created_by', '=', $id)->where('call_source', 0)->count();
+            $this->totalBoth = ManualLoggedCall::where('created_by', '=', $id)->where('outcome', 3)->count();
+            $this->totalAgent = ManualLoggedCall::where('created_by', '=', $id)->where('outcome', 7)->count();
+            $this->totalCustUnAns = ManualLoggedCall::where('created_by', '=', $id)->where('outcome', 4)->count();
+            $this->totalCustAns = ManualLoggedCall::where('created_by', '=', $id)->where('outcome', 6)->count();
 
             // call details end
 
@@ -878,12 +879,12 @@ class MemberLeadController extends MemberBaseController
                 'data' => $dTable,
                 'additional' => $counter,
                 'totalCalls' => $this->totalCalls,
-                'totalIncomming' =>$this->totalIncomming,
-                'totalOutgoing' =>$this->totalOutgoing,
-                'totalBoth' =>$this->totalBoth,
-                'totalAgent' =>$this->totalAgent,
-                'totalCustUnAns' =>$this->totalCustUnAns,
-                'totalCustAns' =>$this->totalCustAns,
+                'totalIncomming' => $this->totalIncomming,
+                'totalOutgoing' => $this->totalOutgoing,
+                'totalBoth' => $this->totalBoth,
+                'totalAgent' => $this->totalAgent,
+                'totalCustUnAns' => $this->totalCustUnAns,
+                'totalCustAns' => $this->totalCustAns,
                 'tab_count' => array(
                     '#total_leads_count' => $this->totalAvailable,
                     '#complete_leads_count' => $this->totalCompleted,
@@ -906,7 +907,4 @@ class MemberLeadController extends MemberBaseController
 
         return view('member.lead.dashboard', $this->data);
     }
-
-
-  
 }

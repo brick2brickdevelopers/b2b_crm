@@ -442,6 +442,16 @@ Route::group(['middleware' => 'auth'], function () {
                 Route::get('lead-files/thumbnail', ['uses' => 'LeadFilesController@thumbnailShow'])->name('lead-files.thumbnail');
                 Route::resource('lead-files', 'LeadFilesController');
 
+
+                ///call outcome
+                Route::resource('call-outcome','CallOutcomeController');
+                Route::get('/call-outcome/destroy/{id}', 'CallOutcomeController@destroy')->name('call-outcome.destroy');
+
+                //campaign lead status
+                Route::resource('campaign-lead-status','CampaignLeadStatusController');
+                Route::get('/campaign-lead-status/destroy/{id}', 'CampaignLeadStatusController@destroy')->name('campaign-lead-status.destroy');
+
+
                 // Proposal routes
                 Route::get('proposals/data/{id?}', ['uses' => 'ProposalController@data'])->name('proposals.data');
                 Route::get('proposals/download/{id}', ['uses' => 'ProposalController@download'])->name('proposals.download');
@@ -1686,6 +1696,8 @@ Route::group(['middleware' => 'auth'], function () {
             Route::resource('notices', 'ClientNoticesController');
         }
     );
+
+  
 
 
     // Mark all notifications as read

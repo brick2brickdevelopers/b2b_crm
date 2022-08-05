@@ -29,13 +29,14 @@ class Task extends \App\Task
         'due_date',
         'is_private',
         'status',
+        'created_by'
     ];
 
     protected $hidden = [
         'user_id',
         'project_id',
         'task_category_id',
-        'created_by'
+        // 'created_by'
     ];
 
     protected $guarded = [

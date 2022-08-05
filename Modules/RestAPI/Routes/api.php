@@ -43,10 +43,11 @@ ApiRoute::group(['namespace' => 'Modules\RestAPI\Http\Controllers', 'middleware'
     );
 
     //Campaign api route tarting from here 
-    ApiRoute::get('campaign', 'CampaignController@campign_list');
+    ApiRoute::get('campaign', 'CampaignController@campaign_list');
     ApiRoute::get('user_lead', 'CampaignController@user_lead');
     ApiRoute::post('update_lead_status', 'CampaignController@update_lead_status');
     ApiRoute::post('call_disposal', 'CampaignController@call_disposal');
+    ApiRoute::get('disposal_data', 'CampaignController@getDynamicOptions');
     ApiRoute::get('call_purpose', 'CampaignController@call_purpose');
     ApiRoute::get('event_list', 'CampaignController@event_list');
     ApiRoute::get('call_log_reports', 'CampaignController@call_log_reports');
@@ -103,8 +104,8 @@ ApiRoute::group(['namespace' => 'Modules\RestAPI\Http\Controllers', 'middleware'
     ApiRoute::resource('notice', 'NoticeController');
     // ApiRoute::resource('event', 'EventController');
     ApiRoute::get('/me/calendar', 'EventController@me');
-  
-    
+
+
 
     ApiRoute::get('/estimate/send/{id}', ['as' => 'estimate.send', 'uses' => 'EstimateController@sendEstimate']);
     ApiRoute::resource('estimate', 'EstimateController');

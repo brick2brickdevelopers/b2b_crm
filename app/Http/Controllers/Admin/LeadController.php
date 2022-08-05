@@ -594,6 +594,7 @@ class LeadController extends AdminBaseController
     //Leads Dasboard
     public function dashboard(Builder $builder, Request $request)
     {
+     
         $this->unique_id = uniqid();
         $this->employees = User::allEmployees();
         $this->events = Event::all();
@@ -663,10 +664,10 @@ class LeadController extends AdminBaseController
             $this->totalCalls = ManualLoggedCall::count();
             $this->totalIncomming = ManualLoggedCall::where('call_source',1)->count();
             $this->totalOutgoing = ManualLoggedCall::where('call_source',0)->count();
-            $this->totalBoth = ManualLoggedCall::where('outcome',3)->count();
-            $this->totalAgent = ManualLoggedCall::where('outcome',7)->count();
-            $this->totalCustUnAns = ManualLoggedCall::where('outcome',4)->count();
-            $this->totalCustAns = ManualLoggedCall::where('outcome',6)->count();
+            $this->totalBoth = 0;
+            $this->totalAgent = 0;
+            $this->totalCustUnAns = 0;
+            $this->totalCustAns = 0;
 
         // call details end
 
@@ -779,7 +780,8 @@ class LeadController extends AdminBaseController
         $log = ManualLoggedCall::find($request->log_id);
         $log->call_source = $request->call_source;
         $log->call_purpose = $request->call_purpose;
-        $log->outcome = $request->outcome;
+        $log->call_outcome_id = $request->call_outcome_id;
+        $log->campaign_lead_status_id = $request->campaign_lead_status_id;
         $log->duration = $request->duration;
         $log->call_status = $request->call_status;
         $log->save();

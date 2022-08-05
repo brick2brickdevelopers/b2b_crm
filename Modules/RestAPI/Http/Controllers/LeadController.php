@@ -27,9 +27,7 @@ class LeadController extends ApiBaseController
 
     public function modifyIndex($query)
     {
-
-
-
+          
         return $query->visibility();
     }
 

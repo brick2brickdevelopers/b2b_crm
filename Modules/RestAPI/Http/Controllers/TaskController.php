@@ -32,31 +32,31 @@ class TaskController extends ApiBaseController
 
     public function modifyIndex($query)
     {
-        $query->visibility();
-        if (request()->filters && str_contains(request()->filters, 'project_client_id')) {
-            $query->rightJoin(
-                \DB::raw(
-                    '(SELECT `id` as `a_project_id`, 
-                `client_id` as `project_client_id`, 
-                `deleted_at` as `project_deleted_at`, 
-                `project_name` FROM `projects`) as `a`'
-                ),
-                'a.a_project_id',
-                '=',
-                'tasks.project_id'
-            );
-        }
-        if (request()->filters && str_contains(request()->filters, 'task_user_id')) {
-            $query->join(
-                \DB::raw(
-                    '(SELECT `task_id` as `tu_task_id`, 
-                    `user_id` as `task_user_id` FROM `task_users`) as `tu`'
-                ),
-                'tu.tu_task_id',
-                '=',
-                'tasks.id'
-            )->groupBy('tasks.id');
-        }
+        // $query->visibility();
+        // if (request()->filters && str_contains(request()->filters, 'project_client_id')) {
+        //     $query->rightJoin(
+        //         \DB::raw(
+        //             '(SELECT `id` as `a_project_id`, 
+        //         `client_id` as `project_client_id`, 
+        //         `deleted_at` as `project_deleted_at`, 
+        //         `project_name` FROM `projects`) as `a`'
+        //         ),
+        //         'a.a_project_id',
+        //         '=',
+        //         'tasks.project_id'
+        //     );
+        // }
+        // if (request()->filters && str_contains(request()->filters, 'task_user_id')) {
+        //     $query->join(
+        //         \DB::raw(
+        //             '(SELECT `task_id` as `tu_task_id`, 
+        //             `user_id` as `task_user_id` FROM `task_users`) as `tu`'
+        //         ),
+        //         'tu.tu_task_id',
+        //         '=',
+        //         'tasks.id'
+        //     )->groupBy('tasks.id');
+        // }
         return $query;
     }
 

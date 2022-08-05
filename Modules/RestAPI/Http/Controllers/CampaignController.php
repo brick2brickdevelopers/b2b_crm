@@ -19,6 +19,8 @@ use App\CustomField;
 use App\CustomFieldGroup;
 use App\ManualLoggedCall;
 use App\AttendanceSetting;
+use App\CallOutcome;
+use App\CampaignLeadStatus;
 use App\Holiday;
 use App\Setting;
 use App\TaskboardColumn;
@@ -60,7 +62,7 @@ class CampaignController extends ApiBaseController
 
 
     //all campign list
-    public function campign_list(Request $request)
+    public function campaign_list(Request $request)
     {
 
         $user      = auth('api')->user();
@@ -68,56 +70,43 @@ class CampaignController extends ApiBaseController
         $perPage   = $request->page_size;
 
 
-        $compain = Campaign::join('campaign_leads', 'campaign_leads.campaign_id', '=', 'campaigns.id')
+        $campaign = Campaign::join('campaign_leads', 'campaign_leads.campaign_id', '=', 'campaigns.id')
             ->where('campaign_leads.agent_id', $userId)
             ->select('campaigns.*')
             ->groupby('campaigns.id')
             ->orderBy('campaigns.id', 'desc')
             ->paginate($perPage);
-        // $compain   = Campaign::orderBy('id', 'desc')->paginate($perPage);
-        if (count($compain) > 0) {
-            $compain = $compain;
+        if (count($campaign) > 0) {
+            $campaign = $campaign;
         } else {
-            $compain = [];
+            $campaign = [];
         }
         return response()->json([
             'success'  => true,
             'status'   => 200,
             'code'     => "success",
             'message'  => "Campaign retrieved successfully",
-            'campaign' =>  $compain
+            'campaign' =>  $campaign
             //  'count'    => $data 
         ]);
     }
+
     //list of lead assingned to particular user
     public function user_lead(Request $request)
     {
-        //get the user id from the token
         $user    = auth('api')->user();
         $userId  = $user->id;
-
-
-        $compain = Campaign::where('id', $request->campaign_id)->get();
-        //leadcallstatus 
-        //0 is Available
-        //1 is Completed
-        //2 is Follow Up
+        $campaign = Campaign::where('id', $request->campaign_id)->get();
         $leadStatusText = '';
         $callStatus = $request->leadcallstatus;
-        // echo $callStatus;exit();
-
         if ($callStatus === '0') {
-            // echo "here is 0";
-            //exit();
             $callStatus = ['0'];
             $leadStatusText = 'Available';
         }
-
         if ($callStatus == 1) {
             $callStatus = [1];
             $leadStatusText = 'completed';
         }
-
         if ($callStatus == 2) {
             $callStatus = [2];
             $leadStatusText = 'folow up';
@@ -127,16 +116,13 @@ class CampaignController extends ApiBaseController
         }
 
 
-        //print_r($callStatus);exit();
         $orders = CampaignLead::where(['campaign_id' => $request->campaign_id, 'agent_id' => $userId])
             ->whereIn('leadcallstatus', $callStatus)
             ->get();
-        //$orders = CampaignLead::where('agent_id', $request->user_id)->get();
         $leadId = [];
         foreach ($orders as $order) {
             array_push($leadId, $order['lead_id']);
         }
-        //per page
 
 
         $perPage = $request->page_size;
@@ -147,25 +133,19 @@ class CampaignController extends ApiBaseController
             $clientInfo = $clientInfo;
 
 
-            foreach ($clientInfo as $cli) {
-                //assign lead call status to the lead
+            //  foreach ($clientInfo as $cli) {
 
+            //      if ($cli['status_id'] == 4) {
+            //          $cli['leadCallStatus'] = 'Available';
+            //      }
+            //      if ($cli['status_id'] == 1) {
+            //          $cli['leadCallStatus'] = 'Completed';
+            //      }
+            //      if ($cli['status_id'] == 2) {
+            //          $cli['leadCallStatus'] = 'follow up';
+            //      }
+            //  }
 
-                if ($cli['status_id'] == 4) {
-                    $cli['leadCallStatus'] = 'Available';
-                }
-                if ($cli['status_id'] == 1) {
-                    $cli['leadCallStatus'] = 'Completed';
-                }
-                if ($cli['status_id'] == 2) {
-                    $cli['leadCallStatus'] = 'follow up';
-                }
-
-
-                // array_push($abc,$cli);
-            }
-
-            //$clientInfo['leadCallStatus'] =  $leadStatusText;
 
         } else {
             $clientInfo = [];
@@ -176,11 +156,10 @@ class CampaignController extends ApiBaseController
             'status'   => 200,
             'code'     => "success",
             'message'  => "Lead retrieved successfully",
-            'campaign_info' => $compain,
+            'campaign_info' => $campaign,
             'lead' => $clientInfo
         ]);
     }
-
 
     //update the particular lead status based on lead id , user id and compaign_id
     public function update_lead_status(Request $request)
@@ -191,19 +170,60 @@ class CampaignController extends ApiBaseController
         CampaignLead::where(['campaign_id' => $request->campaign_id, 'agent_id' => $userId, 'lead_id' => $request->lead_id])
             ->update(['status' => $request->status]);
         $updatedLead = Lead::where('id', $request->lead_id)->get();
-        return response()->json(['success' => 'true', 'status' => 200, 'code' => "success", 'message' => 'Lead status has been updated successfully', 'Updatedlead' => $updatedLead]);
+
+        return response()->json([
+            'success' => 'true',
+            'status' => 200,
+            'code' => "success",
+            'message' => 'Lead status has been updated successfully',
+            'Updatedlead' => $updatedLead
+        ]);
     }
+
+    public function getDynamicOptions()
+    {
+        return response()->json([
+            'success'  => true,
+            'status'   => 200,
+            'code'     => "success",
+            'message'  => "call disposal has been initiated successfully",
+            'data'     =>  [
+                'outcomes' => CallOutcome::all(),
+                'campaignLeadStatus' => CampaignLeadStatus::all(),
+                'callPurpose' =>  CallPurpose::all(),
+            ],
+        ]);
+    }
+
+    //call purpose api
+    public function call_purpose(Request $request)
+    {
+        $perPage = $request->page_size;
+        $data = CallPurpose::orderBy('id', 'desc')->paginate($perPage);
+        return response()->json([
+            'success'     => true,
+            'status'      => 200,
+            'message'     => "call Purpose data has been fetched successfully",
+            'callPurpose' =>  $data,
+        ]);
+    }
+
 
     //call disposal api
     public function call_disposal(Request $request)
     {
         $request->validate([
-            'lead_name' => 'required',
-            'lead_email' => 'required',
+            // 'lead_name' => 'required',
+            // 'lead_email' => 'required',
             'call_status' => 'required',
             'call_type' => 'required',
             'call_source' => 'required',
-            'call_outcome' => 'required',
+            'call_outcome_id' => 'required',
+            'campaign_lead_status_id' => 'required',
+            'lead_id' => 'required',
+            'campaign_id' => 'required',
+            'lead_number' => 'required',
+            // 'duration' => 'required',
         ]);
 
         $user           = auth('api')->user();
@@ -212,77 +232,27 @@ class CampaignController extends ApiBaseController
         $campaignId     = $request->campaign_id;
         $leadId         = $request->lead_id;
         $callPurpose    = $request->call_purpose;
-        $leadMobile     = $request->lead_mobile;
+        $leadMobile     = $request->lead_number;
         $callStatus     = $request->call_status;
         $callType       = $request->call_type;
         $callSource     = $request->call_source;
         $leadcallstatus = $request->leadcallstatus;
-        $outcome        = $request->call_outcome;
+        $call_outcome        = $request->call_outcome_id;
+        $duration = $request->duration;
+        $campaign_lead_status        = $request->campaign_lead_status_id;
 
         if (!$agentNumber) {
             $agentNumber = 12345678;
         }
 
-        //return the lead name and the lead email based on the lead id
-       // $leadData  = Lead::where('id', $leadId)->first();
+
         $leadName  = $request->lead_name;
         $leadEmail = $request->lead_email;
-        // if ($request->lead_name) {
-        //     $leadName = $request->lead_name;
-        // } else {
-        //     $leadName = $leadName;
-        // }
-        // if ($request->lead_email) {
-        //     $leadEmail = $request->lead_email;
-        // } else {
-        //     $leadEmail = $leadEmail;
-        // }
 
-        //update the lead data based on the lead id 
         Lead::where('id', $leadId)->update(array('client_name' => $leadName, 'client_email' => $leadEmail));
-        // $description    = $request->description;
-        //leadcallstatus 
-        //0 is Available
-        //1 is Completed
-        //2 is Follow Up
 
-        // call Status is database
-        //     1- available,2- completed,3- follow 
 
-        //call Type
-        //0=Manual,1=Auto
-
-        //call_source
-        //1=Incoming,0=Outgoing
-
-        if ($leadcallstatus === '0') {
-            $callStatus = 1;
-        }
-        if ($leadcallstatus == 1) {
-            $callStatus = 2;
-        }
-        if ($leadcallstatus == 2) {
-            $callStatus = 3;
-        }
-
-        //Out come status
-        // 1 => 'in Process'; 2 => 'Running'; 3 => 'Both Answered';
-        // 4 => 'To (Customer) Answered - From (Agent) Unanswered'; 
-        // 5 => 'To (Customer) Answered';
-        // 6 => 'To (Customer) Unanswered - From (Agent) Answered.'; 
-        // 7 => 'From (Agent) Unanswered';
-        // 8 => 'To (Customer) Unanswered.';
-        // 9 => 'Both Unanswered'; 
-        // 10 => 'From (Agent) Answered.';
-        // 11 => 'Rejected Call'; 
-        // 12 => 'Skipped';
-        // 13 => 'From (Agent) Failed.';
-        // 14 => 'To (Customer) Failed - From (Agent) Answered';
-        // 15 => 'To (Customer) Failed'; 16 => 'To (Customer) Answered - From (Agent) Failed';
-        //need to store the all disposal form data in the database
-        //in the table mannual_logged_calls
-
-        $duration = '00:00:00';
+        // $duration = '00:00:00';
         // $recordingsFile
         $manualLoggedCallData = ManualLoggedCall::create([
             'company_id'       => $user->company_id,
@@ -290,24 +260,25 @@ class CampaignController extends ApiBaseController
             'lead_number'      => $leadMobile,
             'agent_number'     => $agentNumber,
             'created_by'       => $userId,
-            'outcome'          => $outcome,
-            'call_status'      => $callStatus,
+            'call_status' => $callStatus,
+            'call_outcome_id'          => $call_outcome,
+            'campaign_lead_status_id'          => $campaign_lead_status,
             'duration'         => $duration,
             'status'           => $leadcallstatus,
             'call_type'        => $callType,
             'call_source'      => $callSource,
             'call_purpose'     => $callPurpose,
-            'campaign_id'      => $campaignId
-
+            'campaign_id'      => $campaignId,
+            'session_id' =>  uniqid()
         ]);
 
 
-        //store the call_purpose and user_id
-        $callPurpose  = CallPurpose::create([
-            'company_id' => $user->company_id,
-            'purpose' => $callPurpose,
-            'from_id' =>  $userId,
-        ]);
+        // //store the call_purpose and user_id
+        // $callPurpose  = CallPurpose::create([
+        //     'company_id' => $user->company_id,
+        //     'purpose' => $callPurpose,
+        //     'from_id' =>  $userId,
+        // ]);
 
         CampaignLead::where('lead_id', $leadId)->update(array('leadcallstatus' => $leadcallstatus));
         //update the lead status 
@@ -315,19 +286,11 @@ class CampaignController extends ApiBaseController
         //get single lead data
         $leadRecord =  Lead::where('id', $leadId)->first();
 
-        //store the other calling data and other 
-        $callingData  = Callingdata::create([
-            'lead_id'       =>  $leadId,
-            'campaign_id'   =>  $campaignId,
-            'mobile'        =>  $leadMobile,
-            'agent_id'      =>  $userId,
-            'agent_mobile'  =>  $agentNumber,
-            'company_id'    =>  $user->company_id
-        ]);
-
         $data = [];
 
-        if ($leadcallstatus == 0) {
+        if (
+            $leadcallstatus == 0
+        ) {
             $updatedLeadStatus = 'Available';
         } elseif ($leadcallstatus == 1) {
             $updatedLeadStatus = 'Completed';
@@ -355,7 +318,6 @@ class CampaignController extends ApiBaseController
             // 'leadData' => $leadRecord
         ]);
     }
-    //employee dashboard Api
 
     public function employee_dashboard(Request $request)
     {
@@ -368,14 +330,7 @@ class CampaignController extends ApiBaseController
         $completedLeads         = CampaignLead::where(['agent_id' => $userId, 'leadcallstatus' => 1])->count();
         $followUpLeads          = CampaignLead::where(['agent_id' => $userId, 'leadcallstatus' => 2])->count();
         // $userTask               = Task::where('user_id', $request->user_id)->count();
-        //contact by source
-        //1 email
-        //2 google
-        //3 facebook
-        //4 friend
-        //5 direct visit
-        //6 tv ad
-        //38 other
+
         $otherLeadCount         = Lead::where(['agent_id' => $userId, 'source_id' => 38])->count();
         $emailLeadCount         = Lead::where(['agent_id' => $userId, 'source_id' => 1])->count();
         $googleLeadCount        = Lead::where(['agent_id' => $userId, 'source_id' => 2])->count();
@@ -398,11 +353,11 @@ class CampaignController extends ApiBaseController
             ->count();
 
 
-        $userTask = TaskUser::where('user_id', $userId)
+        $userTask = Task::where('created_by', $userId)
             ->limit(4)->get();
         $taskIds = [];
         foreach ($userTask as $task) {
-            array_push($taskIds, $task['task_id']);
+            array_push($taskIds, $task['id']);
         }
         //per page
 
@@ -411,7 +366,7 @@ class CampaignController extends ApiBaseController
 
         $empTask = Task::orderBy('id', 'desc')
             ->whereIn('id', $taskIds)
-            ->WhereDate('start_date', '>=', $startDate)
+            // ->WhereDate('start_date', '>=', $startDate)
             ->get();
 
 
@@ -484,10 +439,16 @@ class CampaignController extends ApiBaseController
         $ldate = date('Y-m-d');
         $startDate = Carbon::createFromFormat('Y-m-d', $ldate)->startOfDay();
         //event functionality
-        $userEvent = Event::join('event_attendees', 'event_attendees.event_id', '=', 'events.id')
-            ->where('event_attendees.user_id', $userId)
+        // $userEvent = Event::join('event_attendees', 'event_attendees.event_id', '=', 'events.id')
+        //     ->where('event_attendees.user_id', $userId)
+        //     ->WhereDate('events.start_date_time', '>=', $startDate)
+        //     ->select('events.*')
+        //     ->orderBy('id', 'desc')
+        //     ->limit(4)
+        //     ->get();
+
+        $userEvent = Event::where('created_by', $userId)
             ->WhereDate('events.start_date_time', '>=', $startDate)
-            ->select('events.*')
             ->orderBy('id', 'desc')
             ->limit(4)
             ->get();
@@ -510,24 +471,11 @@ class CampaignController extends ApiBaseController
         ]);
     }
 
-    //call purpose api
-    public function call_purpose(Request $request)
-    {
-        $perPage = $request->page_size;
-        $data = CallPurpose::orderBy('id', 'desc')->paginate($perPage);
-        return response()->json([
-            'success'     => true,
-            'status'      => 200,
-            'message'     => "call Purpose data has been fetched successfully",
-            'callPurpose' =>  $data,
-        ]);
-    }
-
     public function event_list(Request $request)
     {
         $user    = auth('api')->user();
         $userId  = $user->id;
-       
+
         $ldate = date('Y-m-d');
         if ($request->start_date) {
             $startDate = Carbon::createFromFormat('Y-m-d', $request->start_date)->startOfDay();
@@ -535,18 +483,12 @@ class CampaignController extends ApiBaseController
             $startDate = Carbon::createFromFormat('Y-m-d', $ldate)->startOfDay();
         }
 
-        // $userEvent = Event::join('event_attendees', 'event_attendees.event_id', '=', 'events.id')
-        //     ->where('event_attendees.user_id', $userId)
-        //     ->WhereDate('events.start_date_time', '=', $startDate)
-        //     ->select('events.*')
-        //     ->orderBy('id', 'desc')
-        //     ->get();
-        if (!empty($request->start_date)){
+        if (!empty($request->start_date)) {
             $userEvent = Event::WhereDate('start_date_time', '=', $startDate)->get();
-        }else{
-            $userEvent = Event::where('status','=','pending')->get();
+        } else {
+            $userEvent = Event::where('status', '=', 'pending')->get();
         }
-        
+
 
         return response()->json([
             'success'       => true,
@@ -554,64 +496,6 @@ class CampaignController extends ApiBaseController
             'code'          => "success",
             'message'       => "Event List has been fetched successfully",
             'upcomingEvent' => $userEvent
-        ]);
-    }
-
-
-    //call log Reports Api
-
-    public function call_log_reports(Request $request)
-    {
-
-        $perPage = $request->page_size;
-        $user         = auth('api')->user();
-        $userId       = $user->id;
-        $agentNumber  = $user->mobile;
-        if (!$agentNumber) {
-            $agentNumber = 12345678;
-        }
-        $callReportData = ManualLoggedCall::where('agent_number', $agentNumber)->paginate($perPage);
-
-
-        $datanew = [];
-        foreach ($callReportData as $data) {
-            if ($data['call_type'] == 1) {
-                $data['call_type'] = 'Auto';
-            } else {
-                $data['call_type'] = 'Mannual';
-            }
-            if ($data['call_source'] == 1) {
-                $data['call_source'] = 'Incoming';
-            } else {
-                $data['call_source'] = 'Outgoing';
-            }
-            if ($data['status'] == 1) {
-                $data['call_status'] = 'Completed';
-            } elseif ($data['status'] == 2) {
-                $data['call_status'] = 'follow Up';
-            } else {
-                $data['call_status'] = 'available';
-            }
-
-            $data['created_by'] = $user->name;
-            //unset some variable
-            unset($data['date']);
-            unset($data['description']);
-            unset($data['status']);
-            unset($data['terminate']);
-            unset($data['recordings_file']);
-            unset($data['did']);
-            unset($data['session_id']);
-            unset($data['reason_text']);
-            unset($data['outcome']);
-        }
-
-        return response()->json([
-            'success'       => true,
-            'status'        => 200,
-            'code'          => "success",
-            'message'       => "call log report fetched successfully",
-            'callReportData' => $callReportData
         ]);
     }
 }
