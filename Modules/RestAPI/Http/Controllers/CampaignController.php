@@ -220,7 +220,7 @@ class CampaignController extends ApiBaseController
             'call_source' => 'required',
             'call_outcome_id' => 'required',
             'campaign_lead_status_id' => 'required',
-            'lead_id' => 'required',
+            // 'lead_id' => 'required',
             'campaign_id' => 'required',
             'lead_number' => 'required',
             // 'duration' => 'required',
@@ -245,11 +245,23 @@ class CampaignController extends ApiBaseController
             $agentNumber = 12345678;
         }
 
-
         $leadName  = $request->lead_name;
         $leadEmail = $request->lead_email;
 
-        Lead::where('id', $leadId)->update(array('client_name' => $leadName, 'client_email' => $leadEmail));
+        //create Lead
+        $new_lead = Lead::where('mobile', $leadMobile)->count();
+        if ($new_lead == 0) {
+            $lead = new Lead();
+            $lead->company_id = $user->company_id;
+            $lead->client_name = $leadName;
+            $lead->client_email = $leadEmail;
+            $lead->mobile = $leadMobile;
+            $lead->save();
+
+            $leadId = $lead->id;
+        } else {
+            Lead::where('id', $leadId)->update(array('client_name' => $leadName, 'client_email' => $leadEmail));
+        }
 
 
         // $duration = '00:00:00';
