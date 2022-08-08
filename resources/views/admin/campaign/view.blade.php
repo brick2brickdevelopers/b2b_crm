@@ -43,7 +43,7 @@
    
                     <form action="" id="filter-form">
                         <div class="col-xs-12">
-                            <h5 >@lang('app.selectDateRange')</h5>
+                            <h5>@lang('app.selectDateRange')</h5>
                             <div class="form-group">
                                 <div id="reportrange" class="form-control reportrange">
                                     <i class="fa fa-calendar"></i>&nbsp;
@@ -51,48 +51,84 @@
                                 </div>
 
                                 <input type="hidden" class="form-control" id="start-date" placeholder="@lang('app.startDate')"
-                                       value=""/>
+                                    value="" />
                                 <input type="hidden" class="form-control" id="end-date" placeholder="@lang('app.endDate')"
-                                       value=""/>
+                                    value="" />
                             </div>
                         </div>
                         <div class="col-xs-12">
                             <div class="form-group">
-                                {{--<label class="control-label">@lang('app.status')</label>--}}
-                                <select class="form-control selectpicker" name="status" id="status" data-style="form-control">
-                                    <option value="all">Campaign Status Filter</option>
+                                <label for="">Campaign Status Filter</label>
+                                <select class="form-control" name="campaignStatus" id="campaignStatus" data-style="form-control">
+                                    <option value="all">All</option>
+                                    <option value="0">Available</option>
+                                    <option value="1">Completed</option>
+                                    <option value="all">Follow</option>
                                 </select>
                             </div>
                         </div>
                         <div class="col-xs-12">
                             <div class="form-group">
-                                {{--<label class="control-label">@lang('app.status')</label>--}}
-                                <select class="form-control selectpicker" name="status" id="status" data-style="form-control">
-                                    <option value="all">Select Agent</option>
+                                <label for="">ChooseAgents</label>
+                                <select class="form-control" data-placeholder="@lang('modules.tickets.chooseAgents')"
+                                    id="agent_id" name="agent_id">
+                                    <option value="all">@lang('modules.lead.all')</option>
+                                    @foreach ($leadAgents as $emp)
+                                        <option value="{{ $emp->id }}">{{ ucwords($emp->user->name) }} @if ($emp->user->id == $user->id)
+                                                (YOU)
+                                            @endif
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                      
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label for="">Call Type</label>
+                                <select class="form-control" name="callType" id="callType" data-style="form-control">
+                                    <option value="all">All</option>
+                                    <option value="0">Outgoing</option>
+                                    <option value="1">Incoming</option>
                                 </select>
                             </div>
                         </div>
                         <div class="col-xs-12">
                             <div class="form-group">
-                                {{--<label class="control-label">@lang('app.status')</label>--}}
-                                <select class="form-control selectpicker" name="status" id="status" data-style="form-control">
-                                    <option value="all">Select Agent Group</option>
+                                <label class="control-label">Call Purpose</label>
+                                <select class="form-control" name="callPuspose" id="callPuspose" data-style="form-control">
+                                    <option value="all">All</option>
+
+                                    @foreach ($callPusposes as $callPuspose)
+                                    <option value="{{ $callPuspose->id }}">{{ $callPuspose->purpose }}</option>
+
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
                         <div class="col-xs-12">
                             <div class="form-group">
-                                {{--<label class="control-label">@lang('app.status')</label>--}}
-                                <select class="form-control selectpicker" name="status" id="status" data-style="form-control">
-                                    <option value="all">Select Call Type</option>
+                                <label class="control-label">Call Outcome</label>
+                                <select class="form-control" name="callOutcome" id="callOutcome" data-style="form-control">
+                                    <option value="all">All</option>
+
+                                    @foreach ($callOutcomes as $callOutcome)
+                                    <option value="{{ $callOutcome->id }}">{{ $callOutcome->name }}</option>
+
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
                         <div class="col-xs-12">
                             <div class="form-group">
-                                {{--<label class="control-label">@lang('app.status')</label>--}}
-                                <select class="form-control selectpicker" name="status" id="status" data-style="form-control">
-                                    <option value="all">Select Call Purpose</option>
+                                <label class="control-label">Campaign Status Lead</label>
+                                <select class="form-control" name="campaignLeadStatus" id="campaignLeadStatus" data-style="form-control">
+                                    <option value="all">All</option>
+
+                                    @foreach ($campaignLeadStatuses as $campaignLeadStatus)
+                                    <option value="{{ $campaignLeadStatus->id }}">{{ $campaignLeadStatus->name }}</option>
+
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
@@ -134,7 +170,37 @@
 <script src="{{ asset('plugins/bower_components/moment/moment.js') }}"></script>
 <script type="text/javascript" src="{{ asset('plugins/daterange-picker/daterangepicker.js') }}"></script>
 
+
+
 {!! $html->scripts() !!}
 
+<script>
+    $('#apply-filters').click(function() {
+       
+        var start_date = $('#start-date').val();
+        var end_date = $('#end-date').val();
+        var campaignStatus = $('#campaignStatus').val();
+        var callType = $('#callType').val();
+        var callPuspose = $('#callPuspose').val();
+        var callOutcome = $('#callOutcome').val();
+        var campaignLeadStatus = $('#campaignLeadStatus').val();
 
+        $.easyAjax({
+            type: 'POST',
+            url: "{{ route('admin.campaigns.index') }}",
+            data: {
+                '_token': "{{ csrf_token() }",
+                'start_date': start_date,
+                'end_date': end_date,
+                'agent_id': agent_id,
+                'campaignStatus': campaignStatus,
+                'callType': callType,
+                'callPuspose': callPuspose,
+                'callOutcome': callOutcome,
+                'campaignLeadStatus': campaignLeadStatus,
+            },
+        });
+    });
+
+</script>
 @endpush

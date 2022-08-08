@@ -8,13 +8,13 @@ use App\Campaign;
 use App\CampaignAgent;
 use App\CampaignLead;
 use App\EmployeeDetails;
-use App\EmployeeTeam;
 use App\Helper\Reply;
 use App\Team;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\CustomField;
 use App\CustomFieldGroup;
+use App\CallOutcome;
+use App\CampaignLeadStatus;
+use App\LeadAgent;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
@@ -36,7 +36,8 @@ class CampaignController extends AdminBaseController
     }
 
     public function index()
-    {
+    {   
+        $this->callOutcomes = CallOutcome::all();
         $this->campaigns = Campaign::all();
         return view('admin.campaign.index', $this->data);
     }
@@ -171,13 +172,19 @@ class CampaignController extends AdminBaseController
 
     public function view(Builder $builder, Request $request, $id)
     {
-
+        
+        $this->leadAgents = LeadAgent::with('user')->has('user')->get();
+        $this->callPusposes = CallPurpose::where('company_id','=',company()->id)->get();
         $this->employee = EmployeeDetails::all();
+        $this->callOutcomes = CallOutcome::all();
+        $this->campaignLeadStatuses = CampaignLeadStatus::all();
         $this->teams = Team::all();
         $this->campaign = Campaign::findOrFail($id);
 
         if ($request->ajax()) {
-            return DataTables::of(CampaignLead::query()->where('campaign_id', $this->campaign->id)->orderBy(
+            return DataTables::of(CampaignLead::query()
+            ->where('campaign_id', $this->campaign->id)
+            ->orderBy(
                 'id',
                 'DESC'
             )->with(['lead', 'agent']))->toJson();

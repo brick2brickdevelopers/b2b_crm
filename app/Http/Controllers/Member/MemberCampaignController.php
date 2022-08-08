@@ -2,15 +2,20 @@
 
 namespace App\Http\Controllers\Member;
 
+use App\CallOutcome;
 use App\Campaign;
 use App\CampaignAgent;
 use App\CampaignLead;
 use App\EmployeeDetails;
+use App\LeadAgent;
+use App\CallPurpose;
+use App\CampaignLeadStatus;
 use App\Helper\Reply;
 use App\Http\Controllers\Controller;
 use App\Lead;
 use App\Team;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
 use Yajra\DataTables\Html\Builder;
@@ -26,6 +31,8 @@ class MemberCampaignController extends MemberBaseController
 
     public function index()
     {
+        $this->userId = Auth::user()->id;
+        $this->callOutcomes = CallOutcome::all();
         $this->agent = CampaignAgent::where('employee_id', auth()->user()->id)->pluck('id');
         $this->campaigns = Campaign::findMany($this->agent);
         return view('member.campaign.index', $this->data);
@@ -108,12 +115,37 @@ class MemberCampaignController extends MemberBaseController
 
     public function view(Builder $builder, Request $request, $id)
     {
+        $this->leadAgents = LeadAgent::with('user')->has('user')->get();
+        $this->callPusposes = CallPurpose::where('company_id','=',company()->id)->get();
+        $this->callOutcomes = CallOutcome::all();
+        $this->campaignLeadStatuses = CampaignLeadStatus::all();
+
+        
 
         $this->employee = EmployeeDetails::all();
         $this->teams = Team::all();
         $this->campaign = Campaign::findOrFail($id);
         if ($request->ajax()) {
-            return  DataTables::of(CampaignLead::query()->where('campaign_id', $this->campaign->id)->where('agent_id', auth()->user()->id)->with(['lead', 'agent']))->toJson();
+            return  DataTables::of(CampaignLead::query()->where('campaign_id', $this->campaign->id)
+                        ->where('agent_id', auth()->user()->id)
+                        ->with(['lead', 'agent']))
+                        ->editColumn('status', function ($row) {
+                            if ($row->status=1) {
+                                return 'ok';
+                            }
+                            if ($row->status=0) {
+                                return 'no';
+                            }
+                        })
+                        ->editColumn('leadcallstatus', function ($row) {
+                            if ($row->leadcallstatus=1) {
+                                return 'ok';
+                            }
+                            if ($row->status=0) {
+                                return 'no';
+                            }
+                        })
+                        ->toJson();
         }
         $this->html = $builder->columns([
             ['data' => 'id', 'name' => 'id', 'title' => 'Id'],

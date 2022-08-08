@@ -345,7 +345,7 @@ Route::group(['middleware' => 'auth'], function () {
                 Route::get('/campaigns/call-purpose/delete/{id}', 'CampaignController@destroyCallPurpose')->name('campaigns.call-purpose.delete');
                 Route::resource('campaigns', 'CampaignController');
                 Route::get('/campaigns/destroy/{id}', 'CampaignController@destroy')->name('campaigns.destroy');
-                Route::get('/campaigns/view/{id}', 'CampaignController@view')->name('campaigns.view');
+                Route::any('/campaigns/view/{id}', 'CampaignController@view')->name('campaigns.view');
 
                 //Calling Group Route
                 Route::resource('calling-group', 'CallingGroupController');

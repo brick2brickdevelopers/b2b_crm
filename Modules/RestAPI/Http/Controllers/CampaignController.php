@@ -337,19 +337,58 @@ class CampaignController extends ApiBaseController
         $userId  = $user->id;
         $data = [];
         $contactBySource = [];
-        $totalLeads             = CampaignLead::where('agent_id', $userId)->count();
-        $availableForCallLeads  = CampaignLead::where(['agent_id' => $userId, 'leadcallstatus' => 0])->count();
-        $completedLeads         = CampaignLead::where(['agent_id' => $userId, 'leadcallstatus' => 1])->count();
-        $followUpLeads          = CampaignLead::where(['agent_id' => $userId, 'leadcallstatus' => 2])->count();
+        
+        $ldate = date('Y-m-d');
+        if(!empty($request->start_date)){
+            $startDate = Carbon::createFromFormat('Y-m-d', $request->start_date)->startOfDay();
+        }else{
+            $startDate = Carbon::createFromFormat('Y-m-d', $ldate)->startOfDay();
+        }
+        if(!empty($request->start_date)){
+            $endDate = Carbon::createFromFormat('Y-m-d', $request->end_date)->startOfDay();
+        }else{
+            $endDate = Carbon::createFromFormat('Y-m-d', $ldate)->startOfDay();
+        }
+
+      //  return ($startDate);
+    
+        
+        //event functionality
+        // $userEvent = Event::join('event_attendees', 'event_attendees.event_id', '=', 'events.id')
+        //     ->where('event_attendees.user_id', $userId)
+        //     ->WhereDate('events.start_date_time', '>=', $startDate)
+        //     ->select('events.*')
+        //     ->orderBy('id', 'desc')
+        //     ->limit(4)
+        //     ->get();
+
+        $totalLeads             = CampaignLead::where('agent_id', $userId)->WhereDate('campaign_leads.created_at', '>=', $startDate)
+                                    ->WhereDate('campaign_leads.created_at', '<=', $endDate)->count();
+        $availableForCallLeads  = CampaignLead::where(['agent_id' => $userId, 'leadcallstatus' => 0])->WhereDate('campaign_leads.created_at', '>=', $startDate)
+                                    ->WhereDate('campaign_leads.created_at', '<=', $endDate)->count();
+        $completedLeads         = CampaignLead::where(['agent_id' => $userId, 'leadcallstatus' => 1])->WhereDate('campaign_leads.created_at', '>=', $startDate)
+                                    ->WhereDate('campaign_leads.created_at', '<=', $endDate)->count();
+        $followUpLeads          = CampaignLead::where(['agent_id' => $userId, 'leadcallstatus' => 2])->WhereDate('campaign_leads.created_at', '>=', $startDate)
+                                    ->WhereDate('campaign_leads.created_at', '<=', $endDate)->count();
         // $userTask               = Task::where('user_id', $request->user_id)->count();
 
-        $otherLeadCount         = Lead::where(['agent_id' => $userId, 'source_id' => 38])->count();
-        $emailLeadCount         = Lead::where(['agent_id' => $userId, 'source_id' => 1])->count();
-        $googleLeadCount        = Lead::where(['agent_id' => $userId, 'source_id' => 2])->count();
-        $facebookLeadCount      = Lead::where(['agent_id' => $userId, 'source_id' => 3])->count();
-        $friendLeadCount        = Lead::where(['agent_id' => $userId, 'source_id' => 4])->count();
-        $directVisitLeadCount   = Lead::where(['agent_id' => $userId, 'source_id' => 5])->count();
-        $tvAdLeadCount          = Lead::where(['agent_id' => $userId, 'source_id' => 6])->count();
+        $otherLeadCount         = Lead::where(['agent_id' => $userId, 'source_id' => 38])->WhereDate('leads.created_at', '>=', $startDate)
+                                    ->WhereDate('leads.created_at', '<=', $endDate)->count();
+        $emailLeadCount         = Lead::where(['agent_id' => $userId, 'source_id' => 1])->WhereDate('leads.created_at', '>=', $startDate)
+                                    ->WhereDate('leads.created_at', '<=', $endDate)->count();
+        $googleLeadCount        = Lead::where(['agent_id' => $userId, 'source_id' => 2])->WhereDate('leads.created_at', '>=', $startDate)
+                                    ->WhereDate('leads.created_at', '<=', $endDate)->count();
+        $facebookLeadCount      = Lead::where(['agent_id' => $userId, 'source_id' => 3])->WhereDate('leads.created_at', '>=', $startDate)
+                                    ->WhereDate('leads.created_at', '<=', $endDate)->count();
+        $friendLeadCount        = Lead::where(['agent_id' => $userId, 'source_id' => 4])->WhereDate('leads.created_at', '>=', $startDate)
+                                    ->WhereDate('leads.created_at', '<=', $endDate)->count();
+        $directVisitLeadCount   = Lead::where(['agent_id' => $userId, 'source_id' => 5])->WhereDate('leads.created_at', '>=', $startDate)
+                                    ->WhereDate('leads.created_at', '<=', $endDate)->count();
+        $tvAdLeadCount          = Lead::where(['agent_id' => $userId, 'source_id' => 6])->WhereDate('leads.created_at', '>=', $startDate)
+                                    ->WhereDate('leads.created_at', '<=', $endDate)->count();
+
+
+       
 
 
         $taskBoardColumn = TaskboardColumn::all();
@@ -381,6 +420,7 @@ class CampaignController extends ApiBaseController
             // ->WhereDate('start_date', '>=', $startDate)
             ->get();
 
+         
 
         $task_data = [];
         if (count($empTask) > 0) {
@@ -422,7 +462,8 @@ class CampaignController extends ApiBaseController
 
 
         $pendingTasks = Task::select('tasks.id', 'tasks.heading', 'tasks.description', 'tasks.start_date', 'tasks.due_date')
-            ->join('task_users', 'task_users.task_id', '=', 'tasks.id')
+            ->join('task_users', 'task_users.task_id', '=', 'tasks.id')->WhereDate('tasks.created_at', '>=', $startDate)
+            ->WhereDate('tasks.created_at', '<=', $endDate)
             ->where('task_users.user_id', '=', $userId)
             ->get();
 
@@ -470,6 +511,26 @@ class CampaignController extends ApiBaseController
         } else {
             $userEvent = [];
         }
+        // campaign lead status count
+        $campaignLeadStatus = CampaignLeadStatus::all();
+        $campaignLeadStatus_data = [];
+        if(count($campaignLeadStatus)>0){
+           $campaignLeadStatus = $campaignLeadStatus;
+
+           foreach($campaignLeadStatus as $leadStatus){
+               $leadStatusCount = ManualLoggedCall::where('campaign_lead_status_id',$leadStatus['id'])->WhereDate('manual_logged_calls.created_at', '>=', $startDate)
+               ->WhereDate('manual_logged_calls.created_at', '<=', $endDate)->count();
+               $leadStatusName = CampaignLeadStatus::where('name',$leadStatus['name'])->first()->name;
+               
+               array_push($campaignLeadStatus_data,array(
+                'name' => $leadStatusName,
+                'count'=> $leadStatusCount,
+               ));
+           }
+
+        }else{
+           $campaignLeadStatus = [];
+        }
 
         return response()->json([
             'success'  => true,
@@ -480,6 +541,7 @@ class CampaignController extends ApiBaseController
             'taskList' =>  $task_data,
             'contactedBySource'   =>  $sourceData,
             'dasboardData'     =>  $data,
+            'campaignStatus' =>$campaignLeadStatus_data,
         ]);
     }
 
@@ -508,6 +570,62 @@ class CampaignController extends ApiBaseController
             'code'          => "success",
             'message'       => "Event List has been fetched successfully",
             'upcomingEvent' => $userEvent
+        ]);
+    }
+
+    //call log Reports Api
+
+    public function call_log_reports(Request $request)
+    {
+        $perPage = $request->page_size;
+        $user = auth('api')->user();
+        $userId = $user->id;
+        $agentNumber = $user->mobile;
+        if (!$agentNumber) {
+            $agentNumber = 12345678;
+        }
+        $callReportData = ManualLoggedCall::where('agent_number', $agentNumber)->paginate($perPage);
+
+        $datanew = [];
+        foreach ($callReportData as $data) {
+            if ($data['call_type'] == 1) {
+                $data['call_type'] = 'Auto';
+            } else {
+                $data['call_type'] = 'Mannual';
+            }
+            if ($data['call_source'] == 1
+            ) {
+                $data['call_source'] = 'Incoming';
+            } else {
+                $data['call_source'] = 'Outgoing';
+            }
+            if ($data['status'] == 1) {
+                $data['call_status'] = 'Completed';
+            } elseif ($data['status'] == 2) {
+                $data['call_status'] = 'follow Up';
+            } else {
+                $data['call_status'] = 'available';
+            }
+
+            $data['created_by'] = $user->name;
+            //unset some variable
+            unset($data['date']);
+            unset($data['description']);
+            unset($data['status']);
+            unset($data['terminate']);
+            unset($data['recordings_file']);
+            unset($data['did']);
+            unset($data['session_id']);
+            unset($data['reason_text']);
+            unset($data['outcome']);
+        }
+
+        return response()->json([
+            'success' => true,
+            'status' => 200,
+            'code' => 'success',
+            'message' => 'call log report fetched successfully',
+            'callReportData' => $callReportData,
         ]);
     }
 }

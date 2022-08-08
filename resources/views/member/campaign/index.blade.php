@@ -1,3 +1,4 @@
+@php use App\ManualLoggedCall; @endphp
 @extends('layouts.member-app')
 @section('page-title')
     <div class="row bg-title">
@@ -73,18 +74,24 @@
                                         <td>{{ $campaign->name }}</td>
                                         <td>{{ $campaign->start_date }} to {{ $campaign->end_date }}</td>
                                         <td>Total Leads: {{ $campaign->leads->count() }}</td>
+                                        @php
+                                        $available = ManualLoggedCall::where('campaign_id',$campaign->id)->where('call_status','=',0)->where('created_by','=',$userId)->count();
+                                        $completed = ManualLoggedCall::where('campaign_id',$campaign->id)->where('call_status','=',1)->where('created_by','=',$userId)->count();
+                                        $follow = ManualLoggedCall::where('campaign_id',$campaign->id)->where('call_status','=',2)->where('created_by','=',$userId)->count();
+                                        @endphp
                                         <td>
                                             <ul class="p-l-20">
-                                                <li>Available: 0</li>
-                                                <li>Completed: 3</li>
-                                                <li>Follow Up: 0</li>
+                                                <li>Available : {{ $available }}</li>
+                                                <li>Completed : {{ $completed }}</li>
+                                                <li>Follow Up : {{ $follow }}</li>
                                             </ul>
                                         </td>
                                         <td>
                                             <ul class="p-l-20">
-                                                <li>Dialed: 0</li>
-                                                <li>Both Answered: 3</li>
-                                                <li>Un-Answered: 0</li>
+                                                @foreach ($callOutcomes as $callOutcome)
+                                                @php $calOutcomeCount = ManualLoggedCall::where('campaign_id',$campaign->id)->where('created_by','=',$userId)->where('call_outcome_id','=',$callOutcome->id)->count();@endphp
+                                                <li>{{ $callOutcome->name }} : {{ $calOutcomeCount }}</li>
+                                                @endforeach
                                             </ul>
                                         </td>
                                         <td>
