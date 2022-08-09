@@ -39,6 +39,10 @@ use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
 use Yajra\DataTables\Html\Builder;
 
+use App\Exports\LeadsExport;
+use App\Imports\LeadsImport;
+use Maatwebsite\Excel\Facades\Excel;
+
 class LeadController extends AdminBaseController
 {
 
@@ -789,6 +793,21 @@ class LeadController extends AdminBaseController
             $this->updateCustomFieldData($request->get('custom_fields_data'), $callP->id);
         }
         return Reply::successWithData('Call Log entry Completed', ['data' => $request->all()]);
+    }
+
+    public function export()
+    {
+        // return Excel::download(new UsersExport, 'users.xlsx');
+
+        return Excel::download(new LeadsExport,'leads.xlsx');
+
+    }
+
+    public function import(Request $request)
+    {
+
+        Excel::import(new LeadsImport,request()->file('file'));
+        return back();
     }
 
 

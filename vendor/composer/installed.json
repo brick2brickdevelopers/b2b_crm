@@ -6669,7 +6669,8 @@
             "email": "devrel@nexmo.com",
             "issues": "https://github.com/Nexmo/nexmo-laravel/issues",
             "source": "https://github.com/Nexmo/nexmo-laravel/tree/2.4.1"
-        }
+        },
+        "abandoned": "vonage-laravel"
     },
     {
         "name": "nikic/php-parser",

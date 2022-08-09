@@ -15,6 +15,7 @@ use App\CustomFieldGroup;
 use App\CallOutcome;
 use App\CampaignLeadStatus;
 use App\LeadAgent;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
@@ -36,7 +37,7 @@ class CampaignController extends AdminBaseController
     }
 
     public function index()
-    {   
+    {
         $this->callOutcomes = CallOutcome::all();
         $this->campaigns = Campaign::all();
         return view('admin.campaign.index', $this->data);
@@ -51,35 +52,31 @@ class CampaignController extends AdminBaseController
 
     public function store(Request $request)
     {
-        
-        if($request->type !='') {
+
+        if ($request->type != '') {
             $campType = $request->type;
-        }
-        else {
+        } else {
             $campType = 'none';
         }
 
-        if($request->caller_id !='') {
+        if ($request->caller_id != '') {
             $callerId = $request->caller_id;
-        }
-        else {
+        } else {
             $callerId = '';
         }
 
-        if($request->call_to_call_gap !='') {
+        if ($request->call_to_call_gap != '') {
             $callToGap = $request->call_to_call_gap;
-        }
-        else {
+        } else {
             $callToGap = '';
         }
 
-        if($request->break_time !='') {
+        if ($request->break_time != '') {
             $breakTime = $request->break_time;
-        }
-        else {
+        } else {
             $breakTime = '';
         }
-       // return ($request->all());
+        // return ($request->all());
         $campaign = new Campaign();
         $campaign->type = $campType;
         $campaign->name = $request->name;
@@ -92,9 +89,9 @@ class CampaignController extends AdminBaseController
 
 
         if ($campaign->save()) {
-           
+
             if ($request->agent != null) {
-               
+
                 foreach ($request->agent as $ag) {
                     CampaignAgent::create([
                         'campaign_id' => $campaign->id,
@@ -104,7 +101,7 @@ class CampaignController extends AdminBaseController
                 }
             }
             if ($request->agentGroup != null) {
-               
+
                 $team = Team::find($request->agentGroup);
 
                 if (!empty($team)) {
@@ -172,53 +169,60 @@ class CampaignController extends AdminBaseController
 
     public function view(Builder $builder, Request $request, $id)
     {
-       
+
+
         $this->leadAgents = LeadAgent::with('user')->has('user')->get();
-        $this->callPusposes = CallPurpose::where('company_id','=',company()->id)->get();
+        $this->callPusposes = CallPurpose::where('company_id', '=', company()->id)->get();
         $this->employee = EmployeeDetails::all();
         $this->callOutcomes = CallOutcome::all();
         $this->campaignLeadStatuses = CampaignLeadStatus::all();
         $this->teams = Team::all();
         $this->campaign = Campaign::findOrFail($id);
 
-            if ($request->ajax()) {
-                $campaigns = CampaignLead::query()->where('campaign_id', $this->campaign->id)
-                    ->with(['lead', 'agent']);
-    
-                    if ($request->start_date) {
-                        $campaigns->where('agent_id', $request->callType);
-                    }
-                    if ($request->end_date) {
-                        $campaigns->where('agent_id', $request->callType);
-                    }
-                    if ($request->campaignStatus) {
-                        $campaigns->where('agent_id', $request->campaignStatus);
-                    }
-    
-                    if ($request->callType) {
-                        $campaigns->where('status', $request->callType);
-                    }
-                    if ($request->callPuspose) {
-                        $campaigns->where('agent_id', $request->callType);
-                    }
-                    if ($request->callOutcome) {
-                        $campaigns->where('agent_id', $request->callType);
-                    }
-                    if ($request->campaignLeadStatus) {
-                        $campaigns->where('agent_id', $request->callType);
-                    }
-                    if ($request->agent_id) {
-                        $campaigns->where('agent_id', $request->agent_id);
-                    }
-                return  DataTables::of($campaigns)->editColumn('leadcallstatus', function ($row) {
-                    if ($row->leadcallstatus = 1) {
-                        return 'ok';
-                    }
-                    if ($row->status = 0) {
-                        return 'no';
-                    }
-                })
-                    ->toJson();
+
+        if ($request->ajax()) {
+            $campaigns = CampaignLead::query()->where('campaign_id', $this->campaign->id);
+
+
+            if ($request->start_date) {
+                $campaigns->WhereDate('created_at', '>=', date('Y-m-d', strtotime($request->start_date)));
+            }
+            if ($request->end_date) {
+                $campaigns->WhereDate('created_at', '<=', date('Y-m-d', strtotime($request->end_date)));
+            }
+            if ($request->agent_id) {
+                $campaigns->where('agent_id', $request->agent_id);
+            }
+
+            if ($request->campaignStatus) {
+                $campaigns->where('status', '=', ($request->campaignStatus - 1));
+            }
+
+            if ($request->callOutcome) {
+
+                $campaigns->where('leadcallstatus', '=', $request->callOutcome);
+            }
+            $campaigns->with(['lead', 'agent', 'calloutcome']);
+
+
+            return  DataTables::of($campaigns)->editColumn('status', function ($row) {
+                if ($row->status == 0) {
+                    return 'Avaiable';
+                }
+                if ($row->status == 1) {
+                    return 'Completed';
+                }
+                if ($row->status == 2) {
+                    return 'Follow';
+                }
+            })->editColumn('calloutcome', function ($item) {
+                if ($item->calloutcome) {
+                    return $item->calloutcome->name;
+                } else {
+                    return "N/A";
+                }
+            })
+                ->toJson();
         }
         $this->html = $builder->columns([
             ['data' => 'id', 'name' => 'id', 'title' => 'Id'],
@@ -227,28 +231,27 @@ class CampaignController extends AdminBaseController
             // ['data' => 'leadcallstatus', 'name' => 'name', 'title' => 'Call Status'],
             ['data' => 'lead.mobile', 'name' => 'name', 'title' => 'Lead Mobile'],
             ['data' => 'agent.mobile', 'name' => 'name', 'title' => 'Agent Mobile'],
-            ['data' => 'status', 'name' => 'name', 'title' => 'Campaign Status'],
-            ['data' => 'agent.mobile', 'name' => 'name', 'title' => 'Call Purpose'],
+            ['data' => 'status', 'name' => 'status', 'title' => 'Campaign Status'],
+            ['data' => 'calloutcome', 'name' => 'leadcallstatus', 'title' => 'Call Outcome'],
             // ['data' => 'email', 'name' => 'email', 'title' => 'Email'],
             // ['data' => 'created_at', 'name' => 'created_at', 'title' => 'Created At'],
             // ['data' => 'updated_at', 'name' => 'updated_at', 'title' => 'Updated At'],
-        ]);
+        ])->setTableId("tab-table");
 
         return view('admin.campaign.view', $this->data);
-        
     }
 
     public function callPurpose(Request $request)
     {
 
-     
+
         $this->callPurpose = CallPurpose::all();
-       
+
         if ($request->method() == 'POST') {
             $request->validate([
                 'purpose' => 'required|unique:call_purposes,purpose,' . company()->id
             ]);
-            
+
             $call_purposes = CallPurpose::findOrNew($request->id);
             $call_purposes->purpose = $request->purpose;
             if ($call_purposes->save()) {

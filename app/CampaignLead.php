@@ -28,10 +28,10 @@ class CampaignLead extends Model
         return $this->belongsTo(Lead::class, 'lead_id');
     }
 
-    // public function manual()
-    // {
-    //     return $this->belongsTo(ManualLoggedCall::class, 'lead_id');
-    // }
+    public function calloutcome()
+    {
+        return $this->belongsTo(CallOutcome::class, 'leadcallstatus');
+    }
 
    protected $guarded = [];
 }

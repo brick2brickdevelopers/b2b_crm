@@ -14,6 +14,7 @@ use App\Helper\Reply;
 use App\Http\Controllers\Controller;
 use App\Lead;
 use App\Team;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -119,59 +120,49 @@ class MemberCampaignController extends MemberBaseController
         $this->callPusposes = CallPurpose::where('company_id', '=', company()->id)->get();
         $this->callOutcomes = CallOutcome::all();
         $this->campaignLeadStatuses = CampaignLeadStatus::all();
-
-        // start_date:start_date,
-        // end_date:end_date,
-        // campaignStatus:campaignStatus,
-        // callType:callType,
-        // callPuspose:callPuspose,
-        // callOutcome:callOutcome,
-        // campaignLeadStatus:campaignLeadStatus,
-       
-
         $this->employee = EmployeeDetails::all();
         $this->teams = Team::all();
         $this->campaign = Campaign::findOrFail($id);
-        if ($request->ajax()) {
-            $campaigns = CampaignLead::query()->where('campaign_id', $this->campaign->id)->where('agent_id', auth()->user()->id)
-                ->with(['lead', 'agent']);
 
-                // if ($request->callType) {
-                //     $campaigns->where('agent_id', $request->callType);
-                // }
-                // if ($request->callType) {
-                //     $campaigns->where('agent_id', $request->callType);
-                // }
-                // if ($request->campaignStatus) {
-                //     $campaigns->where('agent_id', $request->campaignStatus);
-                // }
+            if ($request->ajax()) {
+                $campaigns = CampaignLead::query()->where('campaign_id', $this->campaign->id)->where('agent_id', auth()->user()->id)
+                    ->with(['lead', 'agent']);
 
-                // if ($request->callType) {
-                //     $campaigns->where('agent_id', $request->callType);
-                // }
-                // if ($request->callPuspose) {
-                //     $campaigns->where('agent_id', $request->callType);
-                // }
-                // if ($request->callOutcome) {
-                //     $campaigns->where('agent_id', $request->callType);
-                // }
-                // if ($request->campaignLeadStatus) {
-                //     $campaigns->where('agent_id', $request->callType);
-                // }
-              
-
-
-
-            return  DataTables::of($campaigns)->editColumn('leadcallstatus', function ($row) {
-                if ($row->leadcallstatus = 1) {
-                    return 'ok';
-                }
-                if ($row->status = 0) {
-                    return 'no';
-                }
-            })
-                ->toJson();
+                    if ($request->start_date) {
+                        $campaigns->WhereDate('created_at', '>=', date('Y-m-d', strtotime($request->start_date)));
+                    }
+                    if ($request->end_date) {
+                        $campaigns->WhereDate('created_at', '<=', date('Y-m-d', strtotime($request->end_date)));
+                    }
+                    if ($request->campaignStatus) {
+                        $campaigns->where('status', ($request->campaignStatus - 1));
+                    }
+    
+                    if ($request->callOutcome) {
+                        $campaigns->where('leadcallstatus', $request->callOutcome);
+                    }
+                   
+                 
+                return  DataTables::of($campaigns)->editColumn('status', function ($row) {
+                    if ($row->status == 0) {
+                        return 'Avaiable';
+                    }
+                    if ($row->status == 1) {
+                        return 'Completed';
+                    }
+                    if ($row->status == 2) {
+                        return 'Follow';
+                    }
+                })->editColumn('calloutcome', function ($item) {
+                    if ($item->calloutcome) {
+                        return $item->calloutcome->name;
+                    } else {
+                        return "N/A";
+                    }
+                })
+                    ->toJson();
         }
+
         $this->html = $builder->columns([
             ['data' => 'id', 'name' => 'id', 'title' => 'Id'],
             ['data' => 'lead.client_name', 'name' => 'name', 'title' => 'Lead Name'],
@@ -179,12 +170,12 @@ class MemberCampaignController extends MemberBaseController
             // ['data' => 'leadcallstatus', 'name' => 'name', 'title' => 'Call Status'],
             ['data' => 'lead.mobile', 'name' => 'name', 'title' => 'Lead Mobile'],
             ['data' => 'agent.mobile', 'name' => 'name', 'title' => 'Agent Mobile'],
-            ['data' => 'status', 'name' => 'name', 'title' => 'Campaign Status'],
-            ['data' => 'agent.mobile', 'name' => 'name', 'title' => 'Call Purpose'],
+            ['data' => 'status', 'name' => 'status', 'title' => 'Campaign Status'],
+            ['data' => 'calloutcome', 'name' => 'leadcallstatus', 'title' => 'Call Outcome'],
             // ['data' => 'email', 'name' => 'email', 'title' => 'Email'],
             // ['data' => 'created_at', 'name' => 'created_at', 'title' => 'Created At'],
             // ['data' => 'updated_at', 'name' => 'updated_at', 'title' => 'Updated At'],
-        ]);
+        ])->setTableId("tab-table");
 
         return view('member.campaign.view', $this->data);
     }

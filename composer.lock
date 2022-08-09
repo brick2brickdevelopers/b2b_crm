@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0b651fdc1634e268c5edf34c41ff02e6",
+    "content-hash": "18967365b3daf9a5d8ac76285cd6cea8",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -5772,6 +5772,7 @@
                 "issues": "https://github.com/Nexmo/nexmo-laravel/issues",
                 "source": "https://github.com/Nexmo/nexmo-laravel/tree/2.4.1"
             },
+            "abandoned": "vonage-laravel",
             "time": "2020-12-04T13:11:05+00:00"
         },
         {
@@ -14244,5 +14245,5 @@
         "php": "^7.3.0"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "1.1.0"
 }

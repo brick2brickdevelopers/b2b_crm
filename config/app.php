@@ -224,7 +224,8 @@ return [
         App\Providers\GoogleDriveServiceProvider::class,
         NotificationChannels\OneSignal\OneSignalServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
-        Froiden\RestAPI\Providers\ApiServiceProvider::class
+        Froiden\RestAPI\Providers\ApiServiceProvider::class,
+        Maatwebsite\Excel\ExcelServiceProvider::class
     ],
 
     /*
@@ -283,7 +284,8 @@ return [
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'Zip' => Macellan\Zip\ZipFacade::class,
-        "ApiRoute" => Froiden\RestAPI\Facades\ApiRoute::class
+        "ApiRoute" => Froiden\RestAPI\Facades\ApiRoute::class,
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class
 
     ],
     'debug_blacklist' => [

@@ -26,8 +26,7 @@
     <link rel="stylesheet" href="//cdn.datatables.net/buttons/1.2.2/css/buttons.dataTables.min.css">
     <link rel="stylesheet" href="//cdn.datatables.net/buttons/1.2.2/css/buttons.dataTables.min.css">
     <link rel="stylesheet" href="{{ asset('plugins/bower_components/bootstrap-select/bootstrap-select.min.css') }}">
-    <link rel="stylesheet"
-        href="{{ asset('plugins/bower_components/bootstrap-datepicker/bootstrap-datepicker.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('plugins/bower_components/bootstrap-datepicker/bootstrap-datepicker.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('plugins/daterange-picker/daterangepicker.css') }}" />
 @endpush
 
@@ -59,86 +58,37 @@
                         <div class="col-xs-12">
                             <div class="form-group">
                                 <label for="">Campaign Status Filter</label>
-                                <select class="form-control" name="campaignStatus" id="campaignStatus" data-style="form-control">
-                                    <option value="all">All</option>
-                                    <option value="0">Available</option>
-                                    <option value="1">Completed</option>
-                                    <option value="all">Follow</option>
+                                <select class="form-control" name="campaignStatus" id="campaignStatus"
+                                    data-style="form-control">
+                                    <option value="">All</option>
+                                    <option value="1">Available</option>
+                                    <option value="2">Completed</option>
+                                    <option value="3">Follow</option>
                                 </select>
                             </div>
                         </div>
-                        {{-- <div class="col-xs-12">
-                            <div class="form-group">
-                                <label for="">ChooseAgents</label>
-                                <select class="form-control" data-placeholder="@lang('modules.tickets.chooseAgents')"
-                                    id="agent_id" name="agent_id">
-                                    <option value="all">@lang('modules.lead.all')</option>
-                                    @foreach ($leadAgents as $emp)
-                                        <option value="{{ $emp->id }}">{{ ucwords($emp->user->name) }} @if ($emp->user->id == $user->id)
-                                                (YOU)
-                                            @endif
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div> --}}
-                      
-                        <div class="col-xs-12">
-                            <div class="form-group">
-                                <label for="">Call Type</label>
-                                <select class="form-control" name="callType" id="callType" data-style="form-control">
-                                    <option value="all">All</option>
-                                    <option value="0">Outgoing</option>
-                                    <option value="1">Incoming</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-xs-12">
-                            <div class="form-group">
-                                <label class="control-label">Call Purpose</label>
-                                <select class="form-control" name="callPuspose" id="callPuspose" data-style="form-control">
-                                    <option value="all">All</option>
 
-                                    @foreach ($callPusposes as $callPuspose)
-                                    <option value="{{ $callPuspose->id }}">{{ $callPuspose->purpose }}</option>
-
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
                         <div class="col-xs-12">
                             <div class="form-group">
                                 <label class="control-label">Call Outcome</label>
                                 <select class="form-control" name="callOutcome" id="callOutcome" data-style="form-control">
-                                    <option value="all">All</option>
+                                    <option value="">All</option>
 
                                     @foreach ($callOutcomes as $callOutcome)
-                                    <option value="{{ $callOutcome->id }}">{{ $callOutcome->name }}</option>
-
+                                        <option value="{{ $callOutcome->id }}">{{ $callOutcome->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
                         </div>
-                        <div class="col-xs-12">
-                            <div class="form-group">
-                                <label class="control-label">Campaign Status Lead</label>
-                                <select class="form-control" name="campaignLeadStatus" id="campaignLeadStatus" data-style="form-control">
-                                    <option value="all">All</option>
 
-                                    @foreach ($campaignLeadStatuses as $campaignLeadStatus)
-                                    <option value="{{ $campaignLeadStatus->id }}">{{ $campaignLeadStatus->name }}</option>
-
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
                         <div class="col-xs-12">
                             <div class="form-group">
                                 <label class="control-label col-xs-12">&nbsp;</label>
                                 <button type="button" id="apply-filters" class="btn btn-success col-md-6"><i
                                         class="fa fa-check"></i> @lang('app.apply')</button>
-                                <button type="button" id="reset-filters" class="btn btn-inverse col-md-5 col-md-offset-1"><i
-                                        class="fa fa-refresh"></i> @lang('app.reset')</button>
+                                <button type="button" id="reset-filters"
+                                    class="btn btn-inverse col-md-5 col-md-offset-1"><i class="fa fa-refresh"></i>
+                                    @lang('app.reset')</button>
                             </div>
                         </div>
                     </form>
@@ -218,7 +168,7 @@
             format: '{{ $global->date_picker_format }}',
         });
 
-        $('#estimates-table').on('preXhr.dt', function(e, settings, data) {
+        $('#tab-table').on('preXhr.dt', function(e, settings, data) {
             var startDate = $('#start-date').val();
 
             if (startDate == '') {
@@ -232,10 +182,15 @@
             }
 
             var status = $('#status').val();
+           
+            var campaignStatus = $('#campaignStatus').val();
+            var callPuspose = $('#callPuspose').val();
+            var callOutcome = $('#callOutcome').val();
 
-            data['startDate'] = startDate;
-            data['endDate'] = endDate;
-            data['status'] = status;
+            data['start_date'] = startDate;
+            data['end_date'] = endDate;
+            data['campaignStatus'] = campaignStatus;
+            data['callOutcome'] = callOutcome;
         });
 
         loadTable();
@@ -327,40 +282,7 @@
     })
 
     $('#apply-filters').click(function() {
-        var start_date = $('#start-date').val();
-        var end_date = $('#end-date').val();
-        var campaignStatus = $('#campaignStatus').val();
-        var callType = $('#callType').val();
-        var callPuspose = $('#callPuspose').val();
-        var callOutcome = $('#callOutcome').val();
-        var campaignLeadStatus = $('#campaignLeadStatus').val();
-
-        //  var id = $(this).data('estimate-id');
-      //  var id =1;
-        var url = "{{ route('member.campaigns.view', request()->id) }}";
-        // url = url.replace(':id', id);
-
-        var token = "{{ csrf_token() }}";
-
-        $.easyAjax({
-            type: 'POST',
-            url: url,
-            data: {
-                '_token': token,
-                start_date:start_date,
-                end_date:end_date,
-                campaignStatus:campaignStatus,
-                callType:callType,
-                callPuspose:callPuspose,
-                callOutcome:callOutcome,
-                campaignLeadStatus:campaignLeadStatus,
-            },
-            success: function(response) {
-                if (response.status == "success") {
-                    loadTable();
-                }
-            }
-        });
+        loadTable();
     });
 
     $('#reset-filters').click(function() {
@@ -372,7 +294,7 @@
     })
 
     $('body').on('click', '.sendButton', function() {
-       // var id = $(this).data('estimate-id');
+        // var id = $(this).data('estimate-id');
         // var url = "{{ route('admin.estimates.send-estimate', ':id') }}";
         url = url.replace(':id', id);
 
