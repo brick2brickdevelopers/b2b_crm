@@ -1135,7 +1135,7 @@ Route::group(['middleware' => 'auth'], function () {
             Route::get('dashboard', ['uses' => 'MemberDashboardController@index'])->name('dashboard');
 
             Route::resource('campaigns', 'MemberCampaignController');
-            Route::get('/campaigns/view/{id}', 'MemberCampaignController@view')->name('campaigns.view');
+            Route::any('/campaigns/view/{id}', 'MemberCampaignController@view')->name('campaigns.view');
             Route::post('profile/updateOneSignalId', ['uses' => 'MemberProfileController@updateOneSignalId'])->name('profile.updateOneSignalId');
             Route::get('language/change-language', ['uses' => 'MemberProfileController@changeLanguage'])->name('language.change-language');
             Route::resource('profile', 'MemberProfileController');

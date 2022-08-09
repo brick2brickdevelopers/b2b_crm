@@ -81,12 +81,25 @@ class CampaignController extends ApiBaseController
         } else {
             $campaign = [];
         }
+        $available = Campaign::join('campaign_leads', 'campaign_leads.campaign_id', '=', 'campaigns.id')
+                     ->where('campaign_leads.agent_id', $userId)
+                     ->where('campaign_leads.status',0)->count();
+        $completed = Campaign::join('campaign_leads', 'campaign_leads.campaign_id', '=', 'campaigns.id')
+                     ->where('campaign_leads.agent_id', $userId)
+                     ->where('campaign_leads.status',1)->count();
+        $follow = Campaign::join('campaign_leads', 'campaign_leads.campaign_id', '=', 'campaigns.id')
+                     ->where('campaign_leads.agent_id', $userId)
+                     ->where('campaign_leads.status',2)->count();
         return response()->json([
             'success'  => true,
             'status'   => 200,
             'code'     => "success",
             'message'  => "Campaign retrieved successfully",
-            'campaign' =>  $campaign
+            'available' => $available,
+            'completed' => $completed,
+            'follow' => $follow,
+            'campaign' =>  $campaign,
+           
             //  'count'    => $data 
         ]);
     }
@@ -335,6 +348,7 @@ class CampaignController extends ApiBaseController
     {
         $user    = auth('api')->user();
         $userId  = $user->id;
+        $companyId = $user->company_id;
         $data = [];
         $contactBySource = [];
         
@@ -344,7 +358,7 @@ class CampaignController extends ApiBaseController
         }else{
             $startDate = Carbon::createFromFormat('Y-m-d', $ldate)->startOfDay();
         }
-        if(!empty($request->start_date)){
+        if(!empty($request->end_date)){
             $endDate = Carbon::createFromFormat('Y-m-d', $request->end_date)->startOfDay();
         }else{
             $endDate = Carbon::createFromFormat('Y-m-d', $ldate)->startOfDay();
@@ -532,6 +546,46 @@ class CampaignController extends ApiBaseController
            $campaignLeadStatus = [];
         }
 
+         // call  outcome  count
+         $callOutcomes = CallOutcome::all();
+         $callOutcomestatus = [];
+         if(count($callOutcomes)>0){
+            $callOutcomes = $callOutcomes;
+ 
+            foreach($callOutcomes as $callOutcome){
+                $callOutcomeCount = ManualLoggedCall::where('call_outcome_id',$callOutcome['id'])->WhereDate('manual_logged_calls.created_at', '>=', $startDate)
+                ->WhereDate('manual_logged_calls.created_at', '<=', $endDate)->count();
+                $callOutcomeName = CallOutcome::where('name',$callOutcome['name'])->first()->name;
+                
+                array_push($callOutcomestatus,array(
+                 'name' => $callOutcomeName,
+                 'count'=> $callOutcomeCount,
+                ));
+            }
+ 
+         }else{
+            $callOutcomestatus = [];
+         }
+            // call  outcome  count
+            $callPurposes = CallPurpose::where('company_id',$companyId)->get();
+            $callPurposesStatus = [];
+            if(count($callPurposes)>0){
+            $callPurposes = $callPurposes;
+
+            foreach($callPurposes as $callPurpose){
+                $callPurposesCount = ManualLoggedCall::where('call_purpose',$callPurpose['id'])->WhereDate('manual_logged_calls.created_at', '>=', $startDate)
+                ->WhereDate('manual_logged_calls.created_at', '<=', $endDate)->count();
+                $callPurposesName = CallPurpose::where('purpose',$callPurpose['purpose'])->first()->purpose;
+                
+                array_push($callPurposesStatus,array(
+                    'name' => $callPurposesName,
+                    'count'=> $callPurposesCount,
+                ));
+            }
+
+            }else{
+            $callPurposesStatus = [];
+            }
         return response()->json([
             'success'  => true,
             'status'   => 200,
@@ -542,6 +596,9 @@ class CampaignController extends ApiBaseController
             'contactedBySource'   =>  $sourceData,
             'dasboardData'     =>  $data,
             'campaignStatus' =>$campaignLeadStatus_data,
+            'callOutcomestatus' =>$callOutcomestatus,
+            'callPurposesStatus' => $callPurposesStatus,
+            
         ]);
     }
 

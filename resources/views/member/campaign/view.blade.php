@@ -337,7 +337,7 @@
 
         //  var id = $(this).data('estimate-id');
       //  var id =1;
-        var url = "{{ route('member.campaigns.view', ':id') }}";
+        var url = "{{ route('member.campaigns.view', request()->id) }}";
         // url = url.replace(':id', id);
 
         var token = "{{ csrf_token() }}";

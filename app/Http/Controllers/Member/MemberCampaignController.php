@@ -116,42 +116,67 @@ class MemberCampaignController extends MemberBaseController
     public function view(Builder $builder, Request $request, $id)
     {
         $this->leadAgents = LeadAgent::with('user')->has('user')->get();
-        $this->callPusposes = CallPurpose::where('company_id','=',company()->id)->get();
+        $this->callPusposes = CallPurpose::where('company_id', '=', company()->id)->get();
         $this->callOutcomes = CallOutcome::all();
         $this->campaignLeadStatuses = CampaignLeadStatus::all();
 
-        
+        // start_date:start_date,
+        // end_date:end_date,
+        // campaignStatus:campaignStatus,
+        // callType:callType,
+        // callPuspose:callPuspose,
+        // callOutcome:callOutcome,
+        // campaignLeadStatus:campaignLeadStatus,
+       
 
         $this->employee = EmployeeDetails::all();
         $this->teams = Team::all();
         $this->campaign = Campaign::findOrFail($id);
         if ($request->ajax()) {
-            return  DataTables::of(CampaignLead::query()->where('campaign_id', $this->campaign->id)
-                        ->where('agent_id', auth()->user()->id)
-                        ->with(['lead', 'agent']))
-                        ->editColumn('status', function ($row) {
-                            if ($row->status=1) {
-                                return 'ok';
-                            }
-                            if ($row->status=0) {
-                                return 'no';
-                            }
-                        })
-                        ->editColumn('leadcallstatus', function ($row) {
-                            if ($row->leadcallstatus=1) {
-                                return 'ok';
-                            }
-                            if ($row->status=0) {
-                                return 'no';
-                            }
-                        })
-                        ->toJson();
+            $campaigns = CampaignLead::query()->where('campaign_id', $this->campaign->id)->where('agent_id', auth()->user()->id)
+                ->with(['lead', 'agent']);
+
+                // if ($request->callType) {
+                //     $campaigns->where('agent_id', $request->callType);
+                // }
+                // if ($request->callType) {
+                //     $campaigns->where('agent_id', $request->callType);
+                // }
+                // if ($request->campaignStatus) {
+                //     $campaigns->where('agent_id', $request->campaignStatus);
+                // }
+
+                // if ($request->callType) {
+                //     $campaigns->where('agent_id', $request->callType);
+                // }
+                // if ($request->callPuspose) {
+                //     $campaigns->where('agent_id', $request->callType);
+                // }
+                // if ($request->callOutcome) {
+                //     $campaigns->where('agent_id', $request->callType);
+                // }
+                // if ($request->campaignLeadStatus) {
+                //     $campaigns->where('agent_id', $request->callType);
+                // }
+              
+
+
+
+            return  DataTables::of($campaigns)->editColumn('leadcallstatus', function ($row) {
+                if ($row->leadcallstatus = 1) {
+                    return 'ok';
+                }
+                if ($row->status = 0) {
+                    return 'no';
+                }
+            })
+                ->toJson();
         }
         $this->html = $builder->columns([
             ['data' => 'id', 'name' => 'id', 'title' => 'Id'],
             ['data' => 'lead.client_name', 'name' => 'name', 'title' => 'Lead Name'],
             ['data' => 'agent.name', 'name' => 'name', 'title' => 'AssignedTo'],
-            ['data' => 'leadcallstatus', 'name' => 'name', 'title' => 'Call Status'],
+            // ['data' => 'leadcallstatus', 'name' => 'name', 'title' => 'Call Status'],
             ['data' => 'lead.mobile', 'name' => 'name', 'title' => 'Lead Mobile'],
             ['data' => 'agent.mobile', 'name' => 'name', 'title' => 'Agent Mobile'],
             ['data' => 'status', 'name' => 'name', 'title' => 'Campaign Status'],

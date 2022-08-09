@@ -30,7 +30,7 @@ ApiRoute::group(['namespace' => 'Modules\RestAPI\Http\Controllers', 'middleware'
     // ApiRoute::get('dashboard', ['as' => 'api.dashboard', 'uses' => 'DashboardController@dashboard']);
     ApiRoute::get('dashboard/me', ['as' => 'api.dashboard', 'uses' => 'DashboardController@myDashboard']);
     ApiRoute::get('auth/me', ['as' => 'api.auth.me', 'uses' => 'AuthController@me']);
-    ApiRoute::get('/project/me', ['as' => 'project.me', 'uses' => 'ProjectController@me']);
+    ApiRoute::get('project/me', ['as' => 'project.me', 'uses' => 'ProjectController@me']);
 
     ApiRoute::get('company', ['as' => 'api.app', 'uses' => 'CompanyController@company']);
     ApiRoute::post('/project/{project_id}/members', ['as' => 'project.member', 'uses' => 'ProjectController@members']);

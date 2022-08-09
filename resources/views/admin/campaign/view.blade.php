@@ -85,15 +85,18 @@
                       
                         <div class="col-xs-12">
                             <div class="form-group">
-                                <label for="">Call Type</label>
-                                <select class="form-control" name="callType" id="callType" data-style="form-control">
+                                <label for="">Status</label>
+                                <select class="form-control" name="callOutcome" id="callOutcome" data-style="form-control">
                                     <option value="all">All</option>
-                                    <option value="0">Outgoing</option>
-                                    <option value="1">Incoming</option>
+
+                                    @foreach ($callOutcomes as $callOutcome)
+                                    <option value="{{ $callOutcome->id }}">{{ $callOutcome->name }}</option>
+
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
-                        <div class="col-xs-12">
+                        {{-- <div class="col-xs-12">
                             <div class="form-group">
                                 <label class="control-label">Call Purpose</label>
                                 <select class="form-control" name="callPuspose" id="callPuspose" data-style="form-control">
@@ -105,8 +108,8 @@
                                     @endforeach
                                 </select>
                             </div>
-                        </div>
-                        <div class="col-xs-12">
+                        </div> --}}
+                        {{-- <div class="col-xs-12">
                             <div class="form-group">
                                 <label class="control-label">Call Outcome</label>
                                 <select class="form-control" name="callOutcome" id="callOutcome" data-style="form-control">
@@ -118,7 +121,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                        </div>
+                        </div> --}}
                         <div class="col-xs-12">
                             <div class="form-group">
                                 <label class="control-label">Campaign Status Lead</label>
@@ -175,8 +178,10 @@
 {!! $html->scripts() !!}
 
 <script>
-    $('#apply-filters').click(function() {
-       
+    function loadTable() {
+        window.LaravelDataTables["tab-table"].draw();
+    }
+   $('#apply-filters').click(function() {
         var start_date = $('#start-date').val();
         var end_date = $('#end-date').val();
         var campaignStatus = $('#campaignStatus').val();
@@ -185,20 +190,31 @@
         var callOutcome = $('#callOutcome').val();
         var campaignLeadStatus = $('#campaignLeadStatus').val();
 
+        //  var id = $(this).data('estimate-id');
+      //  var id =1;
+        var url = "{{ route('admin.campaigns.view', request()->id) }}";
+        // url = url.replace(':id', id);
+
+        var token = "{{ csrf_token() }}";
+
         $.easyAjax({
             type: 'POST',
-            url: "{{ route('admin.campaigns.index') }}",
+            url: url,
             data: {
-                '_token': "{{ csrf_token() }",
-                'start_date': start_date,
-                'end_date': end_date,
-                'agent_id': agent_id,
-                'campaignStatus': campaignStatus,
-                'callType': callType,
-                'callPuspose': callPuspose,
-                'callOutcome': callOutcome,
-                'campaignLeadStatus': campaignLeadStatus,
+                '_token': token,
+                start_date:start_date,
+                end_date:end_date,
+                campaignStatus:campaignStatus,
+                callType:callType,
+                callPuspose:callPuspose,
+                callOutcome:callOutcome,
+                campaignLeadStatus:campaignLeadStatus,
             },
+            success: function(response) {
+                if (response.status == "success") {
+                    loadTable();
+                }
+            }
         });
     });
 
