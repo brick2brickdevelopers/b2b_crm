@@ -649,37 +649,37 @@
         });
 
         $('#my-event').on('shown.bs.modal', function(e) {
-        $(".select2").select2();
-        console.log('modal work 1');
-    });
-    $('#my-event').on('show.bs.modal', function(e) {
-        $(".select2").select2({
-            formatNoMatches: function() {
-                return "No record found.";
-            }
+            $(".select2").select2();
+            console.log('modal work 1');
         });
-        console.log('modal work 2');
-    });
-
-
-    $('#my-event').on('hide.bs.modal', function(e) {
-        $(".select2").select2({
-            formatNoMatches: function() {
-                return "No record found.";
-            }
+        $('#my-event').on('show.bs.modal', function(e) {
+            $(".select2").select2({
+                formatNoMatches: function() {
+                    return "No record found.";
+                }
+            });
+            console.log('modal work 2');
         });
-        console.log('modal work 3');
-    });
 
 
-    $('#my-event').on('hidden.bs.modal', function(e) {
-        $(".select2").select2({
-            formatNoMatches: function() {
-                return "No record found.";
-            }
+        $('#my-event').on('hide.bs.modal', function(e) {
+            $(".select2").select2({
+                formatNoMatches: function() {
+                    return "No record found.";
+                }
+            });
+            console.log('modal work 3');
         });
-        console.log('modal work 4');
-    });
+
+
+        $('#my-event').on('hidden.bs.modal', function(e) {
+            $(".select2").select2({
+                formatNoMatches: function() {
+                    return "No record found.";
+                }
+            });
+            console.log('modal work 4');
+        });
 
 
 

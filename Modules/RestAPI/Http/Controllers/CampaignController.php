@@ -225,6 +225,8 @@ class CampaignController extends ApiBaseController
     //call disposal api
     public function call_disposal(Request $request)
     {
+        // return($request->mobile);
+
         $request->validate([
             // 'lead_name' => 'required',
             // 'lead_email' => 'required',
@@ -273,6 +275,23 @@ class CampaignController extends ApiBaseController
 
             $leadId = $lead->id;
         } else {
+            $leadInfo = Lead::select('id','client_name','client_email')->where('mobile',$leadMobile)->first();
+           // return($leadInfo);
+            if(!empty($leadName)){
+                $leadName = $leadName;
+            }else{
+                $leadName = $leadInfo->client_name;
+            }
+            if(!empty($leadEmail)){
+                $leadEmail = $leadEmail;
+            }else{
+                $leadEmail = $leadInfo->client_email;
+            }
+            if(!empty($leadId)){
+                $leadId = $leadId;
+            }else{
+                $leadId = $leadInfo->id;
+            }
             Lead::where('id', $leadId)->update(array('client_name' => $leadName, 'client_email' => $leadEmail));
         }
 
@@ -634,14 +653,40 @@ class CampaignController extends ApiBaseController
 
     public function call_log_reports(Request $request)
     {
+
         $perPage = $request->page_size;
         $user = auth('api')->user();
         $userId = $user->id;
         $agentNumber = $user->mobile;
+
+        $ldate = date('Y-m-d');
+        if(!empty($request->start_date)){
+            $startDate = Carbon::createFromFormat('Y-m-d', $request->start_date)->startOfDay();
+        }else{
+            $startDate = Carbon::createFromFormat('Y-m-d', $ldate)->startOfDay();
+        }
+        if(!empty($request->end_date)){
+            $endDate = Carbon::createFromFormat('Y-m-d', $request->end_date)->startOfDay();
+        }else{
+            $endDate = Carbon::createFromFormat('Y-m-d', $ldate)->startOfDay();
+        }
+
         if (!$agentNumber) {
             $agentNumber = 12345678;
         }
-        $callReportData = ManualLoggedCall::where('agent_number', $agentNumber)->paginate($perPage);
+        // $callReportData = ManualLoggedCall::where('agent_number', $agentNumber)
+        //                     ->WhereDate('created_at', '>=', $startDate)
+        //                     ->WhereDate('created_at', '<=', $endDate)->paginate($perPage);
+                            if($request->campaign_id){
+                                $callReportData = ManualLoggedCall::where('agent_number', $agentNumber)
+                                ->WhereDate('created_at', '>=', $startDate)
+                                ->WhereDate('created_at', '<=', $endDate)->where('campaign_id', $request->campaign_id)->paginate($perPage);
+                            //    $callReportData->where('campaign_id', $request->campaign_id);
+                            }else{
+                                $callReportData = ManualLoggedCall::where('agent_number', $agentNumber)
+                                ->WhereDate('created_at', '>=', $startDate)
+                                ->WhereDate('created_at', '<=', $endDate)->paginate($perPage);
+                            }
 
         $datanew = [];
         foreach ($callReportData as $data) {

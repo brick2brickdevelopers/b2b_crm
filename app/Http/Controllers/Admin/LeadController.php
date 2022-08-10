@@ -15,12 +15,14 @@ use App\Http\Requests\CommonRequest;
 use App\Http\Requests\FollowUp\UpdateFollowUpRequest;
 use App\Http\Requests\Gdpr\SaveConsentLeadDataRequest;
 use App\Http\Requests\Lead\StoreRequest;
+use App\Http\Requests\Lead\CsvImportRequest;
 use App\Http\Requests\Lead\UpdateRequest;
 use App\User;
+use App\CsvData;
 use App\Event;
 use App\Lead;
 use App\EventCategory;
-use App\EventType;           
+use App\EventType;
 use App\Country;
 use App\EmployeeDetails;
 use App\LeadAgent;
@@ -598,13 +600,13 @@ class LeadController extends AdminBaseController
     //Leads Dasboard
     public function dashboard(Builder $builder, Request $request)
     {
-     
+
         $this->unique_id = uniqid();
         $this->employees = User::allEmployees();
         $this->events = Event::all();
         $this->clients = User::allClients();
         $this->categories = EventCategory::all();
-        
+
         $this->eventTypes = EventType::all();
         $this->leads = Lead::all();
         $this->campaigns = Campaign::get();
@@ -666,25 +668,25 @@ class LeadController extends AdminBaseController
             // call details start
 
             $this->totalCalls = ManualLoggedCall::count();
-            $this->totalIncomming = ManualLoggedCall::where('call_source',1)->count();
-            $this->totalOutgoing = ManualLoggedCall::where('call_source',0)->count();
+            $this->totalIncomming = ManualLoggedCall::where('call_source', 1)->count();
+            $this->totalOutgoing = ManualLoggedCall::where('call_source', 0)->count();
             $this->totalBoth = 0;
             $this->totalAgent = 0;
             $this->totalCustUnAns = 0;
             $this->totalCustAns = 0;
 
-        // call details end
+            // call details end
 
             return response()->json([
                 'data' => $dTable,
                 'additional' => $counter,
                 'totalCalls' => $this->totalCalls,
-                'totalIncomming' =>$this->totalIncomming,
-                'totalOutgoing' =>$this->totalOutgoing,
-                'totalBoth' =>$this->totalBoth,
-                'totalAgent' =>$this->totalAgent,
-                'totalCustUnAns' =>$this->totalCustUnAns,
-                'totalCustAns' =>$this->totalCustAns,
+                'totalIncomming' => $this->totalIncomming,
+                'totalOutgoing' => $this->totalOutgoing,
+                'totalBoth' => $this->totalBoth,
+                'totalAgent' => $this->totalAgent,
+                'totalCustUnAns' => $this->totalCustUnAns,
+                'totalCustAns' => $this->totalCustAns,
                 'tab_count' => array(
                     '#total_leads_count' => $this->totalAvailable,
                     '#complete_leads_count' => $this->totalCompleted,
@@ -725,7 +727,7 @@ class LeadController extends AdminBaseController
     public function callingLeadDetails(Request $request)
     {
 
-       
+
 
         if ($request->type === 'lead') {
 
@@ -773,7 +775,7 @@ class LeadController extends AdminBaseController
             $this->callperposes = CallPurpose::all();
             $this->type = 'call';
         }
-        
+
         return view('admin.lead.incoming', $this->data);
     }
 
@@ -795,20 +797,30 @@ class LeadController extends AdminBaseController
         return Reply::successWithData('Call Log entry Completed', ['data' => $request->all()]);
     }
 
-    public function export()
-    {
-        // return Excel::download(new UsersExport, 'users.xlsx');
-
-        return Excel::download(new LeadsExport,'leads.xlsx');
-
-    }
-
-    public function import(Request $request)
+    public function getImport()
     {
 
-        Excel::import(new LeadsImport,request()->file('file'));
-        return back();
+        // return Excel::download(new LeadsExport,'leads.xlsx');
+
+        return view('admin.lead.import', $this->data);
     }
 
+    // public function parseImport(CsvImportRequest $request)
+    // {
+    //     $path = $request->file('csv_file')->getRealPath();
+    //     $data = array_map('str_getcsv', file($path));
 
+    //     $csv_data_file = CsvData::create([
+    //         'csv_filename' => $request->file('csv_file')->getClientOriginalName(),
+    //         'csv_header' => $request->has('header'),
+    //         'csv_data' => json_encode($data)
+    //     ]);
+
+    //     $csv_data = array_slice($data, 0, 2);
+    //     return view('import_fields', compact('csv_data', 'csv_data_file'));
+    // }
+
+    // public function processImport(Request $request)
+    // {
+    // }
 }

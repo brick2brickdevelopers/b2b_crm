@@ -36,7 +36,7 @@ class MeetingController extends ApiBaseController
         $event->where = $request->where;
         $event->description = $request->description;
         $event->category_id = $request->category_id;
-        $event->event_type_id = !empty($request->event_type_id) ? $request->event_type_id : 1;
+        $event->event_type_id = $request->event_type_id;
         $event->event_unique_id = $request->event_unique_id;
 
 

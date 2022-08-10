@@ -164,6 +164,14 @@ return [
     |
     */
 
+    //import data call
+
+    'db_fields' => [
+        'first_name',
+        'last_name',
+        'email'
+    ],
+
     'providers' => [
 
         /*
