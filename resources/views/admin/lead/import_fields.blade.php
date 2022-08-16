@@ -34,31 +34,40 @@
 <div class="container">
     <form class="form-horizontal" method="POST" action="{{ route('admin.leads.import_process') }}">
         {{ csrf_field() }}
+        <input type="hidden" name="csv_data_file_id" value="{{ $csv_data_file->id }}" />
     
-        <table class="table">
-            @foreach ($csv_data as $row)
-                <tr>
-                @foreach ($row as $key => $value)
-                    <td>{{ $value }}</td>
-                @endforeach
-                </tr>
+         <table class="table table-responsive ">
+        @if (isset($csv_header_fields))
+        <tr>
+            @foreach ($csv_header_fields as $csv_header_field)
+                <th>{{ $csv_header_field }}</th>
             @endforeach
+        </tr>
+        @endif
+        @foreach ($csv_data as $row)
             <tr>
-                @foreach ($csv_data[0] as $key => $value)
-                    <td>
-                        <select name="fields[{{ $key }}]">
-                            @foreach (config('app.db_fields') as $db_field)
-                                <option value="{{ $loop->index }}">{{ $db_field }}</option>
-                            @endforeach
-                        </select>
-                    </td>
-                @endforeach
+            @foreach ($row as $key => $value)
+                <td>{{ $value }}</td>
+            @endforeach
             </tr>
-        </table>
-    
-        <button type="submit" class="btn btn-primary">
-            Import Data
-        </button>
+        @endforeach
+        <tr>
+            @foreach ($csv_data[0] as $key => $value)
+                <td>
+                    <select name="fields[{{ $key }}]">
+                        @foreach (config('app.db_fields') as $db_field)
+                            <option value="{{ (\Request::has('header')) ? $db_field : $loop->index }}"
+                                @if ($key === $db_field) selected @endif>{{ $db_field }}</option>
+                        @endforeach
+                    </select>
+                </td>
+            @endforeach
+        </tr>
+    </table>
+
+    <button type="submit" class="btn btn-primary">
+        Import Data
+    </button>
     </form>
 </div>
 @endsection

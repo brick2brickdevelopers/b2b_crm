@@ -29,7 +29,17 @@
     </div> --}}
 @endsection
 
-
+@push('head-script')
+    <link rel="stylesheet"
+        href="{{ asset('plugins/bower_components/bootstrap-datepicker/bootstrap-datepicker.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('plugins/tagify-master/dist/tagify.css') }}">
+    <link rel="stylesheet" href="{{ asset('plugins/bower_components/bootstrap-select/bootstrap-select.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('plugins/bower_components/bootstrap-select/bootstrap-select.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('plugins/bower_components/custom-select/custom-select.css') }}">
+    <link rel="stylesheet" href="{{ asset('plugins/bower_components/multiselect/css/multi-select.css') }}">
+    <link rel="stylesheet" href="{{ asset('plugins/bower_components/switchery/dist/switchery.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('plugins/bower_components/clockpicker/dist/jquery-clockpicker.min.css') }}">
+@endpush
 @section('content')
 <div class="container">
     <div class="row">
@@ -57,11 +67,15 @@
 
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-4">
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="checkbox" name="header" checked> File contains header row?
-                                    </label>
-                                </div>
+                               
+                                    
+
+                                         <div class="switchery-demo">
+                                    <input id="menu-switch_work_day"  name="header"  type="checkbox"
+                                        class="js-switch" data-size="small" data-color="#00c292" value="1"/>File contains header row?
+                               
+                                        </div>
+
                             </div>
                         </div>
 
@@ -80,3 +94,23 @@
 </div>
 @endsection
 
+
+@push('footer-script')
+    <script src="{{ asset('plugins/bower_components/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script>
+    <script src="{{ asset('plugins/tagify-master/dist/tagify.js') }}"></script>
+    <script src="{{ asset('plugins/bower_components/bootstrap-select/bootstrap-select.min.js') }}"></script>
+    <script src="{{ asset('plugins/bower_components/custom-select/custom-select.min.js') }}"></script>
+    <script src="{{ asset('plugins/bower_components/multiselect/js/jquery.multi-select.js') }}"></script>
+    <script src="{{ asset('plugins/bower_components/bootstrap-select/bootstrap-select.min.js') }}"></script>
+    <script src="{{ asset('plugins/bower_components/switchery/dist/switchery.min.js') }}"></script>
+    <script src="{{ asset('plugins/bower_components/clockpicker/dist/jquery-clockpicker.min.js') }}"></script>
+<script>
+   
+        // Switchery
+        var elems = Array.prototype.slice.call(document.querySelectorAll('.js-switch'));
+        $('.js-switch').each(function() {
+            new Switchery($(this)[0], $(this).data());
+
+        });
+    </script>
+@endpush

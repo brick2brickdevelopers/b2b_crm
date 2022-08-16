@@ -11,26 +11,25 @@
         <div class="col-lg-8 col-sm-8 col-md-8 col-xs-12 text-right bg-title-right">
             <a href="{{ route('admin.leads.create') }}" class="btn btn-outline btn-success btn-sm">@lang('modules.lead.addNewLead') <i
                     class="fa fa-plus" aria-hidden="true"></i></a>
-
             <a href="{{ route('admin.leads.kanbanboard') }}" class="btn btn-outline btn-primary btn-sm">@lang('modules.lead.kanbanboard')
             </a>
-
             <a href="{{ route('admin.lead-form.index') }}" class="btn btn-outline btn-inverse btn-sm">@lang('modules.lead.leadForm') <i
                     class="fa fa-pencil" aria-hidden="true"></i></a>
-
             <ol class="breadcrumb">
                 <li><a href="{{ route('admin.dashboard') }}">@lang('app.menu.home')</a></li>
                 <li class="active">{{ __($pageTitle) }}</li>
             </ol>
         </div>
 
-        {{-- <form action="{{ route('admin.import') }}" method="POST" enctype="multipart/form-data">
-            @csrf
-            <input type="file" name="file" class="form-control">
-            <br>
-            <button class="btn btn-success">Import Lead Data</button>
-            <a class="btn btn-warning" href="{{ route('admin.export') }}">Export User Data</a>
-        </form> --}}
+        <div class="card-body">
+            <form action="{{ route('admin.import') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <input type="file" name="file" class="form-control">
+                <br>
+                <button class="btn btn-success">Import Lead Data</button>
+                <a class="btn btn-warning" href="{{ route('admin.export') }}">Export Lead Data</a>
+            </form>
+        </div>
         <!-- /.breadcrumb -->
     </div>
 @endsection

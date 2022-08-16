@@ -244,7 +244,7 @@
                         <div class="row">
                             <div class="col-xs-12"  id="attendees">
                                 <div class="form-group">
-                                    <label class="col-xs-3 m-t-10 required">@lang('modules.events.addAttendees')</label>
+                                    <label class="col-xs-3 m-t-10">@lang('modules.events.addAttendees')</label>
                                     <div class="col-xs-7">
                                         <div class="checkbox checkbox-info">
                                             <input id="all-employees" name="all_employees" value="true"
@@ -270,7 +270,7 @@
                         <div class="row">
                             <div class="col-xs-12"  id="attendees">
                                 <div class="form-group">
-                                    <label class="col-xs-3 m-t-10 required">@lang('modules.events.addClients')</label>
+                                    <label class="col-xs-3 m-t-10">@lang('modules.events.addClients')</label>
                                     <div class="col-xs-7">
                                         <div class="checkbox checkbox-info">
                                             <input id="all-employees" name="all_clients" value="true"
@@ -290,7 +290,7 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="col-xs-3 m-t-10 required">Add Leads</label>
+                                    <label class="col-xs-3 m-t-10">Add Leads</label>
                                     <select class="select2 m-b-10 select2-multiple " multiple="multiple"
                                             data-placeholder="select Leads" name="lead_id[]">
                                         @foreach($leads as $lead)

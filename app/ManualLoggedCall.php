@@ -23,6 +23,27 @@ class ManualLoggedCall extends Model
     {
         return $this->belongsTo(CallPurpose::class, 'call_purpose');
     }
+    public function calloutcome()
+    {
+        return $this->belongsTo(CallOutcome::class, 'call_outcome_id');
+    }
+    public function leadstatus()
+    {
+        return $this->belongsTo(CampaignLeadStatus::class, 'campaign_lead_status_id');
+    }
+
+    public function event()
+    {
+        return $this->belongsTo(Event::class, 'event_id');
+    }
+
+    public function campaign()
+    {
+        return $this->belongsTo(Campaign::class, 'campaign_id');
+    }
+
+    
+
 
     protected $guarded = [];  
 

@@ -37,7 +37,6 @@ class StoreEvent extends CoreRequest
             'start_time' => 'required',
             'end_time' => ['required', new CheckAfterDate('', company()->date_format . ' ' . company()->time_format, $startDateTime, null, $endDateTime)],
             'all_employees' => 'sometimes',
-            'user_id.0' => 'required_unless:all_employees,true',
             'where' => 'required',
             'description' => 'required',
         ];
@@ -46,7 +45,6 @@ class StoreEvent extends CoreRequest
     public function messages()
     {
         return [
-            'user_id.0.required_unless' => __('messages.atleastOneValidation'),
             'end_time.after' => __('messages.endTimeGreaterThenStart')
         ];
     }

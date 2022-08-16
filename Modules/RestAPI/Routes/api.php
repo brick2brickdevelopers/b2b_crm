@@ -51,17 +51,9 @@ ApiRoute::group(['namespace' => 'Modules\RestAPI\Http\Controllers', 'middleware'
     ApiRoute::get('call_purpose', 'CampaignController@call_purpose');
     ApiRoute::get('event_list', 'CampaignController@event_list');
     ApiRoute::get('call_log_reports', 'CampaignController@call_log_reports');
-
-    //Campaign api route tarting from here 
-    // ApiRoute::get('campaign', 'CampaignController@campign_list');
-    // ApiRoute::get('user_lead', 'CampaignController@user_lead');
+    //Meeting api route
     ApiRoute::post('event_create', 'MeetingController@event_store');
-    // ApiRoute::post('call_disposal', 'CampaignController@call_disposal');
-    // ApiRoute::get('call_purpose', 'CampaignController@call_purpose');
-    // ApiRoute::get('event_list', 'CampaignController@event_list');
-    // ApiRoute::get('call_log_reports', 'CampaignController@call_log_reports');
 
-    //ending the compaign route here
     //Updated dashboard api route starting from here
     ApiRoute::get('dashboard', 'CampaignController@dashboard');
     ApiRoute::get('employee_dashboard', 'CampaignController@employee_dashboard');
@@ -70,8 +62,6 @@ ApiRoute::group(['namespace' => 'Modules\RestAPI\Http\Controllers', 'middleware'
 
 
     //updated dashboard api route ending here
-
-
     ApiRoute::resource('project', 'ProjectController');
     ApiRoute::resource('project-category', 'ProjectCategoryController');
     ApiRoute::resource('currency', 'CurrencyController');

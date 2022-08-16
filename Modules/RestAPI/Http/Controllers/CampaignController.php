@@ -69,18 +69,40 @@ class CampaignController extends ApiBaseController
         $userId    = $user->id;
         $perPage   = $request->page_size;
 
-
         $campaign = Campaign::join('campaign_leads', 'campaign_leads.campaign_id', '=', 'campaigns.id')
             ->where('campaign_leads.agent_id', $userId)
             ->select('campaigns.*')
             ->groupby('campaigns.id')
             ->orderBy('campaigns.id', 'desc')
             ->paginate($perPage);
-        if (count($campaign) > 0) {
-            $campaign = $campaign;
-        } else {
-            $campaign = [];
-        }
+            $campaign_data = [];
+            foreach($campaign as $campaig){
+               
+                $available = Campaign::join('campaign_leads', 'campaign_leads.campaign_id', '=', 'campaigns.id')
+                            ->where('campaign_leads.agent_id', $userId)
+                            ->where('campaign_leads.status',0)
+                            ->where('campaign_leads.campaign_id',$campaig->id)
+                            ->count();
+
+                $completed = Campaign::join('campaign_leads', 'campaign_leads.campaign_id', '=', 'campaigns.id')
+                            ->where('campaign_leads.agent_id', $userId)
+                            ->where('campaign_leads.status',1)
+                            ->where('campaign_leads.campaign_id',$campaig->id)
+                            ->count();
+                 $follow = Campaign::join('campaign_leads', 'campaign_leads.campaign_id', '=', 'campaigns.id')
+                            ->where('campaign_leads.agent_id', $userId)
+                            ->where('campaign_leads.campaign_id',$campaig->id)
+                            ->where('campaign_leads.status',2)
+                            ->count();
+                 
+                 array_push($campaign_data,array(
+                 'campaign' => $campaig,
+                  'available' => $available,
+                  'completed'=> $completed,
+                  'follow'=> $follow,
+                 ));
+             }
+       
         $available = Campaign::join('campaign_leads', 'campaign_leads.campaign_id', '=', 'campaigns.id')
                      ->where('campaign_leads.agent_id', $userId)
                      ->where('campaign_leads.status',0)->count();
@@ -90,15 +112,23 @@ class CampaignController extends ApiBaseController
         $follow = Campaign::join('campaign_leads', 'campaign_leads.campaign_id', '=', 'campaigns.id')
                      ->where('campaign_leads.agent_id', $userId)
                      ->where('campaign_leads.status',2)->count();
+        $totalCampaignStatus = array(
+            'available' => $available,
+            'completed' => $completed,
+            'follow' => $follow,
+        );
+       
+
+       // return ($campaign);
         return response()->json([
             'success'  => true,
             'status'   => 200,
             'code'     => "success",
             'message'  => "Campaign retrieved successfully",
-            'available' => $available,
-            'completed' => $completed,
-            'follow' => $follow,
-            'campaign' =>  $campaign,
+            'totalCampaignStatus' => $totalCampaignStatus,          
+          //  'singleCampaignStatus' => $campaign_data,
+
+            'campaign' =>  $campaign_data,
            
             //  'count'    => $data 
         ]);
@@ -674,53 +704,72 @@ class CampaignController extends ApiBaseController
         if (!$agentNumber) {
             $agentNumber = 12345678;
         }
-        // $callReportData = ManualLoggedCall::where('agent_number', $agentNumber)
-        //                     ->WhereDate('created_at', '>=', $startDate)
-        //                     ->WhereDate('created_at', '<=', $endDate)->paginate($perPage);
+ 
                             if($request->campaign_id){
                                 $callReportData = ManualLoggedCall::where('agent_number', $agentNumber)
                                 ->WhereDate('created_at', '>=', $startDate)
-                                ->WhereDate('created_at', '<=', $endDate)->where('campaign_id', $request->campaign_id)->paginate($perPage);
-                            //    $callReportData->where('campaign_id', $request->campaign_id);
+                                ->WhereDate('created_at', '<=', $endDate)
+                                ->where('campaign_id', $request->campaign_id)
+                                ->with(['calloutcome','leadstatus','event','campaign','purpose'])
+                              
+                                ->paginate($perPage);
+                                $callReportData->transform(function($row){
+                                    return [
+                                        "id" =>$row->id,
+                                        "company_id"=>$row->company_id,
+                                        "lead_id"=>$row->lead_id,
+                                        "lead_number"=>$row->lead_number,
+                                        "agent_number"=>$row->agent_number,
+                                        "created_by"=>$row->created_by,
+                                        "call_status"=>$row->call_status,
+                                        "date"=>$row->date,
+                                        "duration"=>$row->duration,
+                                        "description"=>$row->description,
+                                        "call_status"=>($row->status===1 ?"Completed":$row->status===2) ?"Follow UP":"Available",
+                                        "call_type"=>$row->call_type === 1? "Auto":"Manual",
+                                        "call_source"=>$row->call_source === 1 ? "Incoming":"Outgoing",
+                                        "call_purpose"=>$row->purpose? $row->purpose->purpose:$row->call_purpose,
+                                        "campaign_id"=>$row->campaign_id,
+                                        "campaign_name"=>$row->campaign ? $row->campaign->name:$row->campaign_id,
+                                        "call_outcome"=>    $row->calloutcome? $row->calloutcome->name:$row->call_outcome_id,
+                                        "campaign_lead_status"=>$row->leadstatus? $row->leadstatus->name :$row->campaign_lead_status_id,
+                                        "event_id"=>$row->event ? $row->event->event_name : $row->event_id,
+                                    ];
+                                });
                             }else{
+                           
+
                                 $callReportData = ManualLoggedCall::where('agent_number', $agentNumber)
                                 ->WhereDate('created_at', '>=', $startDate)
-                                ->WhereDate('created_at', '<=', $endDate)->paginate($perPage);
+                                ->WhereDate('created_at', '<=', $endDate)
+                                
+                                ->with(['calloutcome','leadstatus','event','campaign','purpose'])
+                                
+                                ->paginate($perPage);
+                                $callReportData->transform(function($row){
+                                    return [
+                                        "id" =>$row->id,
+                                        "company_id"=>$row->company_id,
+                                        "lead_id"=>$row->lead_id,
+                                        "lead_number"=>$row->lead_number,
+                                        "agent_number"=>$row->agent_number,
+                                        "created_by"=>$row->created_by,
+                                        "call_status"=>$row->call_status,
+                                        "date"=>$row->date,
+                                        "duration"=>$row->duration,
+                                        "description"=>$row->description,
+                                        "call_status"=>($row->status===1 ?"Completed":$row->status===2) ?"Follow UP":"Available",
+                                        "call_type"=>$row->call_type === 1? "Auto":"Manual",
+                                        "call_source"=>$row->call_source === 1 ? "Incoming":"Outgoing",
+                                        "call_purpose"=>$row->purpose? $row->purpose->purpose:$row->call_purpose,
+                                        "campaign_id"=>$row->campaign_id,
+                                        "campaign_name"=>$row->campaign ? $row->campaign->name:$row->campaign_id,
+                                        "call_outcome"=>    $row->calloutcome? $row->calloutcome->name:$row->call_outcome_id,
+                                        "campaign_lead_status"=>$row->leadstatus? $row->leadstatus->name :$row->campaign_lead_status_id,
+                                        "event_id"=>$row->event ? $row->event->event_name : $row->event_id,
+                                    ];
+                                });
                             }
-
-        $datanew = [];
-        foreach ($callReportData as $data) {
-            if ($data['call_type'] == 1) {
-                $data['call_type'] = 'Auto';
-            } else {
-                $data['call_type'] = 'Mannual';
-            }
-            if ($data['call_source'] == 1
-            ) {
-                $data['call_source'] = 'Incoming';
-            } else {
-                $data['call_source'] = 'Outgoing';
-            }
-            if ($data['status'] == 1) {
-                $data['call_status'] = 'Completed';
-            } elseif ($data['status'] == 2) {
-                $data['call_status'] = 'follow Up';
-            } else {
-                $data['call_status'] = 'available';
-            }
-
-            $data['created_by'] = $user->name;
-            //unset some variable
-            unset($data['date']);
-            unset($data['description']);
-            unset($data['status']);
-            unset($data['terminate']);
-            unset($data['recordings_file']);
-            unset($data['did']);
-            unset($data['session_id']);
-            unset($data['reason_text']);
-            unset($data['outcome']);
-        }
 
         return response()->json([
             'success' => true,

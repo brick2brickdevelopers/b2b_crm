@@ -167,10 +167,29 @@ return [
     //import data call
 
     'db_fields' => [
-        'first_name',
-        'last_name',
-        'email'
-    ],
+        'client_id',
+        'source_id',
+        'status_id',
+        'agent_id',
+        'company_name',
+        'website',
+        'address',
+        'client_surname',
+        'office_phone',
+        'city',
+        'state',
+        'country',
+        'postal_code',
+        'client_email',
+        'mobile',
+        'note',
+        'value',
+        'currency_id',
+        'column_priority',
+        'client_name',
+        'next_follow_up',
+        'category_id'
+        ],
 
     'providers' => [
 
