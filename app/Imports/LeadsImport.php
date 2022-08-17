@@ -4,10 +4,11 @@ namespace App\Imports;
 
 use App\Lead;
 use Maatwebsite\Excel\Concerns\ToModel;
-// use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
+
 // use Maatwebsite\Excel\Concerns\WithValidation;
 
-class LeadsImport implements ToModel
+class LeadsImport implements ToModel,WithHeadingRow
 {
     /**
     * @param array $row
@@ -24,24 +25,31 @@ class LeadsImport implements ToModel
             // 'note' => $row[4],
             // 'next_follow_up' => $row[5],
 
-            // 'client_name' => $row['client_name'],
-            // 'client_email' => $row['client_email'],
-            // 'mobile' => $row['mobile'],
-            // 'note' => $row['note'],
-            // 'next_follow_up' => $row['next_follow_up'],
-            // 'value' => $row['value'],
-            // 'currency_id' => 17,
-            // 'column_priority' => $row['column_priority'],
-
-            'client_name' => $row[0],
-            'client_email' => $row[1],
-            'mobile' => $row[2],
-            'note' => $row[3],
-            'next_follow_up' => $row[4],
-            'value' => $row[5],
+            'client_id' => $row['client_id'],
+            'source_id' => $row['source_id'],
+            'status_id' => $row['status_id'],
+            'column_priority' => $row['column_priority'],
+            'agent_id' => $row['agent_id'],
+            'company_name' => $row['company_name'],
+            'website' => $row['website'],
             'currency_id' => 17,
-            'column_priority' => $row[7],
-            'company_id' =>company()->id,
+            'address' => $row['address'],
+            'client_surname' => $row['client_surname'],
+            'office_phone' => $row['office_phone'],
+            'city' => $row['city'],
+            'state' => $row['state'],
+            'country' => $row['country'],
+            'postal_code' => $row['postal_code'],
+            'client_name' => $row['client_name'],
+            'address' => $row['address'],
+            'client_email' => $row['client_email'],
+            'mobile' => $row['mobile'],
+            'note' => $row['note'],
+            'next_follow_up' => $row['next_follow_up'],
+            'value' => $row['value'],
+            'category_id' => $row['category_id'],
+
+           
         
             // 'source_id'    => $row[1], 
             // 'source_id'    => $row[1], 

@@ -55,8 +55,9 @@
             @foreach ($csv_data[0] as $key => $value)
                 <td>
                     <select name="fields[{{ $key }}]">
+                        <option value="">Select one</option>
                         @foreach (config('app.db_fields') as $db_field)
-                            <option value="{{ (\Request::has('header')) ? $db_field : $loop->index }}"
+                            <option value="{{ $db_field }}"
                                 @if ($key === $db_field) selected @endif>{{ $db_field }}</option>
                         @endforeach
                     </select>

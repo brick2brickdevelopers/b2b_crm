@@ -798,13 +798,13 @@ class LeadController extends AdminBaseController
         return Reply::successWithData('Call Log entry Completed', ['data' => $request->all()]);
     }
 
-    // public function getImport()
-    // {
+    public function getImport()
+    {
 
-    //     // return Excel::download(new LeadsExport,'leads.xlsx');
+        // return Excel::download(new LeadsExport,'leads.xlsx');
 
-    //     return view('admin.lead.import', $this->data);
-    // }
+        return view('admin.lead.import', $this->data);
+    }
 
     // public function parseImport(CsvImportRequest $request)
     // {
@@ -838,29 +838,71 @@ class LeadController extends AdminBaseController
     //     return view('admin.lead.import_fields', $this->data);
     // }
 
+            public function parseImport(CsvImportRequest $request)
+        {
+
+            $path = $request->file('csv_file')->getRealPath();
+
+            if ($request->has('header')) {
+                $data = Excel::load($path, function($reader) {})->get()->toArray();
+            } else {
+                $data = array_map('str_getcsv', file($path));
+            }
+
+            if (count($data) > 0) {
+                if ($request->has('header')) {
+                    $csv_header_fields = [];
+                    foreach ($data[0] as $key => $value) {
+                        $csv_header_fields[] = $key;
+                    }
+                }
+                $this->csv_data = array_slice($data, 0, 2);
+
+                $this->csv_data_file = CsvData::create([
+                    'csv_filename' => $request->file('csv_file')->getClientOriginalName(),
+                    'csv_header' => $request->has('header'),
+                    'csv_data' => json_encode($data)
+                ]);
+            } else {
+                return redirect()->back();
+            }
+
+            return view('admin.lead.import_fields', $this->data);
+
+        }
+
     
 
-    // public function processImport(Request $request)
-    // {
-    //     $data = CsvData::find($request->csv_data_file_id);
-    //     $csv_data = json_decode($data->csv_data, true);
-    //     foreach ($csv_data as $row) {
-    //         $contact = new Lead();
-    //         foreach (config('app.db_fields') as $index => $field) {
-    //             if ($data->csv_header) {
-    //                 $contact->$field = $row[$request->fields[$field]];
-    //                 return "ok";
-    //             } else {
-    //                 $contact->$field = $row[$request->fields[$index]];
+    public function processImport(Request $request)
+    {
+        $data = CsvData::find($request->csv_data_file_id);
+        $csv_data = json_decode($data->csv_data, true);
 
-    //                 return "1";
-    //             }
-    //             $lead->company_id = company()->currency_id;
-    //         }
-    //         $contact->save();
-    //     }
+        dd($csv_data);
 
-    // }
+        // dd($request->fields);
+
+        foreach ($csv_data as $row) {
+            $contact = new Lead();
+            foreach ($request->fields as $index => $field) {
+
+                dd($row);
+                // if ($data->csv_header) {
+                //     $contact->$field = $row[$request->fields[$field]];
+                //     return "ok";
+                // } else {
+                //     $contact->$field = $row[$request->fields[$index]];
+
+                //     return "1";
+                // }
+
+                $contact->$field = $row[$field];
+                $contact->company_id = company()->currency_id;
+            }
+            $contact->save();
+        }
+
+    }
 
     public function export(){
         return Excel::download(new LeadsExport, 'leads.xlsx');

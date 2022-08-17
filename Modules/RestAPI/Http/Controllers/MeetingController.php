@@ -56,7 +56,7 @@ class MeetingController extends ApiBaseController
         $event->lead_id = json_encode($request->lead_id);
         $event->save();
         $eventIds [] = $event->id;
-        if ($request->all_employees) {
+        if (!empty($request->all_employees)) {
             $attendees = User::allEmployees();
             foreach ($attendees as $attendee) {
                 EventAttendee::create(['user_id' => $attendee->id, 'event_id' => $event->id]);
