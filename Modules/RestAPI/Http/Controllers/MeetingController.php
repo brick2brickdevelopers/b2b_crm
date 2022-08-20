@@ -4,8 +4,10 @@ namespace Modules\RestAPI\Http\Controllers;
 
 use App\Event;
 use App\EventAttendee;
+use App\GoogleAccount;
 use App\Notification;
 use App\Notifications\EventInvite;
+use App\Services\Google;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -29,7 +31,7 @@ class MeetingController extends ApiBaseController
             'where' => 'required',
         ]);
        
-        
+       
         $eventIds = [];
         $event = new Event();
         $event->event_name = $request->event_name;
@@ -56,47 +58,50 @@ class MeetingController extends ApiBaseController
         $event->lead_id = json_encode($request->lead_id);
         $event->save();
         $eventIds [] = $event->id;
-        if (!empty($request->all_employees)) {
+        if ($request->all_employees) {
             $attendees = User::allEmployees();
             foreach ($attendees as $attendee) {
+              
                 EventAttendee::create(['user_id' => $attendee->id, 'event_id' => $event->id]);
             }
+           
 
             // Notification::send($attendees, new EventInvite($event));
         }
         
         if ($request->all_clients) {
-
             if(isset($attendees)){
                 $attendees = User::allClients()->merge($attendees);
             }
             else{
                 $attendees = User::allClients();
             }
-
             foreach ($attendees as $attendee) {
                 EventAttendee::create(['user_id' => $attendee->id, 'event_id' => $event->id]);
             }
+          //  Notification::send($attendees, new EventInvite($event));
 
-            Notification::send($attendees, new EventInvite($event));
+           
         }
         if(empty($request->all_employees))
         {
             EventAttendee::create(['user_id' => Auth::user()->id, 'event_id' => $event->id]);
-        }
 
-        if ($request->user_id) {
+           
+        }
+       
+        if ($request->user_id == null) {
             foreach ($request->user_id as $userId) {
                 EventAttendee::firstOrCreate(['user_id' => $userId, 'event_id' => $event->id]);
             }
             $attendees = User::whereIn('id', $request->user_id)->get();
           //  Notification::send($attendees, new EventInvite($event));
+          
         }
         if (!$request->has('repeat') || $request->repeat == 'no') {
             $event->event_id = $this->googleCalendarEvent($event);
             $event->save();
         }
-
         // Add repeated event
         if ($request->has('repeat') && $request->repeat == 'yes') {
             $repeatCount = $request->repeat_count;
@@ -135,15 +140,16 @@ class MeetingController extends ApiBaseController
                         EventAttendee::create(['user_id' => $attendee->id, 'event_id' => $event->id]);
                     }
         
-                    Notification::send($attendees, new EventInvite($event));
+                //    Notification::send($attendees, new EventInvite($event));
                 }
         
                 if ($request->user_id) {
                     foreach ($request->user_id as $userId) {
+                        
                         EventAttendee::firstOrCreate(['user_id' => $userId, 'event_id' => $event->id]);
                     }
                     $attendees = User::whereIn('id', $request->user_id)->get();
-                    Notification::send($attendees, new EventInvite($event));
+                 //   Notification::send($attendees, new EventInvite($event));
                 }
                 $eventIds [] = $event->id;
             }
@@ -155,7 +161,7 @@ class MeetingController extends ApiBaseController
                 'success'     => true,
                 'status'      => 200,
                 'message'     => "Event Create successfully",
-                'callPurpose' =>  $data,
+                'event' =>  $data,
             ]);
         
     }

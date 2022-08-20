@@ -9,10 +9,8 @@
         <!-- /.page title -->
         <!-- .breadcrumb -->
         <div class="col-lg-6 col-sm-8 col-md-8 col-xs-12 text-right bg-title-right">
-            <!-- {{-- @if (!$campaigns->isEmpty()) --}}
-            <a href="" class="btn btn-outline btn-success btn-sm">@lang('app.add') Campaign <i class="fa fa-plus"
-                    aria-hidden="true"></i></a>
-            {{-- @endif --}} -->
+            <a href="{{ route('admin.campaigns.create') }}" class="btn btn-outline btn-success btn-sm">Add Campaign
+                <i class="fa fa-plus" aria-hidden="true"></i></a>
             <ol class="breadcrumb">
                 <li><a href="">@lang('app.menu.home')</a></li>
                 <li class="active">{{ __($pageTitle) }}</li>
@@ -48,6 +46,7 @@
                                         <th>Campaign Name</th>
                                         <th>Date</th>
                                         <th>Leads Count</th>
+                                        <th>@lang('app.employees')</th>
                                         <th>Leads Status</th>
                                         <th>Dialing Status</th>
                                         <th>Status</th>
@@ -86,6 +85,20 @@
                                                     <li>Completed : {{ $completed }}</li>
                                                     <li>Follow Up : {{ $follow }}</li>
                                                 </ul>
+                                            </td>
+                                            <td>
+                                                @php 
+                                                    $camAgent =App\CampaignAgent::where('campaign_id',$campaign->id)->get();
+                                                @endphp
+                                                @forelse($camAgent as $item)
+                                                    <img data-toggle="tooltip"
+                                                        data-original-title="{{ ucwords($item->agent->name) }}"
+                                                        src="{{ $item->agent->image_url }}" alt="user" class="img-circle"
+                                                        width="25" height="25">
+                                                        
+                                                @empty
+                                                    @lang('messages.noRecordFound')
+                                                @endforelse
                                             </td>
                                             <td>
                                                 <ul class="p-l-20">

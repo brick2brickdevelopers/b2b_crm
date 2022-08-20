@@ -286,6 +286,8 @@ class CampaignController extends ApiBaseController
         $duration = $request->duration;
         $campaign_lead_status        = $request->campaign_lead_status_id;
 
+
+
         if (!$agentNumber) {
             $agentNumber = 12345678;
         }
@@ -295,6 +297,7 @@ class CampaignController extends ApiBaseController
 
         //create Lead
         $new_lead = Lead::where('mobile', $leadMobile)->count();
+
         if ($new_lead == 0) {
             $lead = new Lead();
             $lead->company_id = $user->company_id;
@@ -304,6 +307,17 @@ class CampaignController extends ApiBaseController
             $lead->save();
 
             $leadId = $lead->id;
+
+            $campaignLead = new CampaignLead();
+
+            $campaignLead->company_id = $user->company_id;
+            $campaignLead->campaign_id = $campaignId;
+            $campaignLead->agent_id = $userId;
+            $campaignLead->lead_id = $leadId; 
+            $campaignLead->status = !empty($leadcallstatus) ? $leadcallstatus:0; 
+            $campaignLead->leadcallstatus = $call_outcome; 
+            $campaignLead->save();
+
         } else {
             $leadInfo = Lead::select('id','client_name','client_email')->where('mobile',$leadMobile)->first();
            // return($leadInfo);
@@ -323,6 +337,7 @@ class CampaignController extends ApiBaseController
                 $leadId = $leadInfo->id;
             }
             Lead::where('id', $leadId)->update(array('client_name' => $leadName, 'client_email' => $leadEmail));
+
         }
 
 
@@ -354,7 +369,8 @@ class CampaignController extends ApiBaseController
         //     'from_id' =>  $userId,
         // ]);
 
-        CampaignLead::where('lead_id', $leadId)->update(array('leadcallstatus' => $leadcallstatus));
+
+        CampaignLead::where('lead_id', $leadId)->update(array('leadcallstatus' => $call_outcome,'status'=>$leadcallstatus));
         //update the lead status 
         Lead::where('id', $leadId)->update(array('status_id' => $leadcallstatus));
         //get single lead data
@@ -425,13 +441,11 @@ class CampaignController extends ApiBaseController
         //     ->limit(4)
         //     ->get();
 
-        $totalLeads             = CampaignLead::where('agent_id', $userId)->WhereDate('campaign_leads.created_at', '>=', $startDate)
+        $totalLeads             = CampaignLead::where('agent_id', $userId)->count();
+        $availableForCallLeads  = CampaignLead::where(['agent_id' => $userId, 'status' => 0])->count();
+        $completedLeads         = CampaignLead::where(['agent_id' => $userId, 'status' => 1])->WhereDate('campaign_leads.created_at', '>=', $startDate)
                                     ->WhereDate('campaign_leads.created_at', '<=', $endDate)->count();
-        $availableForCallLeads  = CampaignLead::where(['agent_id' => $userId, 'leadcallstatus' => 0])->WhereDate('campaign_leads.created_at', '>=', $startDate)
-                                    ->WhereDate('campaign_leads.created_at', '<=', $endDate)->count();
-        $completedLeads         = CampaignLead::where(['agent_id' => $userId, 'leadcallstatus' => 1])->WhereDate('campaign_leads.created_at', '>=', $startDate)
-                                    ->WhereDate('campaign_leads.created_at', '<=', $endDate)->count();
-        $followUpLeads          = CampaignLead::where(['agent_id' => $userId, 'leadcallstatus' => 2])->WhereDate('campaign_leads.created_at', '>=', $startDate)
+        $followUpLeads          = CampaignLead::where(['agent_id' => $userId, 'status' => 2])->WhereDate('campaign_leads.created_at', '>=', $startDate)
                                     ->WhereDate('campaign_leads.created_at', '<=', $endDate)->count();
         // $userTask               = Task::where('user_id', $request->user_id)->count();
 

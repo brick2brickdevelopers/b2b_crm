@@ -10,6 +10,7 @@ use App\CampaignLead;
 use App\EmployeeDetails;
 use App\Helper\Reply;
 use App\Team;
+use App\User;
 use Illuminate\Http\Request;
 use App\CustomFieldGroup;
 use App\CallOutcome;
@@ -17,6 +18,7 @@ use App\CampaignLeadStatus;
 use App\LeadAgent;
 use Carbon\Carbon;
 use Exception;
+use Google\Service\Dfareporting\Resource\Campaigns;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
 use Yajra\DataTables\Html\Builder;
@@ -45,7 +47,11 @@ class CampaignController extends AdminBaseController
 
     public function create()
     {
-        $this->employee = EmployeeDetails::all();
+        $camgaignAgents = CampaignAgent::pluck('employee_id');
+
+        $this->employee =  EmployeeDetails::whereNotIn('user_id', $camgaignAgents)->get();
+
+
         $this->teams = Team::all();
         return view('admin.campaign.create', $this->data);
     }
@@ -96,7 +102,6 @@ class CampaignController extends AdminBaseController
                     CampaignAgent::create([
                         'campaign_id' => $campaign->id,
                         'employee_id' => $ag,
-
                     ]);
                 }
             }
@@ -104,14 +109,15 @@ class CampaignController extends AdminBaseController
 
                 $team = Team::find($request->agentGroup);
 
+                $camgaignAgents = CampaignAgent::pluck('employee_id');
+
                 if (!empty($team)) {
-                    foreach ($team->member as $member) {
+                    foreach ($team->member->whereNotIn('user_id', $camgaignAgents) as $member) {
 
                         try {
                             CampaignAgent::create([
                                 'campaign_id' => $campaign->id,
                                 'employee_id' => $member->user_id,
-
                             ]);
                         } catch (Exception $e) {
                         }
@@ -124,9 +130,17 @@ class CampaignController extends AdminBaseController
 
     public function edit($id)
     {
-        $this->employee = EmployeeDetails::all();
+
+        $employee1 = CampaignAgent::where('campaign_id', $id)->pluck('employee_id');
+        $campaigns = Campaign::pluck('id');
+        $employeex = CampaignAgent::whereIn('campaign_id', $campaigns)->pluck('employee_id');
+        $employee2 = EmployeeDetails::whereNotIn('user_id', $employeex)->pluck('user_id');
+        $employee = $employee1->merge($employee2);
+        $this->employee =  EmployeeDetails::whereIn('user_id', $employee)->get();
+
         $this->teams = Team::all();
         $this->campaign = Campaign::findOrFail($id);
+
         return view('admin.campaign.edit', $this->data);
     }
 
@@ -148,14 +162,20 @@ class CampaignController extends AdminBaseController
                     CampaignAgent::create([
                         'campaign_id' => $campaign->id,
                         'employee_id' => $ag,
-
                     ]);
                 }
             }
             if ($request->agentGroup != null) {
                 $team = Team::find($request->agentGroup);
+
+                $employee1 = CampaignAgent::where('campaign_id', $id)->pluck('employee_id');
+                $campaigns = Campaign::pluck('id');
+                $employeex = CampaignAgent::whereIn('campaign_id', $campaigns)->pluck('employee_id');
+                $employee2 = EmployeeDetails::whereNotIn('user_id', $employeex)->pluck('user_id');
+                $employee = $employee1->merge($employee2);
+
                 if (!empty($agentGroupId)) {
-                    foreach ($team->member as $member) {
+                    foreach ($team->member->whereIn('user_id', $employee) as $member) {
                         DB::table('campaign_agents')->insert([
                             'campaign_id' => $campaign->id,
                             'agent_id' => $member->user_id,
