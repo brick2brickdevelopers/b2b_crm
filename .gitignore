@@ -5,3 +5,4 @@ storage/
 storage.zip
 .env
 storage/.DS_Store
+public/user-uploads
