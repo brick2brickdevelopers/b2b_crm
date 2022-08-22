@@ -117,7 +117,7 @@ class ManageEmployeesController extends AdminBaseController
      */
     public function store(StoreRequest $request)
     {
-
+        
 
         $company = company();
         if (!is_null($company->employees) && $company->employees->count() >= $company->package->max_employees) {
@@ -145,16 +145,18 @@ class ManageEmployeesController extends AdminBaseController
             $user = User::create($data);
 
             if ($request->sip_setting === 'yes') {
-                if ($request->has('sip_pass')) {
+               // if ($request->has('sip_pass')) {
+                    $sip_password = uniqid();
                     if (in_array('calling', $this->modules)) {
                         if ($this->user->company->sip_gateway) {
-                            sip_api($this->user->company->sip_gateway->endpoint, $user->id + 1000, $user->sip_pass, 'add');
+                            sip_api($this->user->company->sip_gateway->endpoint, $user->id + 1000, $sip_password, 'add');
                             $xuser = User::find($user->id);
                             $xuser->sip_user = $user->id + 1000;
+                            $xuser->sip_pass = $sip_password;
                             $xuser->save();
                         }
                     }
-                }
+             //   }
             }
 
 

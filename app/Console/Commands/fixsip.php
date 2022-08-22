@@ -40,15 +40,15 @@ class fixsip extends Command
     public function handle()
     {
         $users = User::whereNotNull('sip_user')->get();
-        foreach ($users as $user) {
-            sip_api($user->sip_user, $user->sip_pass, 'delete');
-            $u = User::find($user->id);
-            $u->sip_user = $user->id + 1000;
-            $u->sip_pass = $user->sip_pass;
-            $u->save();
-            sip_api($u->sip_user, $u->sip_pass, 'add');
-            Log::info(array('user' => $u->id, 'sip_id' => $u->sip_user));
-        }
+        // foreach ($users as $user) {
+        //     sip_api($user->sip_user, $user->sip_pass, 'delete');
+        //     $u = User::find($user->id);
+        //     $u->sip_user = $user->id + 1000;
+        //     $u->sip_pass = $user->sip_pass;
+        //     $u->save();
+        //     sip_api($u->sip_user, $u->sip_pass, 'add');
+        //     Log::info(array('user' => $u->id, 'sip_id' => $u->sip_user));
+        // }
         return 0;
     }
 }

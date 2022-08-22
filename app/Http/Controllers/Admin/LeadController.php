@@ -43,6 +43,7 @@ use Yajra\DataTables\Html\Builder;
 
 use App\Exports\LeadsExport;
 use App\Imports\LeadsImport;
+use App\Jobs\AdminLeadImportJob;
 use Maatwebsite\Excel\Facades\Excel;
 
 
@@ -838,40 +839,40 @@ class LeadController extends AdminBaseController
     //     return view('admin.lead.import_fields', $this->data);
     // }
 
-            public function parseImport(CsvImportRequest $request)
-        {
+    public function parseImport(CsvImportRequest $request)
+    {
 
-            $path = $request->file('csv_file')->getRealPath();
+        $path = $request->file('csv_file')->getRealPath();
 
-            if ($request->has('header')) {
-                $data = Excel::load($path, function($reader) {})->get()->toArray();
-            } else {
-                $data = array_map('str_getcsv', file($path));
-            }
-
-            if (count($data) > 0) {
-                if ($request->has('header')) {
-                    $csv_header_fields = [];
-                    foreach ($data[0] as $key => $value) {
-                        $csv_header_fields[] = $key;
-                    }
-                }
-                $this->csv_data = array_slice($data, 0, 2);
-
-                $this->csv_data_file = CsvData::create([
-                    'csv_filename' => $request->file('csv_file')->getClientOriginalName(),
-                    'csv_header' => $request->has('header'),
-                    'csv_data' => json_encode($data)
-                ]);
-            } else {
-                return redirect()->back();
-            }
-
-            return view('admin.lead.import_fields', $this->data);
-
+        if ($request->has('header')) {
+            $data = Excel::load($path, function ($reader) {
+            })->get()->toArray();
+        } else {
+            $data = array_map('str_getcsv', file($path));
         }
 
-    
+        if (count($data) > 0) {
+            if ($request->has('header')) {
+                $csv_header_fields = [];
+                foreach ($data[0] as $key => $value) {
+                    $csv_header_fields[] = $key;
+                }
+            }
+            $this->csv_data = array_slice($data, 0, 2);
+
+            $this->csv_data_file = CsvData::create([
+                'csv_filename' => $request->file('csv_file')->getClientOriginalName(),
+                'csv_header' => $request->has('header'),
+                'csv_data' => json_encode($data)
+            ]);
+        } else {
+            return redirect()->back();
+        }
+
+        return view('admin.lead.import_fields', $this->data);
+    }
+
+
 
     public function processImport(Request $request)
     {
@@ -901,23 +902,25 @@ class LeadController extends AdminBaseController
             }
             $contact->save();
         }
-
     }
 
-    public function export(){
+    public function export()
+    {
         return Excel::download(new LeadsExport, 'leads.xlsx');
     }
 
     public function import(Request $request)
     {
-      
-        Excel::import(new LeadsImport, request()->file('file'));
+
+
+        $rows = $request->file->store('/upload/execl/');
+        dispatch(new AdminLeadImportJob($rows));
+
+
+
+
+
 
         return back()->withMessage('file successfully imported');
-
-        // Excel::import(new LeadsImport,request()->file('file'));
-        // // Excel::import(new LeadsImport,request()->file('file')->store('temp'));
-           
-        // return back();
     }
 }

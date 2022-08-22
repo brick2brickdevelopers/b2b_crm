@@ -27,7 +27,7 @@
                 <input type="file" name="file" class="form-control">
                 <br>
                 <button class="btn btn-success">Import Lead Data</button>
-                <a class="btn btn-warning" href="{{ route('admin.export') }}">Export Lead Data</a>
+                {{-- <a class="btn btn-warning" href="{{ route('admin.export') }}">Export Lead Data</a> --}}
             </form>
         </div>
         <!-- /.breadcrumb -->

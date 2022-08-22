@@ -171,7 +171,7 @@
                                             <label class="control-label"><i class="fa fa-phone"></i> Sip
                                                 Password</label>
                                             <input autocomplete="false" type="text" id="sip_pass" name="sip_pass"
-                                                class="form-control">
+                                            placeholder="Auto Generated Pass" class="form-control" readonly>
                                         </div>
                                     </div>
                                 @endif

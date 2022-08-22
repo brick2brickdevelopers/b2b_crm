@@ -10,9 +10,9 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::get('fixSIp', function () {
-    fixSipDuplicate();
-})->name('fixsip');
+// Route::get('fixSIp', function () {
+//     fixSipDuplicate();
+// })->name('fixsip');
 Route::get('leads_webCall', function () {
     return view('webcall');
 })->name('webcall');
@@ -144,6 +144,11 @@ Route::group(['middleware' => 'auth'], function () {
             Route::get('faq-category/data', ['uses' => 'SuperAdminFaqCategoryController@data'])->name('faq-category.data');
 
             Route::resource('/faq-category', 'SuperAdminFaqCategoryController');
+
+            //did number 
+            Route::resource('/did-number', 'DidNumberController');
+            //did managment
+            Route::resource('/did-managment', 'DidManagmentController');
 
             // Packages routes
             Route::get('packages/data', ['uses' => 'SuperAdminPackageController@data'])->name('packages.data');
@@ -396,17 +401,17 @@ Route::group(['middleware' => 'auth'], function () {
                 Route::resource('clients', 'ManageClientsController', ['except' => ['create']]);
                 Route::post('clients/getSubcategory', ['uses' => 'ManageClientsController@getSubcategory'])->name('clients.getSubcategory');
 
-                Route::get('export',['uses' => 'LeadController@export'])->name('export');
+                Route::get('export', ['uses' => 'LeadController@export'])->name('export');
                 // Route::get('importExportView',['uses' => 'LeadController@importExportView']);
-                Route::post('import',['uses' => 'LeadController@import'])->name('import');
+                Route::post('import', ['uses' => 'LeadController@import'])->name('import');
 
-                 Route::get('/import/create', 'LeadController@getImport')->name('import');
-                Route::post('/import_parse', 'LeadController@parseImport')->name('import_parse');
-                Route::post('/import_process', 'LeadController@processImport')->name('import_process');
+                //  Route::get('/import/create', 'LeadController@getImport')->name('import');
+                // Route::post('/import_parse', 'LeadController@parseImport')->name('import_parse');
+                // Route::post('/import_process', 'LeadController@processImport')->name('import_process');
 
-                Route::get('leads/import', ['uses' => 'LeadController@getImport'])->name('leads.import');
-                Route::post('leads/import_parse', ['uses' => 'LeadController@parseImport'])->name('leads.import_parse');
-                Route::post('leads/import_process', ['uses' => 'LeadController@processImport'])->name('leads.import_process');
+                // Route::get('leads/import', ['uses' => 'LeadController@getImport'])->name('leads.import');
+                // Route::post('leads/import_parse', ['uses' => 'LeadController@parseImport'])->name('leads.import_parse');
+                // Route::post('leads/import_process', ['uses' => 'LeadController@processImport'])->name('leads.import_process');
 
                 Route::get('leads/kanban-board', ['uses' => 'LeadController@kanbanboard'])->name('leads.kanbanboard');
                 Route::get('leads/kanban-board', ['uses' => 'LeadController@kanbanboard'])->name('leads.kanbanboard');
@@ -456,11 +461,11 @@ Route::group(['middleware' => 'auth'], function () {
 
 
                 ///call outcome
-                Route::resource('call-outcome','CallOutcomeController');
+                Route::resource('call-outcome', 'CallOutcomeController');
                 Route::get('/call-outcome/destroy/{id}', 'CallOutcomeController@destroy')->name('call-outcome.destroy');
 
                 //campaign lead status
-                Route::resource('campaign-lead-status','CampaignLeadStatusController');
+                Route::resource('campaign-lead-status', 'CampaignLeadStatusController');
                 Route::get('/campaign-lead-status/destroy/{id}', 'CampaignLeadStatusController@destroy')->name('campaign-lead-status.destroy');
 
 
@@ -1201,8 +1206,8 @@ Route::group(['middleware' => 'auth'], function () {
             Route::post('leads/dashboard/search', 'MemberLeadController@leadSearch')->name('leads.dashboard.search');
 
 
-            Route::get('lead/dasboard',['uses' => 'MemberLeadController@dashboard'])->name('leads.dashboard');
-            
+            Route::get('lead/dasboard', ['uses' => 'MemberLeadController@dashboard'])->name('leads.dashboard');
+
             // Lead Files
             Route::get('lead-files/download/{id}', ['uses' => 'LeadFilesController@download'])->name('lead-files.download');
             Route::get('lead-files/thumbnail', ['uses' => 'LeadFilesController@thumbnailShow'])->name('lead-files.thumbnail');
@@ -1210,8 +1215,8 @@ Route::group(['middleware' => 'auth'], function () {
 
             Route::resource('task-label', 'TaskLabelController');
 
-             //Call Record Route
-             Route::resource('call-log-reports', 'CallRecordController');
+            //Call Record Route
+            Route::resource('call-log-reports', 'CallRecordController');
 
             // FAQ
             Route::get('faqs/{id}', ['uses' => 'FaqController@details'])->name('faqs.details');
@@ -1709,7 +1714,7 @@ Route::group(['middleware' => 'auth'], function () {
         }
     );
 
-  
+
 
 
     // Mark all notifications as read

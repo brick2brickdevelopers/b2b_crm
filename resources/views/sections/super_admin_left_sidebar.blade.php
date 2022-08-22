@@ -112,6 +112,13 @@
 
             <li><a href="{{ route('super-admin.companies.index') }}" class="waves-effect"><i class="icon-layers fa-fw"></i> <span class="hide-menu">@lang('app.menu.companies') </span></a> </li>
             <li><a href="{{ route('super-admin.sip-gateway.index') }}" class="waves-effect"><i class="icon-phone fa-fw"></i> <span class="hide-menu">SIP Assign </span></a> </li>
+           
+            <li>
+                <a href="{{ route('super-admin.did-managment.index') }}" class="waves-effect"><i class="icon-phone fa-fw">
+                    </i> 
+                    <span class="hide-menu">DID Management </span>
+                </a> 
+            </li>
             <li><a href="{{ route('super-admin.invoices.index') }}" class="waves-effect"><i class="icon-printer fa-fw"></i> <span class="hide-menu">@lang('app.menu.invoices') </span></a> </li>
             <li><a href="{{ route('super-admin.faq.index') }}" class="waves-effect"><i class="icon-docs fa-fw"></i> <span class="hide-menu">@lang('app.menu.faq') </span></a> </li>
             <li><a href="{{ route('super-admin.super-admin.index') }}" class="waves-effect"><i class="fa fa-user fa-fw"></i> <span class="hide-menu">@lang('app.superAdmin') </span></a> </li>
