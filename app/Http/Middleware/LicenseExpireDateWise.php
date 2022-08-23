@@ -30,5 +30,4 @@ class LicenseExpireDateWise
         }
         return $next($request);
     }
-
 }

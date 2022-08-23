@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\SuperAdmin;
 
 use App\Company;
+use App\DidNumber;
 use App\SipGateway;
 use Illuminate\Http\Request;
 use App\Helper\Reply;
@@ -42,8 +43,12 @@ class SipController extends SuperAdminBaseController
                     $btn = '<input class="switch-event1" ' . $checked . '   onchange="changeStatus(' . $data->id . ')" type="checkbox" > ';
                     return $btn;
                 })
+                ->editColumn('caller_id', function ($data) {
+                    $num = implode('<br> ', json_decode($data->caller_id));
+                    return  $num;
+                })
 
-                ->rawColumns(['action', 'status'])
+                ->rawColumns(['action', 'status', 'caller_id'])
                 ->toJson();
         }
         $this->html = $builder->columns([
@@ -58,7 +63,10 @@ class SipController extends SuperAdminBaseController
         ]);
 
 
-        $this->company = Company::all();
+        // $this->company = Company::all();
+        $d = DidNumber::whereNotNull('company_id')->pluck('company_id');
+        $this->company = Company::whereNotIn('id', array_unique($d->toArray()))->get();
+        $this->didNumbers = DidNumber::whereNull('company_id')->get();
         return view('super-admin.sipgateway.index', $this->data);
     }
 
@@ -67,7 +75,12 @@ class SipController extends SuperAdminBaseController
         $sip = SipGateway::findOrNew($request->id);
         $sip->company_id = $request->company_id;
         $sip->type = $request->type;
-        $sip->caller_id = $request->caller_id;
+        $sip->caller_id = json_encode($request->caller_id);
+        foreach ($request->caller_id as $value) {
+            $didNumber = DidNumber::where('number', $value)->first();
+            $didNumber->company_id = $request->company_id;
+            $didNumber->save();
+        }
         $sip->endpoint = $request->endpoint;
         $sip->key = $request->user;
         $sip->token = $request->token;

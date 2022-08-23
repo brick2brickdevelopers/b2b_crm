@@ -25,5 +25,4 @@ class DisableFrontend
 
         return $next($request);
     }
-
 }

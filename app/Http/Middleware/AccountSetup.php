@@ -26,5 +26,4 @@ class AccountSetup
         }
         return $next($request);
     }
-
 }

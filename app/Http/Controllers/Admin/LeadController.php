@@ -81,6 +81,7 @@ class LeadController extends AdminBaseController
         $this->pendingLeadFollowUps = $this->pendingLeadFollowUps->count();
         $this->leadAgents = LeadAgent::with('user')->has('user')->get();
         $this->campaigns = Campaign::all();
+
         return $dataTable->render('admin.lead.index', $this->data);
     }
 
@@ -912,14 +913,7 @@ class LeadController extends AdminBaseController
     public function import(Request $request)
     {
 
-
-        $rows = $request->file->store('/upload/execl/');
-        dispatch(new AdminLeadImportJob($rows));
-
-
-
-
-
+        Excel::import(new LeadsImport, $request->file);
 
         return back()->withMessage('file successfully imported');
     }
