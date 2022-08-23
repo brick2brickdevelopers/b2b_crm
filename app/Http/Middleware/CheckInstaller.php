@@ -20,5 +20,4 @@ class CheckInstaller
 
         return $next($request);
     }
-
 }

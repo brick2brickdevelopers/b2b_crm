@@ -17,7 +17,7 @@ class CreateSipGetwaysTable extends Migration
             $table->id();
             $table->unsignedInteger('company_id')->unique();
             $table->integer('type');
-            $table->string('caller_id')->nullable();
+            $table->json('caller_id')->nullable();
             $table->string('endpoint')->nullable();
             $table->string('key')->nullable();
             $table->string('token')->nullable();

@@ -56,11 +56,23 @@
                     </select>
                 </div>
             </div>
-            <div class="col-xs-12">
+            {{-- <div class="col-xs-12">
                 <div class="form-group">
                     <label class="control-label">Caller ID</label>
                     <input class="form-control" type="text" name="caller_id" id="caller_id" data-style="form-control"
                         required="true">
+                </div>
+            </div> --}}
+
+            <div class="col-xs-12">
+                <div class="form-group">
+                    <label class="control-label">Caller ID's</label>
+                    <select class="select2 select2-multiple" multiple="multiple" id="caller_id"
+                    name="caller_id[]" data-placeholder="Choose Caller ID...">
+                    @foreach ($didNumbers as $didNumber)
+                            <option value="{{ $didNumber->number }}">{{ $didNumber->number }}</option>
+                        @endforeach
+                </select>
                 </div>
             </div>
             <div class="col-xs-12">
@@ -202,6 +214,14 @@
     <script src="{{ asset('plugins/bower_components/custom-select/custom-select.min.js') }}"></script>
     <script src="{{ asset('plugins/bower_components/bootstrap-select/bootstrap-select.min.js') }}"></script>
 
+
+    <script>
+        $(".select2").select2({
+            formatNoMatches: function() {
+                return "No record found.";
+            }
+        });
+    </script>
     {!! $html->scripts() !!}
 
     <script>
