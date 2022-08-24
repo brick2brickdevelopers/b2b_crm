@@ -305,4 +305,6 @@ class CampaignController extends AdminBaseController
         $callPurpose->delete();
         return redirect()->route('admin.campaigns.call-purpose')->with('messages', 'Call Purpose Deleted Successfully');
     }
+
+    
 }

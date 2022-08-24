@@ -114,9 +114,9 @@
             <li><a href="{{ route('super-admin.sip-gateway.index') }}" class="waves-effect"><i class="icon-phone fa-fw"></i> <span class="hide-menu">SIP Assign </span></a> </li>
            
             <li>
-                <a href="{{ route('super-admin.did-managment.index') }}" class="waves-effect"><i class="icon-phone fa-fw">
+                <a href="{{ route('super-admin.did-number.index') }}" class="waves-effect"><i class="icon-phone fa-fw">
                     </i> 
-                    <span class="hide-menu">DID Management </span>
+                    <span class="hide-menu">DID Number </span>
                 </a> 
             </li>
             <li><a href="{{ route('super-admin.invoices.index') }}" class="waves-effect"><i class="icon-printer fa-fw"></i> <span class="hide-menu">@lang('app.menu.invoices') </span></a> </li>

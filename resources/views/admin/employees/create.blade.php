@@ -160,18 +160,21 @@
 
                                     <div class="col-md-3 sipshow">
                                         <div class="form-group">
-                                            <label class="control-label"><i class="fa fa-phone"></i> Sip User</label>
-                                            <input autocomplete="false" type="text" id="sip_user" name="sip_user"
-                                                placeholder="Auto Generated ID" value="" class="form-control"
-                                                readonly>
+                                            <label class="control-label">Call Destination</label>
+                                            <select name="call_destination" id="call_destination" class="form-control">
+                                                <option value="mobile" selected>Mobile</option>
+                                                <option value="sip">Sip</option>
+                                            </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-3 sipshow">
+                                    <div class="col-md-3 sipshow" >
+                                        <label class="control-label" id="callDestination2">Out Bound Did <span style="color:red">*</span></label>
                                         <div class="form-group">
-                                            <label class="control-label"><i class="fa fa-phone"></i> Sip
-                                                Password</label>
-                                            <input autocomplete="false" type="text" id="sip_pass" name="sip_pass"
-                                            placeholder="Auto Generated Pass" class="form-control" readonly>
+                                            <select name="out_bound_did" id="callDestination" class="form-control">
+                                                @foreach($did_numbers as $did_number)
+                                                     <option value="{{ $did_number->number }}">{{ $did_number->number }}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
                                 @endif
@@ -219,15 +222,15 @@
                             <div class="row">
 
                                 <div class="col-md-3">
-                                    <label>@lang('app.mobile')</label>
+                                    <label >@lang('app.mobile') <span style="color:red;">*</span></label>
                                     <div class="form-group">
-                                        <select class="select2 phone_country_code form-control" name="phone_code">
+                                        <select class="select2  phone_country_code form-control" name="phone_code">
                                             @foreach ($countries as $item)
-                                                <option value="{{ $item->id }}">
-                                                    +{{ $item->phonecode . ' (' . $item->iso . ')' }}</option>
+                                                <option value="{{ $item->id }}" @if ($item->phonecode == "+91") selected @endif>
+                                                    +{{ $item->phonecode . ' (' . $item->iso . ')' }} </option>
                                             @endforeach
                                         </select>
-                                        <input type="tel" name="mobile" id="mobile" class="mobile"
+                                        <input type="tel" name="mobile" id="mobile" class="mobile "
                                             autocomplete="nope">
                                     </div>
                                 </div>
@@ -438,6 +441,22 @@
                 $('.sipshow').show();
             } else {
                 $('.sipshow').hide();
+            }
+        })
+    </script>
+
+    <script>
+        $('#callDestination').hide();
+        $('#callDestination2').hide();
+        $('#call_destination').on('change', function() {
+            if ($(this).val() === 'sip') {
+                $('#callDestination').show();
+                $('#callDestination2').show();
+
+            } else {
+                $('#callDestination').hide();
+                $('#callDestination2').hide();
+
             }
         })
     </script>

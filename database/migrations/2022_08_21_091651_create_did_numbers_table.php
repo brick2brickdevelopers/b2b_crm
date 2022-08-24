@@ -16,7 +16,8 @@ class CreateDidNumbersTable extends Migration
         Schema::create('did_numbers', function (Blueprint $table) {
             $table->id();
             $table->integer('company_id')->nullable();
-            $table->integer('number');
+            $table->integer('number')->unique();
+            $table->boolean('is_default')->default(0);
             $table->timestamps();
         });
     }

@@ -8,6 +8,7 @@ use App\Http\Requests\Team\StoreDepartment;
 use App\Http\Requests\Team\StoreTeam;
 use App\Team;
 use App\User;
+use App\DidNumber;
 
 class ManageTeamsController extends AdminBaseController
 {
@@ -45,6 +46,8 @@ class ManageTeamsController extends AdminBaseController
      */
     public function create()
     {
+        $this->did_numbers = DidNumber::where('company_id',company()->id)->get();
+
         return view('admin.teams.create', $this->data);
     }
 
@@ -58,6 +61,8 @@ class ManageTeamsController extends AdminBaseController
     {
         $group = new Team();
         $group->team_name = $request->team_name;
+        $group->call_destination = $request->call_destination;
+        $group->out_bound_did = $request->out_bound_did;
         $group->save();
 
         return Reply::redirect(route('admin.teams.index'), 'Group created successfully.');

@@ -2,6 +2,10 @@
 <ul class="nav tabs-vertical slimscrollright mt-0">
     <li class="tab @if(\Illuminate\Support\Facades\Route::currentRouteName() == 'admin.settings.index') active @endif">
         <a href="{{ route('admin.settings.index') }}">@lang('app.menu.accountSettings')</a></li>
+    <li class="tab @if(\Illuminate\Support\Facades\Route::currentRouteName() == 'admin.did-number.index') active @endif">
+         <a href="{{ route('admin.did-number.index') }}">@lang('Did Number')</a>
+    </li>
+    
 
     <li class="tab @if(\Illuminate\Support\Facades\Route::currentRouteName() == 'admin.profile-settings.index') active @endif">
         <a href="{{ route('admin.profile-settings.index') }}">@lang('app.menu.profileSettings')</a></li>

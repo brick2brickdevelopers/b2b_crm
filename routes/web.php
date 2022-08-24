@@ -357,6 +357,12 @@ Route::group(['middleware' => 'auth'], function () {
                 Route::post('/calling-groups/status', 'CallingGroupController@isDefault')->name('calling-group.default-switch');
                 Route::get('/calling-group/{id}/delete', 'CallingGroupController@destroy')->name('calling-group.destroy');
 
+                // did number
+                Route::resource('did-number', 'DidNumberController');
+                Route::post('/did-number/status', 'DidNumberController@isDefault')->name('did-number.default-switch');
+
+
+
                 //Call Flow Design
                 Route::resource('call-flow-design', 'CallFlowController');
                 Route::get('/call-flow-design/destroy/{id}', 'CallFlowController@destroy')->name('call-flow-design.destroy');

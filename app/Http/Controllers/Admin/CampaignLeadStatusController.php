@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\CampaignLeadStatus;
+use App\Imports\CampaignsImport;
 use App\Helper\Reply;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
@@ -116,7 +117,6 @@ class CampaignLeadStatusController extends AdminBaseController
         return redirect()->route('admin.campaign-lead-status.index')->with('success', 'Campaign lead status Deleted Successfully');
     }
 
-
     public function import(Request $request)
     {
       
@@ -126,4 +126,5 @@ class CampaignLeadStatusController extends AdminBaseController
 
       
     }
+
 }

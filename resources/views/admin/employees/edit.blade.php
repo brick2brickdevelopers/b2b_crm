@@ -138,23 +138,48 @@
                                         <textarea name="address" id="address" rows="3" class="form-control">{{ $employeeDetail->address ?? '' }}</textarea>
                                     </div>
                                     @if (in_array('campaign', $modules))
-                                        <div class="col-md-4">
+                                     @if(!empty($userDetail->sip_user))
+                                        <div class="col-md-3">
                                             <div class="form-group">
                                                 <label class="control-label"><i class="fa fa-phone"></i> Sip
                                                     User</label>
                                                 <input autocomplete="false" type="text" id="sip_user" name="sip_user"
-                                                    readonly value="{{ $employeeDetail->id + 1000 }}"
+                                                    readonly value="{{ $userDetail->sip_user}}"
                                                     class="form-control">
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
+                                      
+                                        <div class="col-md-3">
                                             <div class="form-group">
                                                 <label class="control-label"><i class="fa fa-phone"></i> Sip
                                                     Password</label>
                                                 <input autocomplete="false" type="text" id="sip_pass" name="sip_pass"
-                                                    value="{{ $userDetail->sip_pass }}" class="form-control">
+                                                    value="{{ $userDetail->sip_pass }}" readonly class="form-control">
                                             </div>
                                         </div>
+                                        <div class="col-md-3 sipshow">
+                                            <div class="form-group">
+                                                <label class="control-label">Call Destination</label>
+                                                <select name="call_destination" id="call_destination" class="form-control">
+                                                    <option @if ($userDetail->call_destination == 'mobile') selected @endif value="mobile">Mobile</option>
+                                                    <option @if ($userDetail->call_destination == 'sip') selected @endif value="sip">Sip</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        @if(!empty($did_number->number))
+                                        <div class="col-md-3 sipshow">
+                                            <label class="control-label">Out Bound Did</label>
+                                            <div class="form-group">
+                                                <select name="out_bound_did" id="out_bound_did" class="form-control ">
+                                                    <option value="">Select Out Bound Did</option>
+                                                    @foreach($did_numbers as $did_number)
+                                                         <option value="{{ $did_number->number }}" @if ($did_number->number == $userDetail->out_bound_did) selected @endif >{{ $did_number->number }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                        @endif
+                                        @endif
                                     @endif
                                 </div>
 

@@ -35,6 +35,7 @@ class StoreRequest extends CoreRequest
             'joining_date' => 'required',
             'department' => 'required',
             'designation' => 'required',
+            'mobile' => 'required',
         ];
 
         if (request()->get('custom_fields_data')) {

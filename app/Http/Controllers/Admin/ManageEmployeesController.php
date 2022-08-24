@@ -14,6 +14,7 @@ use App\Helper\Reply;
 use App\Http\Requests\Admin\Employee\StoreRequest;
 use App\Http\Requests\Admin\Employee\UpdateRequest;
 use App\Leave;
+use App\DidNumber;
 use App\LeaveType;
 use App\Project;
 use App\ProjectMember;
@@ -103,6 +104,7 @@ class ManageEmployeesController extends AdminBaseController
         $this->designations = Designation::all();
         $this->lastEmployeeID = EmployeeDetails::count();
         $this->countries = Country::all();
+        $this->did_numbers = DidNumber::where('company_id',company()->id)->get();
 
         if (request()->ajax()) {
             return view('admin.employees.ajax-create', $this->data);
@@ -153,6 +155,12 @@ class ManageEmployeesController extends AdminBaseController
                             $xuser = User::find($user->id);
                             $xuser->sip_user = $user->id + 1000;
                             $xuser->sip_pass = $sip_password;
+                            $xuser->call_destination = $request->call_destination;
+                            if($request->call_destination=='mobile'){
+                                $xuser->out_bound_did =null;
+                            }else{
+                                $xuser->out_bound_did= $request->out_bound_did;
+                            }
                             $xuser->save();
                         }
                     }
@@ -278,6 +286,8 @@ class ManageEmployeesController extends AdminBaseController
         $this->teams = Team::all();
         $this->designations = Designation::all();
         $this->countries = Country::all();
+        $this->did_numbers = DidNumber::where('company_id',company()->id)->get();
+
         if (!is_null($this->employeeDetail)) {
             $this->employeeDetail = $this->employeeDetail->withCustomFields();
             $this->fields = $this->employeeDetail->getCustomFieldGroupsWithFields()->fields;
@@ -304,8 +314,9 @@ class ManageEmployeesController extends AdminBaseController
         $user->country_id = $request->input('phone_code');
         $user->gender = $request->input('gender');
         $user->status = $request->input('status');
-        $user->sip_user = $request->input('sip_user');
-        $user->sip_pass = $request->input('sip_pass');
+        // $user->sip_user = $request->input('sip_user');
+        // $user->sip_pass = $request->input('sip_pass');
+       
         $user->login = $request->login;
         $user->email_notifications = $request->email_notifications;
 
@@ -322,6 +333,13 @@ class ManageEmployeesController extends AdminBaseController
                     if ($this->user->company->sip_gateway) {
 
                         sip_api($this->user->company->sip_gateway->endpoint, $user->sip_user, $user->sip_pass, 'edit');
+                        $user->call_destination = $request->input('call_destination');
+                        if($request->call_destination=='mobile'){
+                            $user->out_bound_did =null;
+                        }else{
+                            $user->out_bound_did= $request->out_bound_did;
+                        }
+                        $user->save();
                     }
                 }
             }
