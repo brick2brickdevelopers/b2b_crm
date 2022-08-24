@@ -91,37 +91,19 @@ class SipController extends SuperAdminBaseController
 
     public function edit($id)
     {
-        // $employee1 = CampaignAgent::where('campaign_id', $id)->pluck('employee_id');
-        // $campaigns = Campaign::pluck('id');
-        // $employeex = CampaignAgent::whereIn('campaign_id', $campaigns)->pluck('employee_id');
-        // $employee2 = EmployeeDetails::whereNotIn('user_id', $employeex)->pluck('user_id');
-        // $employee = $employee1->merge($employee2);
-        // $this->employee =  EmployeeDetails::whereIn('user_id', $employee)->get();
-
-
-
         $this->sip_gateway = SipGateway::find($id);
         $d = DidNumber::whereNotNull('company_id')->pluck('company_id');
         $this->didFree = DidNumber::whereNull('company_id')->pluck('number');
-
         $this->didUsing = DidNumber::where('company_id',$this->sip_gateway->company_id)->pluck('number');
-
         $this->allDid = $this->didFree->merge($this->didUsing);
-
         $this->didNumbers = DidNumber::whereIn('number',$this->allDid)->get();
-
-        
-
         $this->company = Company::where('id',$this->sip_gateway->company_id)->first();
         return view('super-admin.sipgateway.edit', $this->data);
     }
 
     public function update(Request $request,$id)
     {
-        
-        
         $sip = SipGateway::find($id);
-       
         $sip->company_id = $request->company_id;
         $sip->type = $request->type;
         $sip->caller_id = json_encode($request->caller_id);
