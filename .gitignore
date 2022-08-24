@@ -6,3 +6,5 @@ storage.zip
 .env
 storage/.DS_Store
 public/user-uploads
+websocket.php
+vendor/workerman/workerman.log
