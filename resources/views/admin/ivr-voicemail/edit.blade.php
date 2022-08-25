@@ -57,6 +57,29 @@
                                                 autocomplete="nope">
                                         </div>
                                     </div>
+
+                                    <div class="col-md-6" >
+                                        <div class="form-group">
+                                            <label for="" class="required">Type</label>
+                                            <select class="form-control " name="type" id="voice" data-style="form-control">
+                              
+                                                <option value="general" @if ("general" == $voicemails->type) selected @endif>General</option>
+                                                <option value="department" @if ("department" == $voicemails->type) selected @endif>Department</option>
+                                           
+                                        </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6" id="departmentA">
+                                        <label class="control-label" >Department<span style="color:red">*</span></label>
+                                        <div class="form-group">
+                                            <select name="department_id" id="" class="form-control">
+                                                @foreach($departments as $department)
+                                                     <option value="{{ $department->id }}" @if ($department->id == $voicemails->department_id) selected @endif>{{ $department->team_name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+
                                 </div>
 
                                 <button type="submit" id="save-form"
@@ -103,4 +126,19 @@
             })
         });
     </script>
+
+<script>
+    $('#departmentA').hide();
+    
+    $('#voice').on('change', function() {
+
+        if ($(this).val() === 'department') {
+            $('#departmentA').show();
+
+        } else {
+            $('#departmentA').hide();
+
+        }
+    })
+</script>
 @endpush

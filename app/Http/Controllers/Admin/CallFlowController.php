@@ -7,6 +7,7 @@ use App\Helper\Reply;
 use App\Http\Controllers\Controller;
 use App\IvrGreeting;
 use App\VoiceMail;
+use App\Team;
 use Illuminate\Http\Request;
 
 class CallFlowController extends AdminBaseController
@@ -35,6 +36,8 @@ class CallFlowController extends AdminBaseController
      */
     public function create()
     {
+        $this->departments = Team::all();
+
         $this->grettings = IvrGreeting::all();
         $this->voicemails = VoiceMail::all();
         return view('admin.call-flow-design.create', $this->data);

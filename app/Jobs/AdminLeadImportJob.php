@@ -19,16 +19,18 @@ class AdminLeadImportJob implements ShouldQueue
 
     protected $rows;
     protected $company_id;
+    protected $currency_id;
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($rows, $company_id)
+    public function __construct($rows, $company_id, $currency_id)
     {
         //
         $this->rows = $rows;
         $this->company_id = $company_id;
+        $this->currency_id = $currency_id;
     }
 
     /**
@@ -52,7 +54,7 @@ class AdminLeadImportJob implements ShouldQueue
                 $lead->agent_id = $row["client_id"];
                 $lead->company_name = $row["company_name"];
                 $lead->website = $row["website"];
-                $lead->currency_id = 17;
+                $lead->currency_id = $this->currency_id;
                 $lead->address = $row["address"];
                 $lead->client_surname = $row["client_surname"];
                 $lead->office_phone = $row["office_phone"];
@@ -70,7 +72,7 @@ class AdminLeadImportJob implements ShouldQueue
                 $lead->save();
                 // Log::alert($lead->id);
             } catch (Exception $exception) {
-                // Log::alert($exception->getMessage());
+                Log::alert($exception->getMessage());
             }
         }
     }

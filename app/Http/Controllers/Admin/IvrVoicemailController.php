@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Helper\Reply;
 use App\Http\Controllers\Controller;
 use App\VoiceMail;
+use App\Team;
 use Illuminate\Http\Request;
 
 class IvrVoicemailController extends AdminBaseController
@@ -33,6 +34,7 @@ class IvrVoicemailController extends AdminBaseController
      */
     public function create()
     {
+        $this->departments = Team::all();
         return view('admin.ivr-voicemail.create', $this->data);
     }
 
@@ -50,6 +52,13 @@ class IvrVoicemailController extends AdminBaseController
         ]);
         $voicemails = new VoiceMail();
         $voicemails->name = $request->name;
+        $voicemails->type = $request->type;
+        if($request->department=='department'){
+            $voicemails->department_id = $request->department;
+        }else{
+            $voicemails->department_id = null;
+        }
+        
         $voicemails->audio_clip = $request->audio_clip->store('audio/voicemails');
         $voicemails->save();
         return Reply::redirect(route('admin.ivr-voicemail.index'), 'IVR Voicemail created successfully.');
@@ -74,6 +83,8 @@ class IvrVoicemailController extends AdminBaseController
      */
     public function edit($id)
     {
+        $this->departments = Team::all();
+
         $this->voicemails = VoiceMail::findOrFail($id);
         return view('admin.ivr-voicemail.edit', $this->data);
     }
@@ -94,6 +105,11 @@ class IvrVoicemailController extends AdminBaseController
         $voicemails->name = $request->name;
         if ($request->has('file')) {
             $voicemails->audio_clip = $request->audio_clip->store('audio/voicemails');
+        }
+        if($request->department=='department'){
+            $voicemails->department_id = $request->department;
+        }else{
+            $voicemails->department_id = null;
         }
         $voicemails->save();
         return Reply::redirect(route('admin.ivr-voicemail.index'), 'IVR Voicemail updated successfully.');

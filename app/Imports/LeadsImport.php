@@ -25,7 +25,8 @@ class LeadsImport implements ToCollection, WithHeadingRow
     public function collection(Collection $rows)
     {
         $company_id = company()->id;
-        dispatch(new AdminLeadImportJob($rows, $company_id));
+        $currency_id=company()->currency_id;
+        dispatch(new AdminLeadImportJob($rows, $company_id, $currency_id));
     }
 
 }

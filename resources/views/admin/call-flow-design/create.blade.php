@@ -81,12 +81,12 @@
                                     </div>
                                 </div>
                                 <div class="form-group extension-directory">
-                                    <label for="menu_message" class="required">Extension Directory</label>
+                                    <label for="menu_message" class="required">Department </label>
                                     <div id="extension">
-                                        <select class="select2 select2-multiple" multiple="multiple" id="extension"
+                                        <select class="select2 " multiple="multiple" id=""
                                             name="extensions[]" data-placeholder="Choose Department ...">
-                                            @foreach (digits() as $item)
-                                            <option value="{{ $item['id'] }}">{{ $item['label'] }}
+                                            @foreach ($departments as $item)
+                                            <option value="{{ $item->id }}">{{ $item->team_name }}
                                             </option>
                                         @endforeach
 
@@ -112,7 +112,7 @@
                                         </div>
                                         {{-- <div class=" col-md-6 appendHere"></div> --}}
                                         <div class="col-md-6">
-                                            <label for="extension_directory_with_number" class="required">Extension
+                                            <label for="extension_directory_with_number" class="required">Department
                                                 Directory</label>
                                             <div id="">
                                                 <select class="form-control" id="selectGretting" name="voice[]"

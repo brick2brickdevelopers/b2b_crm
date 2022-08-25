@@ -56,6 +56,27 @@
                                                 autocomplete="nope">
                                         </div>
                                     </div>
+                                    <div class="col-md-6" >
+                                        <div class="form-group">
+                                            <label for="" class="required">Type</label>
+                                            <select class="form-control " name="type" id="voice" data-style="form-control">
+                              
+                                                <option value="general">General</option>
+                                                <option value="department">Department</option>
+                                           
+                                        </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6" id="departmentA">
+                                        <label class="control-label" >Department<span style="color:red">*</span></label>
+                                        <div class="form-group">
+                                            <select name="department_id" id="" class="form-control">
+                                                @foreach($departments as $department)
+                                                     <option value="{{ $department->id }}">{{ $department->team_name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <button type="submit" id="save-form"
@@ -76,6 +97,7 @@
 @endsection
 
 @push('footer-script')
+
     <script src="{{ asset('plugins/bower_components/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script>
     <script src="{{ asset('plugins/tagify-master/dist/tagify.js') }}"></script>
     <script src="{{ asset('plugins/bower_components/bootstrap-select/bootstrap-select.min.js') }}"></script>
@@ -83,7 +105,23 @@
     <script src="{{ asset('plugins/bower_components/multiselect/js/jquery.multi-select.js') }}"></script>
     <script src="{{ asset('plugins/bower_components/bootstrap-select/bootstrap-select.min.js') }}"></script>
     <script src="{{ asset('plugins/bower_components/switchery/dist/switchery.min.js') }}"></script>
+    
+<script>
+    $('#departmentA').hide();
+    
+    $('#voice').on('change', function() {
 
+        if ($(this).val() === 'department') {
+            $('#departmentA').show();
+
+        } else {
+            $('#departmentA').hide();
+
+        }
+    })
+</script>
+
+    
     <script>
         $('#createIvrVoicemail').submit(function(e) {
             e.preventDefault();
@@ -100,4 +138,6 @@
             })
         });
     </script>
+
+
 @endpush
