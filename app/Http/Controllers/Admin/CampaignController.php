@@ -22,6 +22,11 @@ use Google\Service\Dfareporting\Resource\Campaigns;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
 use Yajra\DataTables\Html\Builder;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\CampaignsImport;
+
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Validator;
 
 class CampaignController extends AdminBaseController
 {
@@ -304,6 +309,35 @@ class CampaignController extends AdminBaseController
         $callPurpose = CallPurpose::find($id);
         $callPurpose->delete();
         return redirect()->route('admin.campaigns.call-purpose')->with('messages', 'Call Purpose Deleted Successfully');
+    }
+
+    public function import(Request $request,Response $response)
+    {
+       
+        $validator = Validator::make($request->all(), [
+            'file' => ['required','mimes:xlsx, csv']
+          
+            
+        ]); // create the validations
+        if ($validator->fails())   //check all validations are fine, if not then redirect and show error messages
+        {
+            
+            return back()->withInput()->withErrors($validator);
+          
+        }
+        else
+        {
+            $campaign_id = $request->id;
+            
+            Excel::import(new CampaignsImport, $request->file);
+
+            return back()->withMessage('file successfully imported');
+        }  
+        // $request->validate([
+        //     'file'=> 'required|mimes:xlsx, csv, xls'
+        //  ]);
+
+        
     }
 
     

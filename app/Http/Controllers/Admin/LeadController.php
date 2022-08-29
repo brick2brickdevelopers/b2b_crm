@@ -46,6 +46,9 @@ use App\Imports\LeadsImport;
 use App\Jobs\AdminLeadImportJob;
 use Maatwebsite\Excel\Facades\Excel;
 
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Validator;
+
 
 class LeadController extends AdminBaseController
 {
@@ -810,14 +813,29 @@ class LeadController extends AdminBaseController
 
 
 
-    public function import(Request $request)
+    public function import(Request $request,Response $response)
     {
-        $request->validate([
-            'file'=> 'required|mimes:xlsx, csv, xls'
-         ]);
+        $validator = Validator::make($request->all(), [
+            'file' => ['required','mimes:xlsx, csv']
+          
+            
+        ]); // create the validations
+        if ($validator->fails())   //check all validations are fine, if not then redirect and show error messages
+        {
+            
+            return back()->withInput()->withErrors($validator);
+          
+        }
+        else
+        {
+            Excel::import(new LeadsImport, $request->file);
 
-        Excel::import(new LeadsImport, $request->file);
+            return back()->withMessage('file successfully imported');
+        }  
+        // $request->validate([
+        //     'file'=> 'required|mimes:xlsx, csv, xls'
+        //  ]);
 
-        return back()->withMessage('file successfully imported');
+        
     }
 }

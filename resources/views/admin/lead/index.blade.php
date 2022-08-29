@@ -25,7 +25,22 @@
             <form action="{{ route('admin.import') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="row">
+                    <div class="col-md-4">
+                        @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+                    </div>
+                </div>
+                <div class="row">
+                   
                     <div class="form-group col-md-10">
+                        
                         <label class="control-label">Import Lead File</label>
                         <div class="fileinput fileinput-new input-group" data-provides="fileinput">
                             <div class="form-control file-attachment" data-trigger="fileinput"> <i
@@ -88,7 +103,7 @@
 
     <div class="row">
 
-
+  
         <div class="col-xs-12">
             <div class="white-box">
 

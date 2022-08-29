@@ -2,51 +2,31 @@
 
 namespace App\Imports;
 
+use App\Jobs\AdminCampaignLeadImportJob;
+
 use App\Campaign;
 use App\Lead;
 use Exception;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\ToCollection;
 
-class CampaignsImport implements ToModel
+class CampaignsImport implements ToCollection, WithHeadingRow
 {
     /**
-    * @param array $row
-    *
-    * @return \Illuminate\Database\Eloquent\Model|null
-    */
-    public function model(array $row)
+     * @param array $row
+     *
+     * @return \Illuminate\Database\Eloquent\Model|null
+     */
+    public function collection(Collection $rows)
     {
-        try {
 
-            // dispatch(new JobsLead($row));
-            // return 0;
-            return new Lead([
-                'client_id' => $row['client_id'],
-                'source_id' => $row['source_id'],
-                'status_id' => $row['status_id'],
-                'column_priority' => $row['column_priority'],
-                'agent_id' => $row['agent_id'],
-                'company_name' => $row['company_name'],
-                'website' => $row['website'],
-                'currency_id' => 17,
-                'address' => $row['address'],
-                'client_surname' => $row['client_surname'],
-                'office_phone' => $row['office_phone'],
-                'city' => $row['city'],
-                'state' => $row['state'],
-                'country' => $row['country'],
-                'postal_code' => $row['postal_code'],
-                'client_name' => $row['client_name'],
-                'address' => $row['address'],
-                'client_email' => $row['client_email'],
-                'mobile' => $row['mobile'],
-                'note' => $row['note'],
-                'next_follow_up' => $row['next_follow_up'],
-                'value' => $row['value'],
-                'category_id' => $row['category_id'],
-                
-            ]);
-        } catch (Exception $exception) {
-        }
+        $company_id = company()->id;
+        $currency_id = company()->currency_id;
+        // $campaign_id = $_GET['id'];
+        // Log::alert($campaign_id);
+        dispatch(new AdminCampaignLeadImportJob($rows, $company_id, $currency_id));
     }
 }

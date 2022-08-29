@@ -4,6 +4,8 @@
 @php
     // dd(json_decode($call_flow_diagram->extensions)->num)
     $callflow = json_decode($call_flow_diagram->extensions);
+    // $key = 1;
+   // dd($callflow->department);
 @endphp
 
 @section('page-title')
@@ -57,6 +59,8 @@
                                 </div>
                                 @php 
                                     $extension = json_decode($call_flow_diagram->extensions,true);
+
+                                  //  dd($extension);
                                 @endphp
 
                              
@@ -99,7 +103,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group extension-directory" id="directory">
-                                    <label for="menu_message" class="required">Extension Directory</label>
+                                    <label for="menu_message" class="required">Department Directory</label>
                                     <div id="extension">
                                         <select class="select2 select2-multiple" multiple="multiple" id="extension"
                                             name="extensions[]" data-placeholder="Choose Department ...">
@@ -132,14 +136,18 @@
                                         </div>
                                         {{-- <div class=" col-md-6 appendHere"></div> --}}
                                         <div class="col-md-6">
-                                            <label for="extension_directory_with_number" class="required">Extension
+                                            <label for="extension_directory_with_number" class="required">Department
                                                 Directory</label>
                                             <div id="">
                                                 <select class="form-control" id="selectGretting" name="voice[]"
                                                     data-placeholder="Choose Department ...">
-                                                    @foreach ($grettings as $item)
+                                                    {{-- @foreach ($grettings as $item)
                                                         <option value="{{ $item->id }}" {{$callflow->ext[$key]===  "$item->id"?'selected':''}} >{{ $item->name }}</option>
-                                                    @endforeach
+                                                    @endforeach --}}
+                                                   
+                                                    @foreach ($departments as $item)
+                                                    <option value="{{ $item->id }}" {{$callflow->department[$key]===  $item->id?'selected':''}}>{{ $item->team_name }}</option>
+                                                @endforeach
 
                                                 </select>
                                             </div>
@@ -171,14 +179,14 @@
                                         </div>
                                         {{-- <div class=" col-md-6 appendHere"></div> --}}
                                         <div class="col-md-6">
-                                            <label for="extension_directory_with_number" class="required">Extension
+                                            <label for="extension_directory_with_number" class="required">Departments
                                                 Directory</label>
                                             <div id="">
                                                 <select class="form-control" id="selectGretting" name="voice[]"
                                                     data-placeholder="Choose Department ...">
-                                                    @foreach ($grettings as $item)
-                                                        <option value="{{ $item->id }}" >{{ $item->name }}</option>
-                                                    @endforeach
+                                                    @foreach ($departments as $item)
+                                                    <option value="{{ $item->id }}">{{ $item->team_name }}</option>
+                                                @endforeach
 
                                                 </select>
                                             </div>

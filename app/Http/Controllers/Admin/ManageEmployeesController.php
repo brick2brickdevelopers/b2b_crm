@@ -120,7 +120,7 @@ class ManageEmployeesController extends AdminBaseController
     public function store(StoreRequest $request)
     {
         
-
+       
         $company = company();
         if (!is_null($company->employees) && $company->employees->count() >= $company->package->max_employees) {
             return Reply::dataOnly(['type' => 'maxEmployeeReached', 'employeeCount' => company()->employees->count(), 'maxEmployees' => $company->package->max_employees]);
@@ -144,8 +144,9 @@ class ManageEmployeesController extends AdminBaseController
             } else {
                 $data['locale'] = company()->locale;
             }
+          //  return($this->modules);
             $user = User::create($data);
-
+            // return $this->user->company->sip_gateway;
             if ($request->sip_setting === 'yes') {
                // if ($request->has('sip_pass')) {
                     $sip_password = uniqid();
@@ -155,12 +156,14 @@ class ManageEmployeesController extends AdminBaseController
                             $xuser = User::find($user->id);
                             $xuser->sip_user = $user->id + 1000;
                             $xuser->sip_pass = $sip_password;
+                          
                             $xuser->call_destination = $request->call_destination;
                             if($request->call_destination=='mobile'){
                                 $xuser->out_bound_did =null;
                             }else{
                                 $xuser->out_bound_did= $request->out_bound_did;
                             }
+                            
                             $xuser->save();
                         }
                     }

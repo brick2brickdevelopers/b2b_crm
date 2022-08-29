@@ -60,7 +60,7 @@ class CallFlowController extends AdminBaseController
         // $call_flow_design->menu = $request->menu;
         $call_flow_design->menu = $request->has('menu') ? $request->menu : 0;
         $call_flow_design->menu_message = $request->menu_message;
-        $call_flow_design->extensions = $request->has('extensions') ? json_encode($request->extensions) : json_encode(array('num' => $request->num, 'ext' => $request->voice));
+        $call_flow_design->extensions = $request->has('extensions') ? json_encode($request->extensions) : json_encode(array('num' => $request->num, 'department' => $request->voice));
         $call_flow_design->voicemail = $request->has('voicemail') ? $request->voicemail : 0;;
         $call_flow_design->non_working_hours = $request->has('non_working_hours') ? $request->non_working_hours : 0;
         $call_flow_design->start_time = $request->start_time;
@@ -96,6 +96,8 @@ class CallFlowController extends AdminBaseController
      */
     public function edit($id)
     {
+        $this->departments = Team::all();
+
         $this->grettings = IvrGreeting::all();
         $this->voicemails = VoiceMail::all();
         $this->call_flow_diagram = CallFlowDiagram::findOrFail($id);

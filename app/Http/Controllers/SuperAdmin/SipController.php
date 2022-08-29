@@ -85,6 +85,7 @@ class SipController extends SuperAdminBaseController
         $sip->endpoint = $request->endpoint;
         $sip->key = $request->user;
         $sip->token = $request->token;
+        $sip->status =true;
         $sip->save();
         return Reply::redirect(route('super-admin.sip-gateway.index'), 'Package updated successfully.');
     }

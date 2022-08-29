@@ -411,13 +411,8 @@ Route::group(['middleware' => 'auth'], function () {
                 // Route::get('importExportView',['uses' => 'LeadController@importExportView']);
                 Route::post('import', ['uses' => 'LeadController@import'])->name('import');
 
-                //  Route::get('/import/create', 'LeadController@getImport')->name('import');
-                // Route::post('/import_parse', 'LeadController@parseImport')->name('import_parse');
-                // Route::post('/import_process', 'LeadController@processImport')->name('import_process');
+                Route::post('campaign/lead/import', ['uses' => 'CampaignController@import'])->name('campaign.lead.import');
 
-                // Route::get('leads/import', ['uses' => 'LeadController@getImport'])->name('leads.import');
-                // Route::post('leads/import_parse', ['uses' => 'LeadController@parseImport'])->name('leads.import_parse');
-                // Route::post('leads/import_process', ['uses' => 'LeadController@processImport'])->name('leads.import_process');
 
                 Route::get('leads/kanban-board', ['uses' => 'LeadController@kanbanboard'])->name('leads.kanbanboard');
                 Route::get('leads/kanban-board', ['uses' => 'LeadController@kanbanboard'])->name('leads.kanbanboard');

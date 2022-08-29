@@ -84,13 +84,12 @@
                                     <label for="menu_message" class="required">Department </label>
                                     <div id="extension">
                                         <select class="select2 " multiple="multiple" id=""
-                                            name="extensions[]" data-placeholder="Choose Department ...">
-                                            @foreach ($departments as $item)
-                                            <option value="{{ $item->id }}">{{ $item->team_name }}
-                                            </option>
+                                        name="extensions[]" data-placeholder="Choose Department ...">
+                                        @foreach ($departments as $item)
+                                            <option value="{{ $item->id }}">{{ $item->team_name }}</option>
                                         @endforeach
 
-                                        </select>
+                                    </select>
                                     </div>
 
                                 </div>
@@ -117,9 +116,9 @@
                                             <div id="">
                                                 <select class="form-control" id="selectGretting" name="voice[]"
                                                     data-placeholder="Choose Department ...">
-                                                    @foreach ($grettings as $item)
-                                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                                    @endforeach
+                                                    @foreach ($departments as $item)
+                                                    <option value="{{ $item->id }}">{{ $item->team_name }}</option>
+                                                @endforeach
 
                                                 </select>
                                             </div>

@@ -18,6 +18,49 @@
         </div>
         <!-- /.breadcrumb -->
     </div>
+    <div class="card-body">
+        <form action="{{ route('admin.campaign.lead.import') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            <div class="row">
+                <div class="col-md-4">
+                    @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+                </div>
+            </div>
+            <div class="row">
+               
+                <div class="form-group col-md-10">
+                    
+                    <label class="control-label">Import Lead File</label>
+                    <div class="fileinput fileinput-new input-group" data-provides="fileinput">
+                        <div class="form-control file-attachment" data-trigger="fileinput"> <i
+                                class="glyphicon glyphicon-file fileinput-exists"></i> <span
+                                class="fileinput-filename "></span></div>
+                        <span class="input-group-addon btn btn-default btn-file"> <span class="fileinput-new">Select
+                                File</span> <span class="fileinput-exists">Change</span>
+                            <input type="hidden"><input type="file" accept="image/csv, image/xlsx" name="file" required>
+                        </span> <a href="#" class="input-group-addon btn btn-default fileinput-exists"
+                            data-dismiss="fileinput">Remove</a>
+                    </div>
+                </div>
+                <div class="form-group col-md-2" style="margin-top: 23px">
+                    <button class="btn btn-success btn-sm">Import Lead Data File</button>
+                </div>
+            </div>
+
+            {{-- <input type="file" name="file" class="form-control">
+            <br>
+            <button class="btn btn-success">Import Lead Data</button>
+            <a class="btn btn-warning" href="{{ route('admin.export') }}">Export Lead Data</a> --}}
+        </form>
+    </div>
 @endsection
 
 @push('head-script')
