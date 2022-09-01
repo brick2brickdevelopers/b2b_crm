@@ -63,6 +63,7 @@ class ManageTeamsController extends AdminBaseController
         $group->team_name = $request->team_name;
         $group->call_destination = $request->call_destination;
         $group->out_bound_did = $request->out_bound_did;
+        $group->inbound_did = $request->inbound_did;
         $group->save();
 
         return Reply::redirect(route('admin.teams.index'), 'Group created successfully.');
@@ -87,6 +88,8 @@ class ManageTeamsController extends AdminBaseController
      */
     public function edit($id)
     {
+        $this->did_numbers = DidNumber::where('company_id',company()->id)->get();
+
         $this->group = Team::with('member')->findOrFail($id);
 
         return view('admin.teams.edit', $this->data);
@@ -103,6 +106,9 @@ class ManageTeamsController extends AdminBaseController
     {
         $group = Team::find($id);
         $group->team_name = $request->team_name;
+        $group->call_destination = $request->call_destination;
+        $group->out_bound_did = $request->out_bound_did;
+        $group->inbound_did = $request->inbound_did;
         $group->save();
 
         if(!empty($users = $request->user_id)){

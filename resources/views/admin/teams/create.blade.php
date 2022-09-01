@@ -56,6 +56,16 @@
                                                 @endforeach
                                             </select>
                                         </div>
+
+                                        <label class="control-label">In Bound Did</label>
+                                        <div class="form-group">
+                                            <select name="inbound_did" id="inbound_did" class="form-control">
+                                                    <option value="">Select In Bound Did</option>
+                                                @foreach($did_numbers as $did_number)
+                                                    <option value="{{ $did_number->number }}">{{ $did_number->number }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                     
                                  @endif
 

@@ -5,7 +5,8 @@
     // dd(json_decode($call_flow_diagram->extensions)->num)
     $callflow = json_decode($call_flow_diagram->extensions);
     // $key = 1;
-   // dd($callflow->department);
+//    dd($callflow->department['2']);
+//  dd($callflow);
 @endphp
 
 @section('page-title')
@@ -60,7 +61,7 @@
                                 @php 
                                     $extension = json_decode($call_flow_diagram->extensions,true);
 
-                                  //  dd($extension);
+                                  
                                 @endphp
 
                              
@@ -68,15 +69,41 @@
                                 {{-- {{ $call_flow_diagram->extensions }} --}}
                                 {{-- {{ in_array($item->id, $extension) ? 'selected' : '' }} --}}
                                 <div class="form-group">
-                                    <label for="greeting" class="required">Welcome greeting</label>
-                                    <div id="greeting">
+                                    <div class="row">
+                                            <label for="menu" class="required">
+                                                Do you need Lead Greeting?
+                                            </label>
+                                            <div class="switchery-demo">
+                                            <input id="lead_gretting" name="lead_gretting" type="checkbox"
+                                                class="js-switch" data-size="small" data-color="#00c292" value="1" {{ !empty($call_flow_diagram->greetings_id) ? 'checked' :'' }}/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group" id="greeting2">
+                                    <label for="greeting">Leed Greeting</label>
+                                    <div >
                                         <select class="select2 select2-multiple form-control" id="greetings_id"
                                             name="greetings_id" data-placeholder="Choose Greetings ...">
+                                            <option value="">----</option>
+
                                             @foreach ($grettings as $item)
                                                 <option value="{{ $item->id }}" {{ $call_flow_diagram->greetings_id==$item->id ? 'selected' :'' }}>{{ $item->name }}</option>
                                             @endforeach
 
                                         </select>
+                                    </div>
+                                </div>
+                               
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="control-label"> Did Number<span style="color:red">*</span></label>
+                                        <div class="form-group">
+                                            <select name="did_number"  class="form-control">
+                                                @foreach($did_numbers as $did_number)
+                                                     <option value="{{ $did_number->number }}" {{ $call_flow_diagram->did_number==$did_number->number ? 'selected' :'' }}>{{ $did_number->number }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -120,6 +147,7 @@
                                 <div class="form-group extension-directory-with-number">
 
 
+                                    @if(!empty($callflow->num))
                                     @forelse ($callflow->num as $key=>$itemx)
                                     <div class="row  department-choose" style="margin-bottom: 10px;">
                                         <div class="col-md-3 ">
@@ -146,8 +174,9 @@
                                                     @endforeach --}}
                                                    
                                                     @foreach ($departments as $item)
-                                                    <option value="{{ $item->id }}" {{$callflow->department[$key]===  $item->id?'selected':''}}>{{ $item->team_name }}</option>
-                                                @endforeach
+                                                    {{-- @php $key =$loop->index ; @endphp  --}}
+                                                    <option value="{{ $item->id }}" {{$callflow->department[$key]== $item->id?'selected':''}}>{{ $item->team_name }}</option>
+                                                     @endforeach
 
                                                 </select>
                                             </div>
@@ -200,6 +229,7 @@
                                         </div>
                                     </div>
                                     @endforelse
+                                    @endif
                                   
                                     <button class="btn btn-md btn-primary" id="addBtn" type="button">
                                         Add new Row
@@ -305,6 +335,7 @@
                                         class="js-switch" data-size="small" data-color="#00c292" value="1" {{$call_flow_diagram->non_working_days == '1' ? 'checked' : ''}}/>
                                 </div>
                             </div>
+                           
 
                             <div class="menu-switch_work_day_row">
                                 <div class="form-group">
@@ -396,7 +427,17 @@
                                 </div>
                             </div>
 
-
+                            <div class="form-group">
+                                <div class="row">
+                                        <label for="menu" >
+                                        Status                                            
+                                        </label>
+                                        <div class="switchery-demo">
+                                        <input id="status" name="status" type="checkbox"
+                                            class="js-switch" data-size="small" data-color="#00c292" value="1" {{$call_flow_diagram->status == '1' ? 'checked' : ''}}/>
+                                    </div>
+                                </div>
+                            </div>
 
                             <button type="submit" id="save-form"
                                 class="btn btn-success waves-effect waves-light m-r-10">
@@ -471,6 +512,27 @@
             
         })
 
+        
+    </script>
+    <script>
+        $("#lead_gretting").load("change", function() {
+            if ($(this).is(':checked')) {
+                $("#greeting2").show();
+            } else {
+                $("#greeting2").hide();
+            }
+        })
+        
+    </script>
+     <script>
+        $("#greeting2").hide()
+        $("#lead_gretting").on("change", function() {
+            if ($(this).is(':checked')) {
+                $("#greeting2").show();
+            } else {
+                $("#greeting2").hide();
+            }
+        })
         
     </script>
 

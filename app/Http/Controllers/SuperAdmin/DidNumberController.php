@@ -50,11 +50,9 @@ class DidNumberController extends SuperAdminBaseController
       $didNumber->number = $request->number;
      
       $didNumber->save();
+      return back()->with('success','Did Number created successfully!');
 
-      return redirect()->route('super-admin.did-number.index');
-      //   return Reply::success('messages.didNumber.addedSuccess');
-
-        //
+    
     }
 
     /**
@@ -92,7 +90,8 @@ class DidNumberController extends SuperAdminBaseController
           $didNumber->number = $request->number;
           $didNumber->save();
 
-          return redirect()->route('super-admin.did-number.index');
+          return back()->with('success','Did Number Updated successfully!');
+
 
     }
 
@@ -108,6 +107,7 @@ class DidNumberController extends SuperAdminBaseController
 
         $didNumber->delete();
 
-        return redirect()->route('super-admin.did-number.index');
+        return back()->with('success','Did Number Deleted successfully!');
+
     }
 }

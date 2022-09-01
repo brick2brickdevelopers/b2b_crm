@@ -157,7 +157,7 @@
                                                     value="{{ $userDetail->sip_pass }}" readonly class="form-control">
                                             </div>
                                         </div>
-                                        <div class="col-md-3 sipshow">
+                                        <div class="col-md-2 sipshow">
                                             <div class="form-group">
                                                 <label class="control-label">Call Destination</label>
                                                 <select name="call_destination" id="call_destination" class="form-control">
@@ -166,8 +166,8 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        @if(!empty($did_number->number))
-                                        <div class="col-md-3 sipshow">
+                                        @if(!empty($userDetail->out_bound_did))
+                                        <div class="col-md-2 sipshow">
                                             <label class="control-label">Out Bound Did</label>
                                             <div class="form-group">
                                                 <select name="out_bound_did" id="out_bound_did" class="form-control ">
@@ -179,6 +179,20 @@
                                             </div>
                                         </div>
                                         @endif
+                                       
+                                        
+                                        <div class="col-md-2 sipshow" >
+                                            <label class="control-label" id="inbound_did">Inbound Did <span style="color:red">*</span></label>
+                                            <div class="form-group" id="inbound_did2">
+                                                <select name="inbound_did"  class="form-control">
+                                                    @foreach($did_numbers as $did_number)
+                                                         <option value="{{ $did_number->number }}" @if ($did_number->number == $userDetail->inbound_did) selected @endif>{{ $did_number->number }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                        
+                                       
                                         @endif
                                     @endif
                                 </div>
@@ -239,7 +253,7 @@
                                                     +{{ $item->phonecode . ' (' . $item->iso . ')' }}</option>
                                             @endforeach
                                         </select>
-                                        <input type="tel" name="mobile" id="mobile" class="mobile"
+                                        <input type="number" name="mobile" id="mobile" class="mobile"
                                             autocomplete="nope" value="{{ $userDetail->mobile }}">
                                     </div>
                                 </div>
@@ -314,6 +328,7 @@
                                         </select>
                                     </div>
                                 </div>
+                               
                             </div>
 
 
@@ -463,6 +478,24 @@
     {{-- Ajax Modal Ends --}}
 @endsection
 @push('footer-script')
+<script>
+       
+    $('#inbound_did').show();
+    $('#inbound_did2').show();
+    $('#call_destination').on('change', function() {
+        if ($(this).val() === 'sip') {
+     
+            $('#inbound_did').show();
+            $('#inbound_did2').show();
+
+        } else {
+     
+            $('#inbound_did').hide();
+            $('#inbound_did2').hide();
+
+        }
+    })
+</script>
     <script src="{{ asset('plugins/bower_components/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script>
     <script src="{{ asset('plugins/tagify-master/dist/tagify.js') }}"></script>
     <script src="{{ asset('plugins/bower_components/bootstrap-select/bootstrap-select.min.js') }}"></script>

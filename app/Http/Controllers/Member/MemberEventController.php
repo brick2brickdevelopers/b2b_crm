@@ -48,7 +48,7 @@ class MemberEventController extends MemberBaseController
                 ->get();
         }
         $this->employees = User::all();
-
+        
         return view('member.event-calendar.index', $this->data);
     }
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\CallFlowDiagram;
+use App\DidNumber;
 use App\Helper\Reply;
 use App\Http\Controllers\Controller;
 use App\IvrGreeting;
@@ -25,7 +26,7 @@ class CallFlowController extends AdminBaseController
      */
     public function index()
     {
-        $this->call_flow_diagrams = CallFlowDiagram::all();
+        $this->call_flow_diagrams = CallFlowDiagram::where('company_id',company()->id)->get();
         return view('admin.call-flow-design.index', $this->data);
     }
 
@@ -37,7 +38,7 @@ class CallFlowController extends AdminBaseController
     public function create()
     {
         $this->departments = Team::all();
-
+        $this->did_numbers = DidNumber::where('company_id',company()->id)->get();
         $this->grettings = IvrGreeting::all();
         $this->voicemails = VoiceMail::all();
         return view('admin.call-flow-design.create', $this->data);
@@ -51,12 +52,15 @@ class CallFlowController extends AdminBaseController
      */
     public function store(Request $request)
     {
+        $this->validate($request,[
+            'did_number' => 'required|unique:call_flow_diagrams',
+        ]);
         $empty_array = [];
-
+        // return($request->all());
         $call_flow_design = new CallFlowDiagram();
         $call_flow_design->company_id = company()->id;
         $call_flow_design->name = $request->name;
-        $call_flow_design->greetings_id = $request->greetings_id;
+        $call_flow_design->greetings_id = $request->has('greetings_id') ? $request->greetings_id :null;
         // $call_flow_design->menu = $request->menu;
         $call_flow_design->menu = $request->has('menu') ? $request->menu : 0;
         $call_flow_design->menu_message = $request->menu_message;
@@ -71,6 +75,8 @@ class CallFlowController extends AdminBaseController
         $call_flow_design->days = $request->has('days') ? json_encode($request->days) : json_encode($empty_array);
         $call_flow_design->non_working_days_greetings = $request->non_working_days_greetings;
         $call_flow_design->non_working_days_voicemail = $request->non_working_days_voicemail;
+        $call_flow_design->did_number = $request->did_number;
+        $call_flow_design->status = $request->has('status') ? $request->status : '0';
         // return($request->all());
         //dd($request->all());
         $call_flow_design->save();
@@ -97,7 +103,7 @@ class CallFlowController extends AdminBaseController
     public function edit($id)
     {
         $this->departments = Team::all();
-
+        $this->did_numbers = DidNumber::where('company_id',company()->id)->get();          
         $this->grettings = IvrGreeting::all();
         $this->voicemails = VoiceMail::all();
         $this->call_flow_diagram = CallFlowDiagram::findOrFail($id);
@@ -116,7 +122,15 @@ class CallFlowController extends AdminBaseController
      */
     public function update(Request $request, $id)
     {
+     
+
+        $this->validate($request,[
+            'did_number' => 'required|unique:call_flow_diagrams,id,'.$id
+        ]);
+
         $call_flow_design =  CallFlowDiagram::findOrFail($id);
+
+        
 
         $call_flow_design->company_id = company()->id;
         $call_flow_design->name = $request->name;
@@ -124,7 +138,7 @@ class CallFlowController extends AdminBaseController
         // $call_flow_design->menu = $request->menu;
         $call_flow_design->menu = $request->has('menu') ? $request->menu : 0;
         $call_flow_design->menu_message = $request->menu_message;
-        $call_flow_design->extensions = $request->has('extensions') ? json_encode($request->extensions) : json_encode(array('num' => $request->num, 'ext' => $request->voice));
+        $call_flow_design->extensions = $request->has('extensions') ? json_encode($request->extensions) : json_encode(array('num' => $request->num, 'department' => $request->voice));
         $call_flow_design->voicemail = $request->has('voicemail') ? $request->voicemail : 0;;
         $call_flow_design->non_working_hours = $request->has('non_working_hours') ? $request->non_working_hours : 0;
         $call_flow_design->start_time = $request->start_time;
@@ -135,6 +149,8 @@ class CallFlowController extends AdminBaseController
         $call_flow_design->days = $request->has('days') ? json_encode($request->days) : array();
         $call_flow_design->non_working_days_greetings = $request->non_working_days_greetings;
         $call_flow_design->non_working_days_voicemail = $request->non_working_days_voicemail;
+        $call_flow_design->did_number = $request->did_number;
+        $call_flow_design->status = $request->has('status') ? $request->status : '0';
         //return($request->all());
         //dd($request->all());
         $call_flow_design->update();

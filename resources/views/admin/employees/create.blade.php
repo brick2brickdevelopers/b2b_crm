@@ -126,9 +126,9 @@
                                     <div class="form-group">
                                         <label>@lang('modules.employees.gender')</label>
                                         <select name="gender" id="gender" class="form-control">
-                                            <option value="male">@lang('app.male')</option>
-                                            <option value="female">@lang('app.female')</option>
-                                            <option value="others">@lang('app.others')</option>
+                                            <option value="male">@lang('Male')</option>
+                                            <option value="female">@lang('Female')</option>
+                                            <option value="others">@lang('Others')</option>
                                         </select>
                                     </div>
                                 </div>
@@ -158,7 +158,7 @@
 
 
 
-                                    <div class="col-md-3 sipshow">
+                                    <div class="col-md-2 sipshow">
                                         <div class="form-group">
                                             <label class="control-label">Call Destination</label>
                                             <select name="call_destination" id="call_destination" class="form-control">
@@ -167,10 +167,20 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-3 sipshow" >
+                                    <div class="col-md-2 sipshow" >
                                         <label class="control-label" id="callDestination2">Out Bound Did <span style="color:red">*</span></label>
                                         <div class="form-group">
                                             <select name="out_bound_did" id="callDestination" class="form-control">
+                                                @foreach($did_numbers as $did_number)
+                                                     <option value="{{ $did_number->number }}">{{ $did_number->number }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 sipshow" >
+                                        <label class="control-label" id="inbound_did">Inbound Did <span style="color:red">*</span></label>
+                                        <div class="form-group" id="inbound_did2">
+                                            <select name="inbound_did"  class="form-control">
                                                 @foreach($did_numbers as $did_number)
                                                      <option value="{{ $did_number->number }}">{{ $did_number->number }}</option>
                                                 @endforeach
@@ -230,7 +240,7 @@
                                                     +{{ $item->phonecode . ' (' . $item->iso . ')' }} </option>
                                             @endforeach
                                         </select>
-                                        <input type="tel" name="mobile" id="mobile" class="mobile "
+                                        <input type="number" name="mobile" id="mobile" class="mobile "
                                             autocomplete="nope">
                                     </div>
                                 </div>
@@ -287,6 +297,7 @@
                                         </select>
                                     </div>
                                 </div>
+                                
                             </div>
 
                             <div class="row">
@@ -436,26 +447,35 @@
     <script src="{{ asset('plugins/bower_components/bootstrap-select/bootstrap-select.min.js') }}"></script>
     <script>
         $('.sipshow').hide();
+        $('#callDestination').hide();
+        $('#callDestination2').hide();
         $('#sipSetting').on('change', function() {
             if ($(this).val() === 'yes') {
                 $('.sipshow').show();
+                $('#callDestination').show();
+                $('#callDestination2').show();
             } else {
                 $('.sipshow').hide();
+                $('#callDestination').hide();
+                $('#callDestination2').hide();
             }
         })
     </script>
 
     <script>
-        $('#callDestination').hide();
-        $('#callDestination2').hide();
+       
+        $('#inbound_did').hide();
+        $('#inbound_did2').hide();
         $('#call_destination').on('change', function() {
             if ($(this).val() === 'sip') {
-                $('#callDestination').show();
-                $('#callDestination2').show();
+         
+                $('#inbound_did').show();
+                $('#inbound_did2').show();
 
             } else {
-                $('#callDestination').hide();
-                $('#callDestination2').hide();
+         
+                $('#inbound_did').hide();
+                $('#inbound_did2').hide();
 
             }
         })

@@ -49,11 +49,36 @@
                                             autocomplete="nope" required>
                                     </div>
                                 </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="control-label"> Did Number<span style="color:red">*</span></label>
+                                        <div class="form-group">
+                                            <select name="did_number"  class="form-control">
+                                                @foreach($did_numbers as $did_number)
+                                                     <option value="{{ $did_number->number }}">{{ $did_number->number }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="form-group">
-                                    <label for="greeting" class="required">Welcome greeting</label>
-                                    <div id="greeting">
+                                    <div class="row">
+                                            <label for="menu" class="required">
+                                                Do you need Lead Greeting?
+                                            </label>
+                                            <div class="switchery-demo">
+                                            <input id="lead_gretting" name="lead_gretting" type="checkbox"
+                                                class="js-switch" data-size="small" data-color="#00c292" value="1"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group" id="greeting2">
+                                    <label for="greeting">Leed Greeting</label>
+                                    <div >
                                         <select class="select2 select2-multiple form-control" id="greetings_id"
                                             name="greetings_id" data-placeholder="Choose Greetings ...">
+                                            <option value="">----</option>
+
                                             @foreach ($grettings as $item)
                                                 <option value="{{ $item->id }}">{{ $item->name }}</option>
                                             @endforeach
@@ -164,6 +189,7 @@
                                         class="js-switch" data-size="small" data-color="#00c292" value="1"/>
                                 </div>
                             </div>
+                           
 
                             <div class="menu-switch_work_hour_row">
                                 <div class="form-group">
@@ -323,8 +349,20 @@
                                         </div>
                                     </div>
                                 </div>
+                                
                             </div>
 
+                            <div class="form-group">
+                                <div class="row">
+                                        <label for="menu" >
+                                        Status                                            
+                                        </label>
+                                        <div class="switchery-demo">
+                                        <input id="status" name="status" type="checkbox"
+                                            class="js-switch" data-size="small" data-color="#00c292" value="1"/>
+                                    </div>
+                                </div>
+                            </div>
 
 
                             <button type="submit" id="save-form"
@@ -412,6 +450,17 @@
             }
         })
     </script>
+    <script>
+        $("#greeting2").hide()
+        $("#lead_gretting").on("change", function() {
+            if ($(this).is(':checked')) {
+                $("#greeting2").show();
+            } else {
+                $("#greeting2").hide();
+            }
+        })
+        
+    </script>
 
     <script>
         $(".menu-switch_work_day_row").hide()
@@ -423,29 +472,6 @@
             }
         })
     </script>
-    {{-- <script>
-     $('#addBtn').click(function() {
-            // var count = 10;
-            // for (var i=0; i<count; i++){
-                // $('div.appendHere').append('<div class="appendedDIVs">document.write(i)</div>');
-
-                $('.appendHere').append(`<div class="col-md-6">
-                                            <label for="extension_directory_with_number" class="required">Extension
-                                                Directory</label>
-                                            <div id="">
-                                                <select class="select2 select2-multiple" multiple="multiple" id=""
-                                                    name="" data-placeholder="Choose Department ...">
-
-
-                                                </select>
-                                            </div>
-                                        </div>`);
-
-                
-          //  }
-     })
-</script> --}}
-
 
 
     <script>
@@ -489,61 +515,5 @@
     </script>
 
 
-    {{-- <script>
-        $(document).ready(function() {
-
-            // Denotes total number of rows
-            var rowIdx = 0;
-
-            // jQuery button click event to add a row
-            $('#addBtn').on('click', function() {
-
-                // Adding a row inside the tbody.
-                $('#tbody').append(`<tr id="R${++rowIdx}">
-             <td class="row-index text-center">
-                <div class="col-md-6">
-                                            <label for="extension_directory_with_number" class="required">Extension
-                                                Directory</label>
-                                            <div id="">
-                                                <select class="select2 select2-multiple" multiple="multiple"
-                                                    id="greetings" name="greetings"
-                                                    data-placeholder="Choose Greetings ...">
-
-
-                                                </select>
-                                            </div>
-                                        </div>
-             </td>
-              <td class="text-center">
-                <button class="btn btn-danger remove"
-                  type="button"><i class="fa fa-times"></i></button>
-                </td>
-              </tr>`);
-            });
-
-            $('#tbody').on('click', '.remove', function() {
-
-
-                var child = $(this).closest('tr').nextAll();
-
-
-                child.each(function() {
-
-                    var id = $(this).attr('id');
-
-                    var idx = $(this).children('.row-index').children('div');
-
-                    var dig = parseInt(id.substring(1));
-
-                    idx.html(`Row ${dig - 1}`);
-
-                    $(this).attr('id', `R${dig - 1}`);
-                });
-
-                $(this).closest('tr').remove();
-
-                rowIdx--;
-            });
-        });
-    </script> --}}
+   
 @endpush

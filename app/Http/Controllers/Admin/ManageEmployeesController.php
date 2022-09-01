@@ -144,11 +144,8 @@ class ManageEmployeesController extends AdminBaseController
             } else {
                 $data['locale'] = company()->locale;
             }
-          //  return($this->modules);
             $user = User::create($data);
-            // return $this->user->company->sip_gateway;
             if ($request->sip_setting === 'yes') {
-               // if ($request->has('sip_pass')) {
                     $sip_password = uniqid();
                     if (in_array('calling', $this->modules)) {
                         if ($this->user->company->sip_gateway) {
@@ -156,18 +153,22 @@ class ManageEmployeesController extends AdminBaseController
                             $xuser = User::find($user->id);
                             $xuser->sip_user = $user->id + 1000;
                             $xuser->sip_pass = $sip_password;
+                            $xuser->out_bound_did= $request->out_bound_did;
                           
                             $xuser->call_destination = $request->call_destination;
                             if($request->call_destination=='mobile'){
-                                $xuser->out_bound_did =null;
+                                $xuser->inbound_did = null;
+
                             }else{
-                                $xuser->out_bound_did= $request->out_bound_did;
+                                
+                                $xuser->inbound_did = $request->inbound_did;
+
                             }
                             
                             $xuser->save();
                         }
                     }
-             //   }
+             
             }
 
 
@@ -321,11 +322,13 @@ class ManageEmployeesController extends AdminBaseController
         // $user->sip_pass = $request->input('sip_pass');
        
         $user->login = $request->login;
+        
         $user->email_notifications = $request->email_notifications;
 
         if ($request->hasFile('image')) {
             $user->image = Files::upload($request->image, 'avatar', 300);
         }
+
         $user->save();
         if (in_array('calling', $this->modules)) {
 
@@ -334,13 +337,16 @@ class ManageEmployeesController extends AdminBaseController
             if ($request->has('sip_pass')) {
                 if (in_array('calling', $this->modules)) {
                     if ($this->user->company->sip_gateway) {
+                        $user->out_bound_did= $request->out_bound_did;
 
                         sip_api($this->user->company->sip_gateway->endpoint, $user->sip_user, $user->sip_pass, 'edit');
                         $user->call_destination = $request->input('call_destination');
                         if($request->call_destination=='mobile'){
-                            $user->out_bound_did =null;
+                            $user->inbound_did = null;
+
                         }else{
-                            $user->out_bound_did= $request->out_bound_did;
+                            $user->inbound_did = $request->inbound_did;
+
                         }
                         $user->save();
                     }

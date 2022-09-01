@@ -10,7 +10,7 @@
         <!-- .breadcrumb -->
         <div class="col-lg-6 col-sm-8 col-md-8 col-xs-12 text-right bg-title-right">
             {{-- @if (!$campaigns->isEmpty()) --}}
-            <a href="" class="btn btn-outline btn-success btn-sm">@lang('app.add') Campaign <i class="fa fa-plus"
+            <a href="{{ route('member.campaigns.create') }}" class="btn btn-outline btn-success btn-sm">@lang('app.add') Campaign <i class="fa fa-plus"
                     aria-hidden="true"></i></a>
             {{-- @endif --}}
             <ol class="breadcrumb">

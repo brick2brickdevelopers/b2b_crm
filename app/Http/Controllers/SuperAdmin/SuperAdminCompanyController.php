@@ -4,6 +4,7 @@ namespace App\Http\Controllers\SuperAdmin;
 
 use App\Company;
 use App\Currency;
+use App\DidNumber;
 use App\EmployeeDetails;
 use App\GlobalCurrency;
 use App\Helper\Files;
@@ -19,6 +20,7 @@ use App\OfflinePaymentMethod;
 use App\Package;
 use App\Role;
 use App\Scopes\CompanyScope;
+use App\SipGateway;
 use App\StripeInvoice;
 use App\Traits\CurrencyExchange;
 use App\User;
@@ -116,7 +118,9 @@ class SuperAdminCompanyController extends SuperAdminBaseController
         $user->roles()->attach($employeeRole->id);
 
         DB::commit();
-        return Reply::redirect(route('super-admin.companies.index'), 'Company added successfully.');
+        return back()->with('success','Did Number created successfully!');
+
+       // return Reply::redirect(route('super-admin.companies.index'), 'Company added successfully.');
     }
 
     private function newCurrency($globalCurrency, $companyDetail)
@@ -289,6 +293,8 @@ class SuperAdminCompanyController extends SuperAdminBaseController
      */
     public function destroy(DeleteRequest $request, $id)
     {
+        DidNumber::where('company_id',$id)->destroy();
+        SipGateway::where('company_id',$id)->destroy();
         Company::destroy($id);
         return Reply::success(__('messages.deleteSuccess'));
     }

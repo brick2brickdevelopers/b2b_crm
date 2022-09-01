@@ -44,6 +44,40 @@
                                     <label for="company_name">@lang('app.department')</label>
                                     <input type="text" class="form-control" id="team_name" name="team_name" value="{{ $group->team_name }}">
                                 </div>
+
+                                @if (in_array('calling', $modules))
+                                    
+                                    <div class="form-group">
+                                        <label class="control-label">Call Destination</label>
+                                        <select name="call_destination" id="call_destination" class="form-control">
+                                            <option value="mobile" @if ($group->call_destination=="mobile") selected @endif>Mobile</option>
+                                            <option value="sip" @if ($group->call_destination=="sip") selected @endif>Sip</option>
+                                        </select>
+                                    </div>
+                            
+                            
+                                    <label class="control-label">Out Bound Did</label>
+                                    <div class="form-group">
+                                        <select name="out_bound_did" id="out_bound_did" class="form-control">
+                                                <option value="">Select Out Bound Did</option>
+                                            @foreach($did_numbers as $did_number)
+                                                <option value="{{ $did_number->number }}" @if ($group->out_bound_did==$did_number->number) selected @endif>{{ $did_number->number }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <label class="control-label">In Bound Did</label>
+                                    <div class="form-group">
+                                        <select name="inbound_did" id="inbound_did" class="form-control">
+                                                <option value="">Select In Bound Did</option>
+                                            @foreach($did_numbers as $did_number)
+                                                <option value="{{ $did_number->number }}" @if ($group->inbound_did==$did_number->number) selected @endif>{{ $did_number->number }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                            
+                                 @endif
+
                                 <button type="submit" id="save-form" class="btn btn-success waves-effect waves-light m-r-10">
                                     @lang('app.save')
                                 </button>

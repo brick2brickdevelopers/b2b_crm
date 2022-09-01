@@ -17,6 +17,16 @@
                 <li class="active">{{ __($pageTitle) }}</li>
             </ol>
         </div>
+
+        <div class="col-lg-6 col-sm-8 col-md-8 col-xs-12 text-right bg-title-right ">
+            @if ($message = Session::get('success'))
+            <div class="alert alert-success alert-block my-3">
+                <button type="button" class="close" data-dismiss="alert">×</button>    
+                <strong>{{ $message }}</strong>
+            </div>
+             @endif
+        </div>
+       
         <!-- /.breadcrumb -->
     </div>
 @endsection
