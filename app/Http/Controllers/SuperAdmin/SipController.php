@@ -7,6 +7,7 @@ use App\DidNumber;
 use App\SipGateway;
 use Illuminate\Http\Request;
 use App\Helper\Reply;
+use App\SipEndPoint;
 use DataTables;
 use Yajra\DataTables\Html\Builder;
 
@@ -58,6 +59,7 @@ class SipController extends SuperAdminBaseController
             ['data' => 'caller_id', 'name' => 'caller_id', 'title' => 'Caller ID'],
             ['data' => 'key', 'name' => 'key', 'title' => 'Key'],
             ['data' => 'token', 'name' => 'token', 'title' => 'Token'],
+            ['data' => 'endpoint', 'name' => 'endpoint', 'title' => 'End Point'],
             ['data' => 'status', 'name' => 'status', 'title' => 'Status'],
             ['data' => 'action', 'name' => 'action', 'title' => 'Action'],
         ]);
@@ -67,6 +69,7 @@ class SipController extends SuperAdminBaseController
         $d = DidNumber::whereNotNull('company_id')->pluck('company_id');
         $this->company = Company::whereNotIn('id', array_unique($d->toArray()))->get();
         $this->didNumbers = DidNumber::whereNull('company_id')->get();
+        $this->sipEndPoints = SipEndPoint::all();
         // $this->caller_id = DidNumber::where('company_id', )->get();
         return view('super-admin.sipgateway.index', $this->data);
     }
@@ -99,6 +102,8 @@ class SipController extends SuperAdminBaseController
         $this->allDid = $this->didFree->merge($this->didUsing);
         $this->didNumbers = DidNumber::whereIn('number',$this->allDid)->get();
         $this->company = Company::where('id',$this->sip_gateway->company_id)->first();
+        $this->sipEndPoints = SipEndPoint::all();
+
         return view('super-admin.sipgateway.edit', $this->data);
     }
 
@@ -137,6 +142,14 @@ class SipController extends SuperAdminBaseController
 
     public function destroy($id)
     {
+        $company = SipGateway::where('id',$id)->first('company_id');
+        $didNumbers = DidNumber::where('company_id',$company->company_id)->get();
+        foreach($didNumbers as $didNumber)
+        {
+            $number = DidNumber::find($didNumber->id);
+            $number->company_id = null;
+            $number->save();
+        }
         SipGateway::find($id)->delete();
         return redirect()->back();
     }

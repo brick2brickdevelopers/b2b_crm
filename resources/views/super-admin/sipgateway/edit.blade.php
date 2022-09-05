@@ -86,9 +86,17 @@
                     </div>
                     <div class="col-xs-12">
                         <div class="form-group">
-                            <label class="control-label">End Point</label>
-                            <input class="form-control" type="text" name="endpoint" id="endpoint" value="{{ $sip_gateway->endpoint }}" data-style="form-control"
-                                required="true">
+                            <label class="control-label">End Point <a href="javascript:;"
+                                id="designation-setting"><i class="ti-settings text-info"></i></a>
+                            </label>
+                            <select class="form-control selectpicker"   name="endpoint" id="endpoint" data-placeholder="Choose Sip  End Point ...">
+                            @foreach ($sipEndPoints as $sipEndPoint)
+                            <option value="{{ $sipEndPoint->name }}" @if ($sipEndPoint->name==$sip_gateway->endpoint ) selected @endif>{{ $sipEndPoint->name }}</option>
+        
+                            @endforeach
+                      
+                        </select>
+                        
                         </div>
                     </div>
                     <div class="col-xs-12 sarv">

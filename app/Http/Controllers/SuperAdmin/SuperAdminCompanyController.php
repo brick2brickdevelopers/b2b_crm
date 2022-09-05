@@ -2,6 +2,11 @@
 
 namespace App\Http\Controllers\SuperAdmin;
 
+use App\CallFlowDiagram;
+use App\CallingGroup;
+use App\CallOutcome;
+use App\CallPurpose;
+use App\CampaignLead;
 use App\Company;
 use App\Currency;
 use App\DidNumber;
@@ -15,6 +20,7 @@ use App\Http\Requests\SuperAdmin\Companies\StoreRequest;
 use App\Http\Requests\SuperAdmin\Companies\UpdateRequest;
 use App\Invoice;
 use App\LanguageSetting;
+use App\Lead;
 use App\OfflineInvoice;
 use App\OfflinePaymentMethod;
 use App\Package;
@@ -24,6 +30,12 @@ use App\SipGateway;
 use App\StripeInvoice;
 use App\Traits\CurrencyExchange;
 use App\User;
+use App\Campaign;
+use App\CampaignLeadStatus;
+use App\Designation;
+use App\IvrGreeting;
+use App\Team;
+use App\VoiceMail;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -81,6 +93,7 @@ class SuperAdminCompanyController extends SuperAdminBaseController
      */
     public function store(StoreRequest $request)
     {
+       
         DB::beginTransaction();
 
         $company = new Company();
@@ -293,8 +306,27 @@ class SuperAdminCompanyController extends SuperAdminBaseController
      */
     public function destroy(DeleteRequest $request, $id)
     {
-        DidNumber::where('company_id',$id)->destroy();
+        $didNumbers = DidNumber::where('company_id',$id)->get();
+        foreach($didNumbers as $didNumber){
+            $number = DidNumber::find($didNumber->id); 
+            $number->company_id = null; 
+            $number->save(); 
+        }
         SipGateway::where('company_id',$id)->destroy();
+        Lead::where('company_id',$id)->destroy();
+        User::where('company_id',$id)->destroy();
+        Campaign::where('company_id',$id)->destroy();
+        CampaignLead::where('company_id',$id)->destroy();
+        Team::where('company_id',$id)->destroy();
+        Designation::where('company_id',$id)->destroy();
+        EmployeeDetails::where('company_id',$id)->destroy();
+        CallPurpose::where('company_id',$id)->destroy();
+        CallingGroup::where('company_id',$id)->destroy();
+        CallOutcome::where('company_id',$id)->destroy();
+        IvrGreeting::where('company_id',$id)->destroy();
+        VoiceMail::where('company_id',$id)->destroy();
+        CallFlowDiagram::where('company_id',$id)->destroy();
+        CampaignLeadStatus::where('company_id',$id)->destroy();
         Company::destroy($id);
         return Reply::success(__('messages.deleteSuccess'));
     }

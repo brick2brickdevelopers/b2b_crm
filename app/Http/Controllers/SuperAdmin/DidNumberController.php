@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class DidNumberController extends SuperAdminBaseController
 {
-     /**
+    /**
      * SuperAdminContactNumberController constructor.
      */
     public function __construct()
@@ -16,7 +16,7 @@ class DidNumberController extends SuperAdminBaseController
         parent::__construct();
         $this->pageTitle = 'DID Numbers';
         $this->pageIcon = 'icon-settings';
-    } 
+    }
     /**
      * Display a listing of the resource.
      *
@@ -46,13 +46,10 @@ class DidNumberController extends SuperAdminBaseController
      */
     public function store(Request $request)
     {
-      $didNumber = new DidNumber();
-      $didNumber->number = $request->number;
-     
-      $didNumber->save();
-      return back()->with('success','Did Number created successfully!');
-
-    
+        $didNumber = new DidNumber();
+        $didNumber->number = $request->number;
+        $didNumber->save();
+        return redirect()->route('super-admin.did-number.index')->with('alert', 'Did Number Added successfully!');
     }
 
     /**
@@ -86,13 +83,10 @@ class DidNumberController extends SuperAdminBaseController
      */
     public function update(Request $request, $id)
     {
-          $didNumber =  DidNumber::find($id);
-          $didNumber->number = $request->number;
-          $didNumber->save();
-
-          return back()->with('success','Did Number Updated successfully!');
-
-
+        $didNumber =  DidNumber::find($id);
+        $didNumber->number = $request->number;
+        $didNumber->save();
+        return redirect()->route('super-admin.did-number.index')->with('success', 'Did Number Updated successfully!');
     }
 
     /**
@@ -107,7 +101,6 @@ class DidNumberController extends SuperAdminBaseController
 
         $didNumber->delete();
 
-        return back()->with('success','Did Number Deleted successfully!');
-
+        return back()->with('success', 'Did Number Deleted successfully!');
     }
 }

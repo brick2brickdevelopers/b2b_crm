@@ -47,48 +47,46 @@ class CallReportDataTable extends BaseDataTable
             ->editColumn('call_status', function ($row) {
                 if ($row->call_status == 0) {
                     return "Available";
-                } elseif($row->call_status == 1) {
+                } elseif ($row->call_status == 1) {
                     return "Completed";
-                }else{
+                } else {
                     return "Follow";
                 }
             })
             ->editColumn('outcome', function ($row) {
                 if ($row->outcome == 1) {
                     return "In Process";
-                }elseif($row->outcome == 2) {
+                } elseif ($row->outcome == 2) {
                     return "Running";
-                }elseif($row->outcome == 3) {
+                } elseif ($row->outcome == 3) {
                     return "Both Answered";
-                }elseif($row->outcome == 4) {
+                } elseif ($row->outcome == 4) {
                     return "To (Customer) Answered - From (Agent) Unanswered";
-                }elseif($row->outcome == 5) {
+                } elseif ($row->outcome == 5) {
                     return "To (Customer) Answered";
-                }elseif($row->outcome == 6) {
+                } elseif ($row->outcome == 6) {
                     return "To (Customer) Unanswered - From (Agent) Answered";
-                }elseif($row->outcome == 7) {
+                } elseif ($row->outcome == 7) {
                     return "From (Agent) Unanswered";
-                }elseif($row->outcome == 8) {
+                } elseif ($row->outcome == 8) {
                     return "To (Customer) Unanswered";
-                }elseif($row->outcome == 9) {
+                } elseif ($row->outcome == 9) {
                     return "Both Unanswered";
-                }elseif($row->outcome == 10) {
+                } elseif ($row->outcome == 10) {
                     return "From (Agent) Answered";
-                }elseif($row->outcome == 11) {
+                } elseif ($row->outcome == 11) {
                     return "Rejected Call";
-                }elseif($row->outcome == 12) {
+                } elseif ($row->outcome == 12) {
                     return "Skipped";
-                }elseif($row->outcome == 13) {
+                } elseif ($row->outcome == 13) {
                     return "From (Agent) Failed";
-                }elseif($row->outcome == 14) {
+                } elseif ($row->outcome == 14) {
                     return "To (Customer) Failed - From (Agent) Answered";
-                }elseif($row->outcome == 15) {
+                } elseif ($row->outcome == 15) {
                     return "To (Customer) Failed";
-                }
-                elseif($row->outcome == 16) {
+                } elseif ($row->outcome == 16) {
                     return "To (Customer) Answered - From (Agent) Failed";
-                }
-                else{
+                } else {
                     return "N/A";
                 }
             })
@@ -117,27 +115,27 @@ class CallReportDataTable extends BaseDataTable
                 $report = $report->whereBetween('created_at', [$startDate, $endDate]);
             }
         }
-            $report = $report->where('created_by', Auth::user()->id);
-        
+        $report = $report->where('created_by', Auth::user()->id);
+
         if ($this->request()->call_type != 'all' && $this->request()->call_type != '') {
             $report = $report->where('call_type', $this->request()->call_type);
         }
         if ($this->request()->call_source != 'all' && $this->request()->call_source != '') {
             $report = $report->where('call_source', $this->request()->call_source);
         }
-        if ($this->request()->call_outcome!= 'all' && $this->request()->call_outcome != '') {
+        if ($this->request()->call_outcome != 'all' && $this->request()->call_outcome != '') {
             $report = $report->where('outcome', $this->request()->call_outcome);
         }
-        if ($this->request()->campaign_status!= 'all' && $this->request()->campaign_status != '') {
+        if ($this->request()->campaign_status != 'all' && $this->request()->campaign_status != '') {
             $report = $report->where('call_status', $this->request()->campaign_status);
         }
-        if ($this->request()->call_purpose!= 'all' && $this->request()->call_purpose != '') {
+        if ($this->request()->call_purpose != 'all' && $this->request()->call_purpose != '') {
             $report = $report->where('call_purpose', $this->request()->call_purpose);
         }
-        if ($this->request()->campaign_id!= 'all' && $this->request()->campaign_id != '') {
+        if ($this->request()->campaign_id != 'all' && $this->request()->campaign_id != '') {
             $report = $report->where('campaign_id', $this->request()->campaign_id);
         }
-        
+
         return $report;
     }
 

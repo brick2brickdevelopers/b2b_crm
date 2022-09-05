@@ -16,7 +16,7 @@ class CreateCallFlowDiagramsTable extends Migration
         Schema::create('call_flow_diagrams', function (Blueprint $table) {
             $table->id();
             $table->unsignedInteger('company_id');
-            $table->integer('greetings_id');
+            $table->integer('greetings_id')->nullable();
             $table->boolean('menu');
             $table->integer('menu_message')->nullable();
             $table->json('extensions')->nullable();
@@ -30,6 +30,8 @@ class CreateCallFlowDiagramsTable extends Migration
             $table->json('days')->nullable();
             $table->integer('non_working_days_greetings')->nullable();
             $table->integer('non_working_days_voicemail')->nullable();
+            $table->integer('did_number')->nullable();
+            $table->boolean('status');
             $table->timestamps();
         });
     }

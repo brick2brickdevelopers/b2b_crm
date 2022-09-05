@@ -77,9 +77,17 @@
             </div>
             <div class="col-xs-12">
                 <div class="form-group">
-                    <label class="control-label">End Point</label>
-                    <input class="form-control" type="url" name="endpoint" id="endpoint" data-style="form-control"
-                        required="true">
+                    <label class="control-label">End Point <a href="javascript:;"
+                        id="designation-setting"><i class="ti-settings text-info"></i></a>
+                    </label>
+                    <select class="form-control selectpicker"  name="endpoint" id="endpoint" data-placeholder="Choose Sip  End Point ...">
+                    @foreach ($sipEndPoints as $sipEndPoint)
+                    <option value="{{ $sipEndPoint->name }}">{{ $sipEndPoint->name }}</option>
+
+                    @endforeach
+              
+                </select>
+                
                 </div>
             </div>
             <div class="col-xs-12 sarv">
@@ -165,7 +173,7 @@
                             </div>
                             <div class="col-xs-12">
                                 <div class="form-group">
-                                    <label class="control-label">End Point</label>
+                                    <label class="control-label">End Point </label>
                                     <input class="form-control endpoint" type="url" name="endpoint" id="endpoint"
                                         data-style="form-control">
                                 </div>
@@ -197,6 +205,28 @@
                 </div>
             </div>
             </form>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+     {{-- Ajax Modal --}}
+    <div class="modal fade bs-modal-md in" id="departmentModel" role="dialog" aria-labelledby="myModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-md" id="modal-data-application">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <span class="caption-subject font-red-sunglo bold uppercase" id="modelHeading"></span>
+                </div>
+                <div class="modal-body">
+                    Loading...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn blue">Save changes</button>
+                </div>
+            </div>
             <!-- /.modal-content -->
         </div>
         <!-- /.modal-dialog -->
@@ -285,6 +315,14 @@
                 redirect: true,
                 data: $('#update-form').serialize()
             })
+        });
+
+
+        $('#designation-setting').on('click', function(event) {
+            event.preventDefault();
+            var url = "{{ route('super-admin.sip-end-point.create') }}";
+            $('#modelHeading').html("@lang('messages.manageDepartment')");
+            $.ajaxModal('#departmentModel', url);
         });
     </script>
 @endpush

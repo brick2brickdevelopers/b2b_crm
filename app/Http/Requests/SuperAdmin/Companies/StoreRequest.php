@@ -43,7 +43,7 @@ class StoreRequest extends SuperAdminBaseRequest
 
         $len = strlen(get_domain()) + 4;
         $rules = [
-            'company_name' => 'required',
+            'company_name' => 'required|unique:companies',
             'company_email' => 'required|email|unique:companies',
             'sub_domain' => module_enabled('Subdomain') ? 'required|banned_sub_domain|min:'.$len.'|unique:companies,sub_domain|max:50|sub_domain' : '',
             'company_phone' => 'required',

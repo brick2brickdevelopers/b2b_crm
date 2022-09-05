@@ -139,6 +139,7 @@ Route::group(['middleware' => 'auth'], function () {
             Route::get('faq/download/{id}', ['uses' => 'SuperAdminFaqController@download'])->name('faq.download');
             Route::get('faq/data', ['uses' => 'SuperAdminFaqController@data'])->name('faq.data');
             Route::resource('/faq', 'SuperAdminFaqController');
+            Route::resource('/sip-end-point', 'SipEndPointController');
 
             // Faq Category routes
             Route::get('faq-category/data', ['uses' => 'SuperAdminFaqCategoryController@data'])->name('faq-category.data');
