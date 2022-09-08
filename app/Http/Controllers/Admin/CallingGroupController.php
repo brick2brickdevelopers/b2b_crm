@@ -132,6 +132,7 @@ class CallingGroupController extends AdminBaseController
     public function destroy($id)
     {
         CallingGroup::destroy($id);
-        return Reply::redirect(route('admin.calling-group.index'), ('Calling Group deleted successfully.'));
+        // return Reply::redirect(route('admin.calling-group.index'), ('Calling Group deleted successfully.'));
+        return back();
     }
 }

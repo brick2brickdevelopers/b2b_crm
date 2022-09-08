@@ -15,7 +15,7 @@ class UpdateRequest extends SuperAdminBaseRequest
     public function rules()
     {
         return [
-            'company_name' => 'required',
+            'company_name' => 'required|unique:companies,company_name,'.$this->route('company'),
             'company_email' => 'required|email|unique:companies,company_email,'.$this->route('company'),
             'sub_domain' => module_enabled('Subdomain') ? 'required|min:4|max:50|sub_domain|unique:companies,sub_domain,'.$this->route('company') : '',
             'company_phone' => 'required',
