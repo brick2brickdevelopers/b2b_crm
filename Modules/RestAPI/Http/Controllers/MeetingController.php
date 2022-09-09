@@ -245,4 +245,36 @@ class MeetingController extends ApiBaseController
 
     }
     
+    public function search_employee_attendance(Request $request)
+
+    {
+        $request->validate([
+            'attendee' => 'required',
+            
+        ]);
+
+        // $attendee =explode(',',$request->attendee_id);
+
+       
+
+           
+          
+        //         $data = [];
+        //         foreach ($attendee as $value) {
+        //                            $data[] =  EventAttendee::create(['user_id' => $value, 'event_id' => $request->event_id]);
+
+        //         // $data[] = $value;
+        //         }
+                  
+        $data = User::select('id', 'name', 'email')->where('name', 'LIKE', "%$request->attendee%")->get();
+
+
+        return response()->json([
+            'success'     => true,
+            'status'      => 200,
+            'message'     => "Event Create successfully",
+            'event' =>  $data,
+        ]);
+        
+    }
 }
