@@ -63,6 +63,9 @@ class CampaignController extends AdminBaseController
 
     public function store(Request $request)
     {
+        $this->validate($request,[
+            'name' => 'required|unique:campaigns',
+        ]);
 
         if ($request->type != '') {
             $campType = $request->type;
@@ -151,6 +154,10 @@ class CampaignController extends AdminBaseController
 
     public function update(Request $request, $id)
     {
+        $this->validate($request,[
+            'name' => 'required|unique:campaigns,name,'.$id,
+        ]);
+        
         $campaign = Campaign::find($id);
         $campaign->type = $request->type;
         $campaign->name = $request->name;

@@ -53,6 +53,7 @@ ApiRoute::group(['namespace' => 'Modules\RestAPI\Http\Controllers', 'middleware'
     ApiRoute::get('call_log_reports', 'CampaignController@call_log_reports');
     //Meeting api route
     ApiRoute::post('event_create', 'MeetingController@event_store');
+    ApiRoute::post('event_attendance', 'MeetingController@event_attendance');
 
     //Updated dashboard api route starting from here
     ApiRoute::get('dashboard', 'CampaignController@dashboard');

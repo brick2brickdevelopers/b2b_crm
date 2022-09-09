@@ -233,5 +233,16 @@ class MeetingController extends ApiBaseController
             return $event->event_id;
         }
     }
+
+
+    public function event_attendance(Request $request)
+    {
+        $request->validate([
+            'attende_id' => 'required',
+            'event_id' => 'required',
+            
+        ]);
+
+    }
     
 }

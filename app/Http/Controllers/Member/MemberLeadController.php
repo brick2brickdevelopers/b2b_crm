@@ -25,6 +25,7 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\CampaignLead;
+use App\CampaignAgent;
 use Yajra\DataTables\Html\Builder;
 
 
@@ -49,15 +50,16 @@ class MemberLeadController extends MemberBaseController
     public function index()
     {
 
+       
 
         $agent = LeadAgent::where('user_id', $this->user->id)->first();
         $agentId = ($agent) ? $agent->id : '';
 
 
+
         if (!$this->user->cans('view_lead')) {
             $this->totalLeads = Lead::where('leads.agent_id', $agentId)->get();
         } else {
-            // $this->totalLeads = Lead::all();
             $this->totalLeads = Lead::where('leads.agent_id', $agentId)->get();
         }
 
@@ -79,11 +81,21 @@ class MemberLeadController extends MemberBaseController
         $this->leadAgents = LeadAgent::with('user')->has('user')->get();
         $formLead = new Lead();
         $this->column = $formLead->getCustomFieldGroupsWithFields()->fields;
-        // dd($this->data);
+        //dd($this->data);
+
+
 
         return view('member.lead.index', $this->data);
     }
 
+        // public function index()
+        // {
+       
+        //     // return(company()->id);
+        //     $campaignLeads = CampaignLead::where('company_id',5)->get();
+        //     return($campaignLeads);
+        //     return view('member.lead.indexnew',$this->data);
+        // }
     /**
      * @param $id
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
@@ -91,10 +103,12 @@ class MemberLeadController extends MemberBaseController
     public function show($id)
     {
         $this->lead = Lead::findOrFail($id)->withCustomFields();
+
+
         $this->fields = $this->lead->getCustomFieldGroupsWithFields()->fields;
-        if (!$this->user->cans('view_lead') && $this->lead->lead_agent->user_id != $this->user->id) {
-            abort(403);
-        }
+        // if (!$this->user->cans('view_lead') && $this->lead->lead_agent->user_id != $this->user->id) {
+        //     abort(403);
+        // }
         return view('member.lead.show', $this->data);
     }
 
