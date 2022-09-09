@@ -17,7 +17,7 @@ use Validator;
 
 class MeetingController extends ApiBaseController
 {
-   
+
 
 
     public function event_store(Request $request)
@@ -30,8 +30,8 @@ class MeetingController extends ApiBaseController
             'description' => 'required',
             'where' => 'required',
         ]);
-       
-       
+
+
         $eventIds = [];
         $event = new Event();
         $event->event_name = $request->event_name;
@@ -57,46 +57,42 @@ class MeetingController extends ApiBaseController
         $event->created_by = Auth::user()->id;
         $event->lead_id = json_encode($request->lead_id);
         $event->save();
-        $eventIds [] = $event->id;
+        $eventIds[] = $event->id;
         if ($request->all_employees) {
             $attendees = User::allEmployees();
             foreach ($attendees as $attendee) {
-              
+
                 EventAttendee::create(['user_id' => $attendee->id, 'event_id' => $event->id]);
             }
-           
+
 
             // Notification::send($attendees, new EventInvite($event));
         }
-        
+
         if ($request->all_clients) {
-            if(isset($attendees)){
+            if (isset($attendees)) {
                 $attendees = User::allClients()->merge($attendees);
-            }
-            else{
+            } else {
                 $attendees = User::allClients();
             }
             foreach ($attendees as $attendee) {
                 EventAttendee::create(['user_id' => $attendee->id, 'event_id' => $event->id]);
             }
-          //  Notification::send($attendees, new EventInvite($event));
+            //  Notification::send($attendees, new EventInvite($event));
 
-           
+
         }
-        if(empty($request->all_employees))
-        {
+        if (empty($request->all_employees)) {
             EventAttendee::create(['user_id' => Auth::user()->id, 'event_id' => $event->id]);
-
-           
         }
-       
+
         if ($request->user_id == null) {
             foreach ($request->user_id as $userId) {
                 EventAttendee::firstOrCreate(['user_id' => $userId, 'event_id' => $event->id]);
             }
             $attendees = User::whereIn('id', $request->user_id)->get();
-          //  Notification::send($attendees, new EventInvite($event));
-          
+            //  Notification::send($attendees, new EventInvite($event));
+
         }
         if (!$request->has('repeat') || $request->repeat == 'no') {
             $event->event_id = $this->googleCalendarEvent($event);
@@ -139,31 +135,30 @@ class MeetingController extends ApiBaseController
                     foreach ($attendees as $attendee) {
                         EventAttendee::create(['user_id' => $attendee->id, 'event_id' => $event->id]);
                     }
-        
-                //    Notification::send($attendees, new EventInvite($event));
+
+                    //    Notification::send($attendees, new EventInvite($event));
                 }
-        
+
                 if ($request->user_id) {
                     foreach ($request->user_id as $userId) {
-                        
+
                         EventAttendee::firstOrCreate(['user_id' => $userId, 'event_id' => $event->id]);
                     }
                     $attendees = User::whereIn('id', $request->user_id)->get();
-                 //   Notification::send($attendees, new EventInvite($event));
+                    //   Notification::send($attendees, new EventInvite($event));
                 }
-                $eventIds [] = $event->id;
+                $eventIds[] = $event->id;
             }
             $this->googleCalendarEventMulti($eventIds);
         }
 
-            $data = Event::all();
-            return response()->json([
-                'success'     => true,
-                'status'      => 200,
-                'message'     => "Event Create successfully",
-                'event' =>  $data,
-            ]);
-        
+        $data = Event::all();
+        return response()->json([
+            'success'     => true,
+            'status'      => 200,
+            'message'     => "Event Create successfully",
+            'event' =>  $data,
+        ]);
     }
 
     protected function googleCalendarEvent($event)
@@ -177,9 +172,8 @@ class MeetingController extends ApiBaseController
 
             $attendees = EventAttendee::with(['user'])->where('event_id', $event->id)->get();
 
-            foreach($attendees as $attend){
-                if(!is_null($attend->user) && !is_null($attend->user->email) && !is_null($attend->user->calendar_module) && $attend->user->calendar_module->event_status)
-                {
+            foreach ($attendees as $attend) {
+                if (!is_null($attend->user) && !is_null($attend->user->email) && !is_null($attend->user->calendar_module) && $attend->user->calendar_module->event_status) {
                     $attendiesData[] = ['email' => $attend->user->email];
                 }
             }
@@ -240,41 +234,23 @@ class MeetingController extends ApiBaseController
         $request->validate([
             'attende_id' => 'required',
             'event_id' => 'required',
-            
-        ]);
 
+        ]);
     }
-    
+
     public function search_employee_attendance(Request $request)
 
     {
         $request->validate([
             'attendee' => 'required',
-            
+
         ]);
-
-        // $attendee =explode(',',$request->attendee_id);
-
-       
-
-           
-          
-        //         $data = [];
-        //         foreach ($attendee as $value) {
-        //                            $data[] =  EventAttendee::create(['user_id' => $value, 'event_id' => $request->event_id]);
-
-        //         // $data[] = $value;
-        //         }
-                  
         $data = User::select('id', 'name', 'email')->where('name', 'LIKE', "%$request->attendee%")->get();
-
-
         return response()->json([
             'success'     => true,
             'status'      => 200,
             'message'     => "Event Create successfully",
             'event' =>  $data,
         ]);
-        
     }
 }
